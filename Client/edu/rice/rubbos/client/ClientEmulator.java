@@ -197,46 +197,54 @@ public class ClientEmulator
         // Monitor Web server
         int fullTimeInSec = (client.rubbos.getUpRampTime()+client.rubbos.getSessionTime()+client.rubbos.getDownRampTime())/1000 + 5; // Give 5 seconds extra for init
         System.out.println("ClientEmulator: Starting monitoring program on Web server "+client.rubbos.getWebServerName()+"<br>\n");
-        String[] cmdWeb = new String[3];
+        String[] cmdWeb = new String[5];
         cmdWeb[0] = client.rubbos.getMonitoringRsh();
-        cmdWeb[1] = client.rubbos.getWebServerName();
-        cmdWeb[2] = client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"web_server";
+        cmdWeb[1] = client.rubbos.getWebServerName();                                               
+        cmdWeb[2] = "/bin/bash";
+        cmdWeb[3] = "-c";
+        cmdWeb[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"web_server'";
         webServerMonitor = Runtime.getRuntime().exec(cmdWeb);
-        System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+"<br>\n");
+        System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+"<br>\n");
       
         // Monitor Database server
         System.out.println("ClientEmulator: Starting monitoring program on Database server "+client.rubbos.getDBServerName()+"<br>\n");
-        String[] cmdDB = new String[3];
+        String[] cmdDB = new String[5];
         cmdDB[0] = client.rubbos.getMonitoringRsh();
         cmdDB[1] = client.rubbos.getDBServerName();
-        cmdDB[2] = client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"db_server";
+        cmdDB[2] = "/bin/bash";
+        cmdDB[3] = "-c";
+        cmdDB[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"db_server'";
         dbServerMonitor = Runtime.getRuntime().exec(cmdDB);
-        System.out.println("&nbsp &nbsp Command is: "+cmdDB[0]+" "+cmdDB[1]+" "+cmdDB[2]+"<br>\n");
+        System.out.println("&nbsp &nbsp Command is: "+cmdDB[0]+" "+cmdDB[1]+" "+cmdDB[2]+" "+cmdDB[3]+" "+cmdDB[4]+"<br>\n");
 
         // Monitor local client
         System.out.println("ClientEmulator: Starting monitoring program locally on client<br>\n");
-        String[] cmdClient = new String[3];
+        String[] cmdClient = new String[5];
         cmdClient[0] = client.rubbos.getMonitoringRsh();
         cmdClient[1] = "localhost";
-        cmdClient[2] = client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"client0";
+        cmdClient[2] = "/bin/bash";
+        cmdClient[3] = "-c";
+        cmdClient[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"client0'";
         clientMonitor = Runtime.getRuntime().exec(cmdClient);
-        System.out.println("&nbsp &nbsp Command is: "+cmdClient[0]+" "+cmdClient[1]+" "+cmdClient[2]+"<br>\n");
+        System.out.println("&nbsp &nbsp Command is: "+cmdClient[0]+" "+cmdClient[1]+" "+cmdClient[2]+" "+cmdClient[3]+" "+cmdClient[4]+"<br>\n");
 
         remoteClientMonitor = new Process[client.rubbos.getRemoteClients().size()];
         // Monitor remote clients
         for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
         {
           System.out.println("ClientEmulator: Starting monitoring program locally on client<br>\n");
-          String[] rcmdClient = new String[3];
+          String[] rcmdClient = new String[5];
           rcmdClient[0] = client.rubbos.getMonitoringRsh();
           rcmdClient[1] = (String)client.rubbos.getRemoteClients().get(i);
-          rcmdClient[2] = client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-            client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"client"+(i+1);
+          rcmdClient[2] = "/bin/bash";
+          rcmdClient[3] = "-c";
+          rcmdClient[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+            client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"client"+(i+1)+"'";
           remoteClientMonitor[i] = Runtime.getRuntime().exec(rcmdClient);
-          System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+"<br>\n");
+          System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+" "+rcmdClient[3]+" "+rcmdClient[4]+"<br>\n");
         }
 
         // Redirect output for traces
