@@ -181,7 +181,7 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
 
     if (page == 0)
       sp
-          .printHTML("<p><CENTER>\n<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory?category= "
+          .printHTML("<p><CENTER>\n<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory?category="
               + categoryId
               + "&categoryName="
               + URLEncoder.encode(categoryName)
@@ -190,14 +190,14 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
               + "nbOfStories=nbOfStories\">Next page</a>\n</CENTER>\n");
     else
       sp
-          .printHTML("<p><CENTER>\n<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory?category= "
+          .printHTML("<p><CENTER>\n<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory?category="
               + categoryId
               + "&categoryName="
               + URLEncoder.encode(categoryName)
               + "&page="
               + (page - 1)
               + "nbOfStories=nbOfStories\">Previous page</a>\n&nbsp&nbsp&nbsp"
-              + "<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory?category= "
+              + "<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory?category="
               + categoryId
               + "&categoryName="
               + URLEncoder.encode(categoryName)
