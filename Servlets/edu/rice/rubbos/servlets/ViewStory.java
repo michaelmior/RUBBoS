@@ -324,7 +324,7 @@ public class ViewStory extends RubbosHttpServlet
           + " AND " + comment_table 
           + ".writer=users.id");
       rs = stmt.executeQuery();
-      String subject, comment, writer, link;
+      String subject, comment;
       int childs, parent, id;
 
       if (rs.first())
