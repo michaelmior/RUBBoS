@@ -173,10 +173,9 @@ public class ModerateComment extends RubbosHttpServlet
     {
       sp.printHTML("Exception moderating comments part 2: " + e2 + "<br>");
     } 
-    finally
-    {
-      closeConnection(stmt, conn);
-    }
+    
+    closeConnection(stmt, conn);
+
     sp.printHTMLfooter();
 
   }

@@ -125,10 +125,8 @@ public class ReviewStories extends RubbosHttpServlet
     {
       sp.printHTML("Exception rejecting story: " + e + "<br>");
     }
-    finally
-    {
-      closeConnection(stmt, conn);
-    }
+
+    closeConnection(stmt, conn);
 
     sp.printHTMLfooter();
 

@@ -132,10 +132,9 @@ public class SubmitStory extends RubbosHttpServlet
     {
       sp.printHTML("Exception accepting stories: " + e + "<br>");
     }
-    finally
-    {
-      closeConnection(stmt, conn);
-    }
+    
+    closeConnection(stmt, conn);
+
 
     sp
         .printHTML("</SELECT></table><p><br>\n"

@@ -124,10 +124,9 @@ public class BrowseCategories extends RubbosHttpServlet
     {
       sp.printHTML("Exception getting categories: " + e + "<br>");
     } 
-    finally 
-    {
-        closeConnection(stmt, conn);
-    }
+
+    closeConnection(stmt, conn);
+
 
     sp.printHTMLfooter();
 

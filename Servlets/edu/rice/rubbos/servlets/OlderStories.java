@@ -223,10 +223,9 @@ public class OlderStories extends RubbosHttpServlet
       {
         sp.printHTML("Exception getting strings: " + e2 + "<br>");
       }
-      finally
-      {
-          closeConnection(stmt, conn);
-      }
+
+      closeConnection(stmt, conn);
+
       if (page == 0)
         sp
             .printHTML("<p><CENTER>\n<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.OlderStories?day="

@@ -137,10 +137,9 @@ public class StoriesOfTheDay extends RubbosHttpServlet
     {
       sp.printHTML("Exception getting stories of the day: " + e + "<br>");
     } 
-    finally 
-    {
-      closeConnection(stmt, conn);
-    }
+
+    closeConnection(stmt, conn);
+
 
     sp.printHTMLfooter();
 

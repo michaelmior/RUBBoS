@@ -439,10 +439,7 @@ public class Search extends RubbosHttpServlet
       {
         sp.printHTML(e7 + "Exception in type!=1");
       }
-      finally 
-      {
-        closeConnection(stmt, conn);
-      }
+      closeConnection(stmt, conn);
     } // end else
 
     // We do not need to do a closeConnection() here as a connection
