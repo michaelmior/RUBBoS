@@ -208,6 +208,8 @@ public class ViewStory extends RubbosHttpServlet
       {
         sp
             .printHTML("<h3>ERROR: Sorry, but this story does not exist.</h3><br>\n");
+        closeConnection(stmt, conn);
+        return;
       }
 
       //      username = sp.getUserName(rs.getInt("writer"), conn);

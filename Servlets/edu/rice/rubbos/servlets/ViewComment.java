@@ -321,6 +321,7 @@ public class ViewComment extends RubbosHttpServlet
     if (comment_table == null)
     {
       sp.printHTML("Viewing comment: You must provide a comment table!<br>");
+      return;
     }
 
     conn = getConnection();
