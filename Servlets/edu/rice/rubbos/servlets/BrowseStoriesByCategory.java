@@ -56,7 +56,7 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
     try
     {
       if (conn != null)
-          releaseConnection(conn);
+        releaseConnection(conn);
     }
     catch (Exception ignore)
     {
@@ -164,7 +164,7 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
         closeConnection(stmt, conn);
         return;
       }
-
+      
       do
       {
         String title = rs.getString("title");
@@ -189,10 +189,9 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
     {
       sp.printHTML("Exception getting categories: " + e + "<br>");
     }
-    finally 
-    {
-      closeConnection(stmt, conn);
-    }
+        
+    closeConnection(stmt, conn);
+
 
     if (page == 0)
       sp
