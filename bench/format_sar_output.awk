@@ -94,12 +94,13 @@ BEGIN {
 	  print $2 > FILENAME".mem.kbmemfree.dat"; # Amount of free memory available in kilobytes.
 	  print $3 > FILENAME".mem.kbmemused.dat"; # Amount of used memory in kilobytes. This does not take into account memory used by the kernel itself.
 	  print $4 > FILENAME".mem.memused.dat"; # Percentage of used memory.
-#	  print $5 > FILENAME".mem.kbmemshrd.dat"; # Amount of memory shared by the system in kilobytes.  Always zero with 2.4 kernels.
-#	  print $6 > FILENAME".mem.kbbuffers.dat"; # Amount of memory used as buffers by the kernel in kilobytes.
-	  print $7 > FILENAME".mem.kbcached.dat"; # Amount of memory used to cache data by the kernel in kilobytes.
-#	  print $8 > FILENAME".mem.kbswpfree.dat"; # Amount of free swap space in kilobytes.
-#	  print $9 > FILENAME".mem.kbswpused.dat"; # Amount of used swap space in kilobytes.
-	  print $10 > FILENAME".mem.swpused.dat"; # Percentage of used swap space.
+#         It appears the kbmemshrd has been removed from the sysstat output - ntolia
+#	  print $X > FILENAME".mem.kbmemshrd.dat"; # Amount of memory shared by the system in kilobytes.  Always zero with 2.4 kernels.
+#	  print $5 > FILENAME".mem.kbbuffers.dat"; # Amount of memory used as buffers by the kernel in kilobytes.
+	  print $6 > FILENAME".mem.kbcached.dat"; # Amount of memory used to cache data by the kernel in kilobytes.
+#	  print $7 > FILENAME".mem.kbswpfree.dat"; # Amount of free swap space in kilobytes.
+#	  print $8 > FILENAME".mem.kbswpused.dat"; # Amount of used swap space in kilobytes.
+	  print $9 > FILENAME".mem.swpused.dat"; # Percentage of used swap space.
 	  n = "";
  	}
       if (n == "totsck")
