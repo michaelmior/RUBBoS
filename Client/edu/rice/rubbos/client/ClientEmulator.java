@@ -8,10 +8,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.lang.Runtime;
-import java.net.URL;
 import java.util.GregorianCalendar;
 import java.util.Random;
-import java.util.Vector;
 
 /**
  * RUBBoS client emulator. 

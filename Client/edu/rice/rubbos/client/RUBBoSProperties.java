@@ -1,7 +1,5 @@
 package edu.rice.rubbos.client;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.RandomAccessFile;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
