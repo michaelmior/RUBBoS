@@ -92,7 +92,7 @@ public class AcceptStory extends RubbosHttpServlet
     try
     {
       stmt = conn
-          .prepareStatement("SELECT * FROM submissions WHERE id= storyId");
+          .prepareStatement("SELECT * FROM submissions WHERE id="+ storyId);
       rs = stmt.executeQuery();
     }
     catch (Exception e)
@@ -122,7 +122,7 @@ public class AcceptStory extends RubbosHttpServlet
           + categoryTitle + "\", \"" + categoryBody + "\", '" + categoryDate
           + "', " + categoryWriter + ", " + category + ")");
       stmtdel = conn
-          .prepareStatement("DELETE FROM submissions WHERE id=storyId");
+          .prepareStatement("DELETE FROM submissions WHERE id=" + storyId);
 
       updateResult = stmt.executeUpdate();
       updateResult = stmtdel.executeUpdate();
