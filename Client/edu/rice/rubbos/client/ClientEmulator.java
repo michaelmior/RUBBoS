@@ -196,6 +196,58 @@ public class ClientEmulator
       System.out.println("<CENTER></A><A NAME=\"trace\"><h2>*** Monitoring ***</h2></CENTER>");
       try
       {
+
+	// First clean up all of the log files as we could be
+	// recording binary files. Sar by default "appends"
+	try
+	{
+	  String[] delFiles = new String[3];
+	  Process delProcess;
+	  delFiles[0] = client.rubbos.getMonitoringRsh();
+	  // Web server
+	  delFiles[1] = client.rubbos.getWebServerName();
+	  delFiles[2] = "rm -f "+tmpDir+"web_server";
+	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	  delProcess = Runtime.getRuntime().exec(delFiles);
+	  delProcess.waitFor();
+	  // CJDBC server	
+	  if(client.rubbos.getCJDBCServerName() != null
+	     && !client.rubbos.getCJDBCServerName().equals("")) 
+	  {
+	    delFiles[1] = client.rubbos.getCJDBCServerName();
+	    delFiles[2] = "rm -f "+tmpDir+"cjdbc_server";
+	    System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	    delProcess = Runtime.getRuntime().exec(delFiles);
+	    delProcess.waitFor();
+	  }
+	  // Database Server
+	  delFiles[1] = client.rubbos.getDBServerName();
+	  delFiles[2] = "rm -f "+tmpDir+"db_server";
+	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	  delProcess = Runtime.getRuntime().exec(delFiles);
+	  delProcess.waitFor();
+	  // Local client
+	  delFiles[1] = "localhost";
+	  delFiles[2] = "rm -f "+tmpDir+"client0";
+	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	  delProcess = Runtime.getRuntime().exec(delFiles);
+	  delProcess.waitFor();
+	  // Remote clients
+	  for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
+	  {
+	    delFiles[1] =  (String)client.rubbos.getRemoteClients().get(i);
+	    delFiles[2] = "rm -f "+tmpDir+"client"+(i+1);
+	    System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	    delProcess = Runtime.getRuntime().exec(delFiles);
+	    delProcess.waitFor();
+	  }
+	}
+	catch(java.lang.InterruptedException ie) 
+	{
+	  ie.printStackTrace();
+	}
+	System.out.println("&nbsp &nbsp Finished deleting old files<br>\n");
+
         // Monitor Web server
         int fullTimeInSec = (client.rubbos.getUpRampTime()+client.rubbos.getSessionTime()+client.rubbos.getDownRampTime())/1000 + 5; // Give 5 seconds extra for init
         System.out.println("ClientEmulator: Starting monitoring program on Web server "+client.rubbos.getWebServerName()+"<br>\n");
@@ -205,7 +257,7 @@ public class ClientEmulator
         cmdWeb[2] = "/bin/bash";
         cmdWeb[3] = "-c";
         cmdWeb[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+tmpDir+"web_server'";
+          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"web_server'";
         webServerMonitor = Runtime.getRuntime().exec(cmdWeb);
         System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+"<br>\n");
 
@@ -218,7 +270,7 @@ public class ClientEmulator
 	    cmdWeb[2] = "/bin/bash";
 	    cmdWeb[3] = "-c";
 	    cmdWeb[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-		client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+tmpDir+"cjdbc_server'";
+		client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"cjdbc_server'";
 	    cjdbcServerMonitor = Runtime.getRuntime().exec(cmdWeb);
 	    System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+"<br>\n");
 	}
@@ -231,7 +283,7 @@ public class ClientEmulator
         cmdDB[2] = "/bin/bash";
         cmdDB[3] = "-c";
         cmdDB[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+tmpDir+"db_server'";
+          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"db_server'";
         dbServerMonitor = Runtime.getRuntime().exec(cmdDB);
         System.out.println("&nbsp &nbsp Command is: "+cmdDB[0]+" "+cmdDB[1]+" "+cmdDB[2]+" "+cmdDB[3]+" "+cmdDB[4]+"<br>\n");
 
@@ -243,7 +295,7 @@ public class ClientEmulator
         cmdClient[2] = "/bin/bash";
         cmdClient[3] = "-c";
         cmdClient[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"client0'";
+          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+reportDir+"client0'";
         clientMonitor = Runtime.getRuntime().exec(cmdClient);
         System.out.println("&nbsp &nbsp Command is: "+cmdClient[0]+" "+cmdClient[1]+" "+cmdClient[2]+" "+cmdClient[3]+" "+cmdClient[4]+"<br>\n");
 
@@ -258,7 +310,7 @@ public class ClientEmulator
           rcmdClient[2] = "/bin/bash";
           rcmdClient[3] = "-c";
           rcmdClient[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-            client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+tmpDir+"client"+(i+1)+"'";
+            client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"client"+(i+1)+"'";
           remoteClientMonitor[i] = Runtime.getRuntime().exec(rcmdClient);
           System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+" "+rcmdClient[3]+" "+rcmdClient[4]+"<br>\n");
         }
@@ -596,7 +648,8 @@ public class ClientEmulator
         for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
         {
           scpCmd[1] = (String)client.rubbos.getRemoteClients().get(i) + ":"+tmpDir+"/client"+(i+1);
-          Runtime.getRuntime().exec(scpCmd);
+          p = Runtime.getRuntime().exec(scpCmd);
+	  p.waitFor();
         }
         scpCmd[1] =  client.rubbos.getWebServerName() + ":"+tmpDir+"/web_server";
         p = Runtime.getRuntime().exec(scpCmd);
@@ -628,6 +681,91 @@ public class ClientEmulator
         System.out.println("An error occured while scping the files over ("+e.getMessage()+")");
       }
 
+
+      // Time to go and convert the binary files into something that generate_graphs.sh can understand
+      try
+      {
+	String cmd;
+	Process p;
+	// Web server
+	cmd = "mv "+reportDir+"/"+"web_server "+reportDir+"/"+"web_server.bin";
+	p = Runtime.getRuntime().exec(cmd);
+	p.waitFor();
+
+	// CJDBC server	
+	if(client.rubbos.getCJDBCServerName() != null
+	   && !client.rubbos.getCJDBCServerName().equals("")) 
+	{
+	  cmd = "mv "+reportDir+"/"+"cjdbc_server "+reportDir+"/"+"cjdbc_server.bin";
+	  p = Runtime.getRuntime().exec(cmd);
+	  p.waitFor();
+	}
+
+	// Database Server
+	cmd = "mv "+reportDir+"/"+"db_server "+reportDir+"/"+"db_server.bin";
+	p = Runtime.getRuntime().exec(cmd);
+	p.waitFor();
+
+	// Localhost
+	cmd = "mv "+reportDir+"/"+"client0 "+reportDir+"/"+"client0.bin";
+	p = Runtime.getRuntime().exec(cmd);
+	p.waitFor();
+	
+	// Remote clients
+        for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
+        {
+	  cmd = "mv "+reportDir+"/"+"client"+(i+1)+" "+reportDir+"/"+"client"+(i+1)+".bin";
+          p = Runtime.getRuntime().exec(cmd);
+	  p.waitFor();
+        }
+
+	// All files rename at this point in time. Time to go forth and convert them into ascii
+	String[] convCmd = new String[5];  
+	int fullTimeInSec = (client.rubbos.getUpRampTime()+client.rubbos.getSessionTime()+client.rubbos.getDownRampTime())/1000 + 5; // Give 5 seconds extra for init
+	String common = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+	    client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -f "+reportDir;
+	convCmd[0] = client.rubbos.getMonitoringRsh();
+	convCmd[1] = "localhost";
+	convCmd[2] =  "/bin/bash";
+        convCmd[3] = "-c";
+        convCmd[4] = common+"web_server.bin > "+reportDir+""+"web_server'";
+        System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+"<br>\n");
+	p = Runtime.getRuntime().exec(convCmd); 
+	
+	if(client.rubbos.getCJDBCServerName() != null
+	   && !client.rubbos.getCJDBCServerName().equals("")) 
+	{
+	  convCmd[4] = common+"cjdbc_server.bin > "+reportDir+""+"cjdbc_server'";
+	  System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+"<br>\n");
+	  p = Runtime.getRuntime().exec(convCmd);
+	  p.waitFor();
+	}
+	
+	convCmd[4] = common+"db_server.bin > "+reportDir+""+"db_server'";
+        System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+"<br>\n");
+	p = Runtime.getRuntime().exec(convCmd);
+	p.waitFor();
+
+	convCmd[4] = common+"client0.bin > "+reportDir+""+"client0'";
+        System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+"<br>\n");
+	p = Runtime.getRuntime().exec(convCmd);
+	p.waitFor();
+
+	for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
+        {
+	  convCmd[2] =common+"client"+(i+1)+".bin > "+reportDir+""+"client"+(i+1)+"'";
+	  System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+"<br>\n");
+	  p = Runtime.getRuntime().exec(convCmd);
+	  p.waitFor();
+	}
+	
+
+      }
+      catch (Exception e)
+      {
+        System.out.println("An error occured while convering log files ("+e.getMessage()+")");
+      }
+
       // Generate the graphics 
       try
       {
@@ -637,6 +775,12 @@ public class ClientEmulator
         cmd[2] = client.rubbos.getGnuPlotTerminal();
         cmd[3] = Integer.toString(client.rubbos.getRemoteClients().size()+1);
         Process graph = Runtime.getRuntime().exec(cmd);
+	// Need to read input so program does not stall.
+	BufferedReader read = new BufferedReader(new InputStreamReader(graph.getInputStream()));
+	String msg;
+        while ((msg = read.readLine()) != null)
+	    System.out.println(msg+"<br>");
+        read.close();
         graph.waitFor();
       }
       catch (Exception e)
@@ -747,7 +891,13 @@ public class ClientEmulator
         cmd[3] = "-v";
         cmd[4] = "nbscript="+Integer.toString(client.rubbos.getRemoteClients().size()+1);
         cmd[5] = reportDir+"stat_client0.html";
-        Process computeStats = Runtime.getRuntime().exec(cmd);
+        Process computeStats = Runtime.getRuntime().exec(cmd);	
+	// Need to read input so program does not stall.
+	BufferedReader read = new BufferedReader(new InputStreamReader(computeStats.getInputStream()));
+	String msg;
+        while ((msg = read.readLine()) != null)
+	    System.out.println(msg+"<br>");
+        read.close();
         computeStats.waitFor();
       }
       catch (Exception e)
