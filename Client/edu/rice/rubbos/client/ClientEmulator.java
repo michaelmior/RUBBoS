@@ -181,7 +181,7 @@ public class ClientEmulator
           String[] rcmdClient = new String[3];
           rcmdClient[0] = client.rubbos.getMonitoringRsh();
           rcmdClient[1] = (String)client.rubbos.getRemoteClients().get(i);
-          rcmdClient[2] = client.rubbos.getClientsRemoteCommand()+" "+reportDir+"trace_client"+(i+1)+".html "+reportDir+"stat_client"+(i+1)+".html";
+          rcmdClient[2] = client.rubbos.getClientsRemoteCommand()+" "+tmpDir+"trace_client"+(i+1)+".html "+tmpDir+"stat_client"+(i+1)+".html";
           remoteClient[i] = Runtime.getRuntime().exec(rcmdClient);
           System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+"<br>\n");
         }
@@ -559,21 +559,27 @@ public class ClientEmulator
       try
       {
 	  String [] scpCmd = new String[3];
+	  scpCmd[0] =  client.rubbos.getMonitoringScp();
+	  scpCmd[2] = reportDir+"/";
 	  for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
 	  {
-	      scpCmd[0] =  client.rubbos.getMonitoringScp();
 	      scpCmd[1] = (String)client.rubbos.getRemoteClients().get(i) + ":"+tmpDir+"/client"+(i+1);
-	      scpCmd[2] = reportDir+"/";
 	      Runtime.getRuntime().exec(scpCmd);
 	  }
-	  scpCmd[0] =  client.rubbos.getMonitoringScp();
 	  scpCmd[1] =  client.rubbos.getWebServerName() + ":"+tmpDir+"/web_server";
-	  scpCmd[2] = reportDir+"/";
 	  Runtime.getRuntime().exec(scpCmd);
-	  scpCmd[0] =  client.rubbos.getMonitoringScp();
 	  scpCmd[1] =  client.rubbos.getDBServerName() + ":"+tmpDir+"/db_server";
-	  scpCmd[2] = reportDir+"/";
 	  Runtime.getRuntime().exec(scpCmd);
+	  // Fetch html files created by the remote clients
+	  for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
+	  {
+	      scpCmd[1] =  (String)client.rubbos.getRemoteClients().get(i)
+		  + ":"+tmpDir+"trace_client"+(i+1)+".html";
+	      Runtime.getRuntime().exec(scpCmd);
+	      scpCmd[1] =  (String)client.rubbos.getRemoteClients().get(i)
+		  + ":"+tmpDir+"stat_client"+(i+1)+".html";
+	      Runtime.getRuntime().exec(scpCmd);
+	  }
       } catch (Exception e) {
 	  System.out.println("An error occured while scping the files over ("+e.getMessage()+")");
       }
