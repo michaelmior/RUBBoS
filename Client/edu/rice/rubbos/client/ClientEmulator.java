@@ -179,12 +179,13 @@ public class ClientEmulator
         try
         {
           System.out.println("ClientEmulator: Starting remote client on "+client.rubbos.getRemoteClients().get(i)+"<br>\n");
-          String[] rcmdClient = new String[3];
+          String[] rcmdClient = new String[4];
           rcmdClient[0] = client.rubbos.getMonitoringRsh();
-          rcmdClient[1] = (String)client.rubbos.getRemoteClients().get(i);
-          rcmdClient[2] = client.rubbos.getClientsRemoteCommand()+" "+tmpDir+"trace_client"+(i+1)+".html "+tmpDir+"stat_client"+(i+1)+".html";
+	  rcmdClient[1] = "-x ";
+          rcmdClient[2] = (String)client.rubbos.getRemoteClients().get(i);
+          rcmdClient[3] = client.rubbos.getClientsRemoteCommand()+" "+tmpDir+"trace_client"+(i+1)+".html "+tmpDir+"stat_client"+(i+1)+".html";
           remoteClient[i] = Runtime.getRuntime().exec(rcmdClient);
-          System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+"<br>\n");
+          System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+" "+rcmdClient[3]+"<br>\n");
         }
         catch (IOException ioe)
         {
@@ -201,43 +202,44 @@ public class ClientEmulator
 	// recording binary files. Sar by default "appends"
 	try
 	{
-	  String[] delFiles = new String[3];
+	  String[] delFiles = new String[4];
 	  Process delProcess;
 	  delFiles[0] = client.rubbos.getMonitoringRsh();
+	  delFiles[1] = "-x ";
 	  // Web server
-	  delFiles[1] = client.rubbos.getWebServerName();
-	  delFiles[2] = "rm -f "+tmpDir+"web_server";
-	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	  delFiles[2] = client.rubbos.getWebServerName();
+	  delFiles[3] = "rm -f "+tmpDir+"web_server";
+	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+" "+delFiles[3]+"<br>\n");
 	  delProcess = Runtime.getRuntime().exec(delFiles);
 	  delProcess.waitFor();
 	  // CJDBC server	
 	  if(client.rubbos.getCJDBCServerName() != null
 	     && !client.rubbos.getCJDBCServerName().equals("")) 
 	  {
-	    delFiles[1] = client.rubbos.getCJDBCServerName();
-	    delFiles[2] = "rm -f "+tmpDir+"cjdbc_server";
-	    System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	    delFiles[2] = client.rubbos.getCJDBCServerName();
+	    delFiles[3] = "rm -f "+tmpDir+"cjdbc_server";
+	    System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+" "+delFiles[3]+"<br>\n");
 	    delProcess = Runtime.getRuntime().exec(delFiles);
 	    delProcess.waitFor();
 	  }
 	  // Database Server
-	  delFiles[1] = client.rubbos.getDBServerName();
-	  delFiles[2] = "rm -f "+tmpDir+"db_server";
-	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	  delFiles[2] = client.rubbos.getDBServerName();
+	  delFiles[3] = "rm -f "+tmpDir+"db_server";
+	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+" "+delFiles[3]+"<br>\n");
 	  delProcess = Runtime.getRuntime().exec(delFiles);
 	  delProcess.waitFor();
 	  // Local client
-	  delFiles[1] = "localhost";
-	  delFiles[2] = "rm -f "+tmpDir+"client0";
-	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	  delFiles[2] = "localhost";
+	  delFiles[3] = "rm -f "+tmpDir+"client0";
+	  System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+" "+delFiles[3]+"<br>\n");
 	  delProcess = Runtime.getRuntime().exec(delFiles);
 	  delProcess.waitFor();
 	  // Remote clients
 	  for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
 	  {
-	    delFiles[1] =  (String)client.rubbos.getRemoteClients().get(i);
-	    delFiles[2] = "rm -f "+tmpDir+"client"+(i+1);
-	    System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+"<br>\n");
+	    delFiles[2] =  (String)client.rubbos.getRemoteClients().get(i);
+	    delFiles[3] = "rm -f "+tmpDir+"client"+(i+1);
+	    System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+" "+delFiles[3]+"<br>\n");
 	    delProcess = Runtime.getRuntime().exec(delFiles);
 	    delProcess.waitFor();
 	  }
@@ -251,68 +253,73 @@ public class ClientEmulator
         // Monitor Web server
         int fullTimeInSec = (client.rubbos.getUpRampTime()+client.rubbos.getSessionTime()+client.rubbos.getDownRampTime())/1000 + 5; // Give 5 seconds extra for init
         System.out.println("ClientEmulator: Starting monitoring program on Web server "+client.rubbos.getWebServerName()+"<br>\n");
-        String[] cmdWeb = new String[5];
+        String[] cmdWeb = new String[6];
         cmdWeb[0] = client.rubbos.getMonitoringRsh();
-        cmdWeb[1] = client.rubbos.getWebServerName();                                               
-        cmdWeb[2] = "/bin/bash";
-        cmdWeb[3] = "-c";
-        cmdWeb[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+        cmdWeb[1] = "-x ";
+        cmdWeb[2] = client.rubbos.getWebServerName();                                               
+        cmdWeb[3] = "/bin/bash";
+        cmdWeb[4] = "-c";
+        cmdWeb[5] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
           client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"web_server'";
         webServerMonitor = Runtime.getRuntime().exec(cmdWeb);
-        System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+"<br>\n");
+        System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+" "+cmdWeb[5]+"<br>\n");
 
 	// Monitor C-JDBC server (if any)
 	if(client.rubbos.getCJDBCServerName() != null
 	   && !client.rubbos.getCJDBCServerName().equals("")) {
 	    System.out.println("ClientEmulator: Starting monitoring program on CJDBC server "+client.rubbos.getCJDBCServerName()+"<br>\n");
 	    cmdWeb[0] = client.rubbos.getMonitoringRsh();
-	    cmdWeb[1] = client.rubbos.getCJDBCServerName();                                               
-	    cmdWeb[2] = "/bin/bash";
-	    cmdWeb[3] = "-c";
-	    cmdWeb[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+	    cmdWeb[1] = "-x ";
+	    cmdWeb[2] = client.rubbos.getCJDBCServerName();                                               
+	    cmdWeb[3] = "/bin/bash";
+	    cmdWeb[4] = "-c";
+	    cmdWeb[5] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
 		client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"cjdbc_server'";
 	    cjdbcServerMonitor = Runtime.getRuntime().exec(cmdWeb);
-	    System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+"<br>\n");
+	    System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+" "+cmdWeb[5]+"<br>\n");
 	}
       
         // Monitor Database server
         System.out.println("ClientEmulator: Starting monitoring program on Database server "+client.rubbos.getDBServerName()+"<br>\n");
-        String[] cmdDB = new String[5];
+        String[] cmdDB = new String[6];
         cmdDB[0] = client.rubbos.getMonitoringRsh();
-        cmdDB[1] = client.rubbos.getDBServerName();
-        cmdDB[2] = "/bin/bash";
-        cmdDB[3] = "-c";
-        cmdDB[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+        cmdDB[1] = "-x ";
+        cmdDB[2] = client.rubbos.getDBServerName();
+        cmdDB[3] = "/bin/bash";
+        cmdDB[4] = "-c";
+        cmdDB[5] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
           client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"db_server'";
         dbServerMonitor = Runtime.getRuntime().exec(cmdDB);
-        System.out.println("&nbsp &nbsp Command is: "+cmdDB[0]+" "+cmdDB[1]+" "+cmdDB[2]+" "+cmdDB[3]+" "+cmdDB[4]+"<br>\n");
+        System.out.println("&nbsp &nbsp Command is: "+cmdDB[0]+" "+cmdDB[1]+" "+cmdDB[2]+" "+cmdDB[3]+" "+cmdDB[4]+" "+cmdDB[5]+"<br>\n");
 
         // Monitor local client
         System.out.println("ClientEmulator: Starting monitoring program locally on client<br>\n");
-        String[] cmdClient = new String[5];
+        String[] cmdClient = new String[6];
         cmdClient[0] = client.rubbos.getMonitoringRsh();
-        cmdClient[1] = "localhost";
-        cmdClient[2] = "/bin/bash";
-        cmdClient[3] = "-c";
-        cmdClient[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+        cmdClient[1] = "-x ";
+        cmdClient[2] = "localhost";
+        cmdClient[3] = "/bin/bash";
+        cmdClient[4] = "-c";
+        cmdClient[5] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
           client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+reportDir+"client0'";
         clientMonitor = Runtime.getRuntime().exec(cmdClient);
-        System.out.println("&nbsp &nbsp Command is: "+cmdClient[0]+" "+cmdClient[1]+" "+cmdClient[2]+" "+cmdClient[3]+" "+cmdClient[4]+"<br>\n");
+        System.out.println("&nbsp &nbsp Command is: "+cmdClient[0]+" "+cmdClient[1]+" "+cmdClient[2]+" "+cmdClient[3]+" "+cmdClient[4]+" "+cmdClient[5]+"<br>\n");
 
         remoteClientMonitor = new Process[client.rubbos.getRemoteClients().size()];
         // Monitor remote clients
         for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
         {
           System.out.println("ClientEmulator: Starting monitoring program locally on client<br>\n");
-          String[] rcmdClient = new String[5];
+          String[] rcmdClient = new String[6];
           rcmdClient[0] = client.rubbos.getMonitoringRsh();
-          rcmdClient[1] = (String)client.rubbos.getRemoteClients().get(i);
-          rcmdClient[2] = "/bin/bash";
-          rcmdClient[3] = "-c";
-          rcmdClient[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
+          rcmdClient[1] = "-x ";
+          rcmdClient[2] = (String)client.rubbos.getRemoteClients().get(i);
+          rcmdClient[3] = "/bin/bash";
+          rcmdClient[4] = "-c";
+          rcmdClient[5] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
             client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"client"+(i+1)+"'";
           remoteClientMonitor[i] = Runtime.getRuntime().exec(rcmdClient);
-          System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+" "+rcmdClient[3]+" "+rcmdClient[4]+"<br>\n");
+          System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+" "+rcmdClient[3]+" "+rcmdClient[4]+" "+rcmdClient[5]+"<br>\n");
         }
 
         // Redirect output for traces
