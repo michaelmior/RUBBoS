@@ -52,7 +52,6 @@ public abstract class RubbosHttpServlet extends HttpServlet
   /** Stack of available connections (pool) */
   private Stack freeConnections = null;
   private int poolSize;
-  private int currentConn = 0;
   private Properties dbProperties = null;
 
   public abstract int getPoolSize(); // Get the pool size for this class
@@ -129,25 +128,6 @@ public abstract class RubbosHttpServlet extends HttpServlet
       }
     }
   }
-
-  //  public Connection getConnection()
-  //  {
-  //    //    currentConn = (currentConn + 1) % poolSize;
-  //    //    return conn[currentConn];
-  //    try
-  //    {
-  //      return DriverManager.getConnection(
-  //        dbProperties.getProperty("datasource.url"),
-  //        dbProperties.getProperty("datasource.username"),
-  //        dbProperties.getProperty("datasource.password"));
-  //    }
-  //    catch (SQLException e)
-  //    {
-  //      return null;
-  //    }
-  //
-  //  }
-
 
   /**
   * Closes a <code>Connection</code>.
