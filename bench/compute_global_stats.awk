@@ -39,7 +39,7 @@ BEGIN {
 	    {
 	      if (count[i] != 0)
 		{
-		  printf "%s</div><TD><div align=right>%.2f %%</div><TD><div align=right>%d</div><TD><div align=right>%d</div><TD><div align=right>%d ms</div><TD><div align=right>%d ms</div><TD><div align=right>%.0f ms</div>\n", stateName[i], 100*count[i]/totalCount, count[i], errors[i], minTime[i], maxTime[i], avgTime[i]/stateNb >> outputFile;
+		  printf "%s</div><TD><div align=right>%.2f %%</div><TD><div align=right>%d</div><TD><div align=right>%d</div><TD><div align=right>%d ms</div><TD><div align=right>%d ms</div><TD><div align=right>%.0f ms</div>\n", stateName[i], 100*count[i]/totalCount, count[i], errors[i], minTime[i], maxTime[i], avgTime[i]/count[i] >> outputFile;
 		  totalTime += avgTime[i];
 		}
 	    }
@@ -115,7 +115,7 @@ BEGIN {
 	      if (maxTime[stateNb] < splited[6])
 		maxTime[stateNb] = splited[6];
 	      sub(/ ms<\/div>/, "", splited[7]); # Get rid of the ' ms</div>'
-	      avgTime[stateNb]  += splited[7];
+	      avgTime[stateNb]  += splited[7]*splited[3];
 	    }
 	  stateNb++;
 	}
