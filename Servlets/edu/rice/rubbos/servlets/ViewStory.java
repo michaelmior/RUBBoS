@@ -125,6 +125,7 @@ public class ViewStory extends RubbosHttpServlet
     {
       if (!rs.first())
       {
+        stmt.close();
         stmt = conn.prepareStatement("SELECT old_stories.id, "
             + "old_stories.title, "
             + "old_stories.body, old_stories.date, "

@@ -133,7 +133,7 @@ public class AcceptStory extends RubbosHttpServlet
       closeConnection(stmt, conn);
       return;
     }
-
+    stmtdel.close();
     closeConnection(stmt, conn);
 
     sp

@@ -247,7 +247,8 @@ class Comment
         comment = follow.getString("comment");
       }
 
-      commentWrapper = new Comment(id, storyId, parent, childs, rating, date, subject, comment, username);
+      commentWrapper = new Comment(id, storyId, parent, childs, rating, date,
+          subject, comment, username);
       
       if ((al = (ArrayList) map.get(new Integer(parent))) == null) 
       {
@@ -268,6 +269,7 @@ class Comment
       }
       
     }
+    stmtfollow.close();
     
     if (deeper) 
     { 
@@ -361,17 +363,21 @@ class Comment
       
     }
     
+    stmt.close();
     
     if(deeper) 
     { 
-      fetchLowerLevels(map, 1, conn, filter, commentId, commentTable, storyId, parent, display);
+      fetchLowerLevels(map, 1, conn, filter, commentId, commentTable, storyId,
+          parent, display);
     }
   
     return map;
     
   }
   
-  private static void displayLowerLevelComments(ServletPrinter sp, HashMap map, int cid, int filter, int display, String commentTable, int level, boolean separator)
+  private static void displayLowerLevelComments(ServletPrinter sp, HashMap map,
+      int cid, int filter, int display, String commentTable, int level,
+      boolean separator)
   {
     ArrayList al;
     String username, date, subject, comment, storyId;
@@ -581,9 +587,12 @@ class Comment
     
   }
   
-  public static void fetchAndDisplay(ServletPrinter sp, Connection conn, String commentTable, int filter, int commentId, int display, String storyId, int parent) throws Exception
+  public static void fetchAndDisplay(ServletPrinter sp, Connection conn,
+      String commentTable, int filter, int commentId, int display,
+      String storyId, int parent) throws Exception
   {
-    HashMap map = fetchComments(conn, filter, commentId, commentTable, storyId, parent, display);
-   displayComments(sp, map, parent, filter, display, commentTable); 
+    HashMap map = fetchComments(conn, filter, commentId, commentTable, storyId,
+        parent, display);
+    displayComments(sp, map, parent, filter, display, commentTable);
   }
 }

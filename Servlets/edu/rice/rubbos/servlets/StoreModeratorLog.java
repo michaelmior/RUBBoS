@@ -145,7 +145,7 @@ public class StoreModeratorLog extends RubbosHttpServlet
           userId = rs.getInt("id");
           access = rs.getInt("access");
         }
-	stmt.close();
+        stmt.close();
       }
       catch (Exception e)
       {
@@ -180,7 +180,7 @@ public class StoreModeratorLog extends RubbosHttpServlet
         int rsrating = rs.getInt("rating");
         String writer = rs.getString("writer");
 
-	stmt.close();
+        stmt.close();
 
         if (((rsrating == -1) && (rating == -1))
             || ((rsrating == 5) && (rating == 1)))
@@ -194,12 +194,12 @@ public class StoreModeratorLog extends RubbosHttpServlet
             stmt = conn.prepareStatement("UPDATE users SET rating=rating+"
                 + rating + " WHERE id=" + writer);
             updateResult = stmt.executeUpdate();
-	    stmt.close();
+            stmt.close();
 
             stmt = conn.prepareStatement("UPDATE " + comment_table
                 + " SET rating=rating+" + rating + " WHERE id=" + commentId);
             updateResult = stmt.executeUpdate();
-	    stmt.close();
+            stmt.close();
           }
         }
 
@@ -210,7 +210,7 @@ public class StoreModeratorLog extends RubbosHttpServlet
 
         if (rs.first())
           comment_row_rating = rs.getString("rating");
-	stmt.close();
+        stmt.close();
 
         stmt = conn.prepareStatement("SELECT rating FROM users WHERE id="
             + writer);
@@ -222,7 +222,7 @@ public class StoreModeratorLog extends RubbosHttpServlet
         if (!rs.first())
           sp
               .printHTML("<h3>ERROR: Sorry, but this user does not exist.</h3><br>\n");
-	stmt.close();
+        stmt.close();
 
         // Update moderator log
         stmt = conn

@@ -180,6 +180,7 @@ public class Search extends RubbosHttpServlet
         {
           if (!rs.first())
           {
+            stmt.close();
             stmt = conn
                 .prepareStatement("SELECT old_stories.id, old_stories.title,"
                     + " old_stories.date, users.nickname FROM"
@@ -247,6 +248,7 @@ public class Search extends RubbosHttpServlet
           rs = stmt.executeQuery();
           if (!rs.first())
           {
+            stmt.close();
             stmt = conn
                 .prepareStatement("SELECT old_comments.id, "
                     + "old_comments.story_id, "
@@ -342,7 +344,9 @@ public class Search extends RubbosHttpServlet
                   + page
                   * nbOfStories + "," + nbOfStories);
           rs = stmt.executeQuery();
-          if (!rs.first())
+          if (!rs.first()) 
+          {
+            stmt.close();
             stmt = conn
                 .prepareStatement("SELECT old_stories.id, old_stories.title,"
                     + " old_stories.date, nickname "
@@ -356,8 +360,8 @@ public class Search extends RubbosHttpServlet
                     + search + "%'" 
                     + /* ) */" ORDER BY date DESC LIMIT "
                     + page * nbOfStories + "," + nbOfStories);
-          rs = stmt.executeQuery();
-
+            rs = stmt.executeQuery();
+          }
           if (!rs.first())
           {
             if (page == 0)
