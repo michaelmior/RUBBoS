@@ -69,7 +69,7 @@ public class RejectStory extends RubbosHttpServlet
   {
 
     ServletPrinter    sp = null;
-    PreparedStatement stmt = null, stmt2 = null;
+    PreparedStatement stmt = null;
     Connection        conn = null;
 
     sp = new ServletPrinter(response, "RejectStory");
@@ -114,10 +114,13 @@ public class RejectStory extends RubbosHttpServlet
         closeConnection(stmt, conn);
         return;
       }
+
+      stmt.close();
+
       // Delete entry from database
-      stmt2 = conn.prepareStatement("DELETE FROM submissions WHERE id="
+      stmt = conn.prepareStatement("DELETE FROM submissions WHERE id="
           + storyId);
-      updateResult = stmt2.executeUpdate();
+      updateResult = stmt.executeUpdate();
     }
     catch (Exception e)
     {

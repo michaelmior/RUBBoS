@@ -68,16 +68,14 @@ public class StoreModeratorLog extends RubbosHttpServlet
       throws IOException, ServletException
   {
     ServletPrinter    sp = null;
-    PreparedStatement stmt = null, stmt2 = null, stmt3 = null, stmt4 = null,
-        stmt5 = null, stmt6 = null, stmt7 = null;
+    PreparedStatement stmt = null;
     Connection        conn = null;
 
     String nickname, password, comment_table, commentId, ratingstring;
     int access = 0, userId = 0, rating;
-    ResultSet rs = null, rs2 = null, rs6 = null, rs7 = null;
+    ResultSet rs = null;
 
-    int updateResult, updateResult4, updateResult5;
-
+    int updateResult;
 
     sp = new ServletPrinter(response, "StoreModeratorLog");
 
@@ -147,7 +145,7 @@ public class StoreModeratorLog extends RubbosHttpServlet
           userId = rs.getInt("id");
           access = rs.getInt("access");
         }
-
+	stmt.close();
       }
       catch (Exception e)
       {
@@ -170,20 +168,22 @@ public class StoreModeratorLog extends RubbosHttpServlet
 
       try
       {
-        stmt2 = conn.prepareStatement("SELECT writer,rating FROM "
+        stmt = conn.prepareStatement("SELECT writer,rating FROM "
             + comment_table + " WHERE id=" + commentId);
-        rs2 = stmt2.executeQuery();
+        rs = stmt.executeQuery();
 
-        if (!rs2.first())
+        if (!rs.first())
         {
           sp
               .printHTML("<h3>ERROR: Sorry, but this comment does not exist.</h3><br>\n");
         }
-        int rs2rating = rs2.getInt("rating");
-        String writer = rs2.getString("writer");
+        int rsrating = rs.getInt("rating");
+        String writer = rs.getString("writer");
 
-        if (((rs2rating == -1) && (rating == -1))
-            || ((rs2rating == 5) && (rating == 1)))
+	stmt.close();
+
+        if (((rsrating == -1) && (rating == -1))
+            || ((rsrating == 5) && (rating == 1)))
           sp
               .printHTML("Comment rating is already to its maximum, updating only user's rating.");
         else
@@ -191,40 +191,44 @@ public class StoreModeratorLog extends RubbosHttpServlet
           // Update ratings
           if (rating != 0)
           {
-            stmt4 = conn.prepareStatement("UPDATE users SET rating=rating+"
+            stmt = conn.prepareStatement("UPDATE users SET rating=rating+"
                 + rating + " WHERE id=" + writer);
-            updateResult4 = stmt4.executeUpdate();
+            updateResult = stmt.executeUpdate();
+	    stmt.close();
 
-            stmt5 = conn.prepareStatement("UPDATE " + comment_table
+            stmt = conn.prepareStatement("UPDATE " + comment_table
                 + " SET rating=rating+" + rating + " WHERE id=" + commentId);
-            updateResult5 = stmt5.executeUpdate();
+            updateResult = stmt.executeUpdate();
+	    stmt.close();
           }
         }
 
-        stmt6 = conn.prepareStatement("SELECT rating FROM " + comment_table
+        stmt = conn.prepareStatement("SELECT rating FROM " + comment_table
             + " WHERE id=" + commentId);
-        rs6 = stmt6.executeQuery();
+        rs = stmt.executeQuery();
         String user_row_rating = null, comment_row_rating = null;
 
-        if (rs6.first())
-          comment_row_rating = rs6.getString("rating");
+        if (rs.first())
+          comment_row_rating = rs.getString("rating");
+	stmt.close();
 
-        stmt7 = conn.prepareStatement("SELECT rating FROM users WHERE id="
+        stmt = conn.prepareStatement("SELECT rating FROM users WHERE id="
             + writer);
-        rs7 = stmt7.executeQuery();
+        rs = stmt.executeQuery();
 
-        if (rs7.first())
-          user_row_rating = rs7.getString("rating");
+        if (rs.first())
+          user_row_rating = rs.getString("rating");
 
-        if (!rs7.first())
+        if (!rs.first())
           sp
               .printHTML("<h3>ERROR: Sorry, but this user does not exist.</h3><br>\n");
+	stmt.close();
 
         // Update moderator log
-        stmt3 = conn
+        stmt = conn
             .prepareStatement("INSERT INTO moderator_log VALUES (NULL, "
                 + userId + ", " + commentId + ", " + rating + ", NOW())");
-        updateResult = stmt3.executeUpdate();
+        updateResult = stmt.executeUpdate();
 
         sp.printHTML("New comment rating is :" + comment_row_rating + "<br>\n");
         sp.printHTML("New user rating is :" + user_row_rating + "<br>\n");

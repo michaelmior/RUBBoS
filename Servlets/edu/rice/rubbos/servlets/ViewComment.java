@@ -190,9 +190,17 @@ public class ViewComment extends RubbosHttpServlet
     }
     catch (Exception e)
     {
-      sp.printHTML("Failure at display_follow_up: " + e);
+      sp.printHTML("Failure at display_follow_up: " + e);      
+      try 
+      {
+	  stmtfollow.close();
+      } 
+      catch (Exception ignore) 
+      {
+      }
       throw e;
     }
+    stmtfollow.close();
   }
 
   /** Build the html page for the response */
@@ -201,7 +209,7 @@ public class ViewComment extends RubbosHttpServlet
   {
 
     ServletPrinter    sp    = null;
-    PreparedStatement stmt5 = null, stmt = null, stmt2 = null;
+    PreparedStatement stmt = null;
     Connection        conn  = null;
 
     String            categoryName, filterstring, username, categoryId, 
@@ -209,7 +217,7 @@ public class ViewComment extends RubbosHttpServlet
     int               parent = 0, childs, page = 0, filter = 0, display = 0, 
         commentId;
     int               i = 0, count, rating;
-    ResultSet         rs = null, rs5 = null, rs2 = null;
+    ResultSet         rs = null;
 
     sp = new ServletPrinter(response, "ViewComment");
 
@@ -262,21 +270,22 @@ public class ViewComment extends RubbosHttpServlet
     {
       try
       {
-        stmt5 = conn.prepareStatement("SELECT parent FROM " + comment_table
+        stmt = conn.prepareStatement("SELECT parent FROM " + comment_table
             + " WHERE id=" + commentId);
-        rs5 = stmt5.executeQuery();
-        if (!rs5.first())
+        rs = stmt.executeQuery();
+        if (!rs.first())
         {
           sp
               .printHTML("<h3>ERROR: Sorry, but this comment does not exist.</h3><br>\n");
           closeConnection(stmt, conn);
           return;
         }
-        parent = rs5.getInt("parent");
+        parent = rs.getInt("parent");
+	stmt.close();
       }
       catch (Exception e)
       {
-        sp.printHTML("Failure at stmt5: " + e);
+        sp.printHTML("Failure at 'SELECT parent' stmt: " + e);
         closeConnection(stmt, conn);
         return;
       }
@@ -333,6 +342,7 @@ public class ViewComment extends RubbosHttpServlet
         }
         while (rs.next());
       }
+      stmt.close();
     }
     catch (Exception e)
     {
@@ -366,21 +376,21 @@ public class ViewComment extends RubbosHttpServlet
     boolean separator;
     try
     {
-      stmt2 = conn.prepareStatement("SELECT * FROM " + comment_table
+      stmt = conn.prepareStatement("SELECT * FROM " + comment_table
           + " WHERE story_id=" + storyId + " AND parent=0"); //+ parent+
       //" AND rating>="+filter);
-      rs2 = stmt2.executeQuery();
+      rs = stmt.executeQuery();
 
-      while (rs2.next())
+      while (rs.next())
       {
-        username = sp.getUserName(rs2.getInt("writer"), conn);
-        rating = rs2.getInt("rating");
-        parent = rs2.getInt("parent");
-        id = rs2.getInt("id");
-        subject = rs2.getString("subject");
-        date = rs2.getString("date");
-        childs = rs2.getInt("childs");
-        comment = rs2.getString("comment");
+        username = sp.getUserName(rs.getInt("writer"), conn);
+        rating = rs.getInt("rating");
+        parent = rs.getInt("parent");
+        id = rs.getInt("id");
+        subject = rs.getString("subject");
+        date = rs.getString("date");
+        childs = rs.getInt("childs");
+        comment = rs.getString("comment");
         separator = false;
 
         if (rating >= filter)
@@ -439,12 +449,12 @@ public class ViewComment extends RubbosHttpServlet
     }
     catch (Exception e)
     {
-      sp.printHTML("Exception getting categories: " + e + "<br>");
-    }
-    finally
-    {
       closeConnection(stmt, conn);
+      sp.printHTML("Exception getting categories: " + e + "<br>");
+      return;
     }
+
+    closeConnection(stmt, conn);
 
     sp.printHTMLfooter();
 

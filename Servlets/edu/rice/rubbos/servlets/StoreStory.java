@@ -74,7 +74,7 @@ public class StoreStory extends RubbosHttpServlet
   {
 
     ServletPrinter    sp = null;
-    PreparedStatement stmt = null, stmt2 = null;
+    PreparedStatement stmt = null;
     Connection        conn = null;
 
     String categoryName, nickname, title, body, category, table;
@@ -141,7 +141,7 @@ public class StoreStory extends RubbosHttpServlet
           userId = rs.getInt("id");
           access = rs.getInt("access");
         }
-
+	stmt.close();
       }
       catch (Exception e)
       {
@@ -169,11 +169,11 @@ public class StoreStory extends RubbosHttpServlet
 
     try
     {
-      stmt2 = conn.prepareStatement("INSERT INTO " + table
+      stmt = conn.prepareStatement("INSERT INTO " + table
           + " VALUES (NULL, \"" + title + "\", \"" + body + "\", NOW(), \""
           + userId + "\", " + category + ")");
 
-      updateResult = stmt2.executeUpdate();
+      updateResult = stmt.executeUpdate();
       if (updateResult != 1)
       {
         sp.printHTML(" ERROR: Failed to insert new story in database. Number of rows updated == " + updateResult +".");

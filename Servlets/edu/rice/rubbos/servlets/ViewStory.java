@@ -75,29 +75,29 @@ public class ViewStory extends RubbosHttpServlet
 
     int               i, childs, story_id, id, writer;
     String            subject, date;
-    ResultSet         rs2;
-    PreparedStatement stmt2 = null;
+    ResultSet         rs;
+    PreparedStatement stmt = null;
     try
     {
 
-      stmt2 = conn
+      stmt = conn
           .prepareStatement("SELECT id,subject,writer,date,story_id,childs FROM "
               + comment_table + " WHERE parent=" + cid);
-      rs2 = stmt2.executeQuery();
+      rs = stmt.executeQuery();
 
-      if (rs2.first())
+      if (rs.first())
       {
         do
         {
           for (i = 0; i < level; i++)
             sp.printHTML("&nbsp&nbsp&nbsp");
 
-          date = rs2.getString("date");
-          story_id = rs2.getInt("story_id");
-          id = rs2.getInt("id");
-          subject = rs2.getString("subject");
-          writer = rs2.getInt("writer");
-          childs = rs2.getInt("childs");
+          date = rs.getString("date");
+          story_id = rs.getInt("story_id");
+          id = rs.getInt("id");
+          subject = rs.getString("subject");
+          writer = rs.getInt("writer");
+          childs = rs.getInt("childs");
 
           sp
               .printHTML("<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
@@ -116,14 +116,23 @@ public class ViewStory extends RubbosHttpServlet
             display_follow_up(id, level + 1, display, filter, link,
                               comment_table, sp, conn);
         }
-        while (rs2.next());
+        while (rs.next());
       }
     }
     catch (Exception e3)
     {
       sp.printHTML(e3 + ": Exception in method display_follow_up");
+      try 
+      {
+	  stmt.close();
+      } 
+      catch (Exception ignore) 
+      {
+      }
       throw e3;
     }
+
+    stmt.close();
 
   }
 
@@ -133,14 +142,14 @@ public class ViewStory extends RubbosHttpServlet
   {
 
     ServletPrinter    sp   = null;
-    PreparedStatement stmt = null, stmt3 = null, stmt4 = null, stmt5 = null;
+    PreparedStatement stmt = null;
     Connection        conn = null;
 
     String            categoryName, nickname, title = null, body = null, 
         category, table;
     String            password = null, date = null, username = null;
     int               userId, access, storyId = 0;
-    ResultSet         rs = null, rs3 = null, rs5, count_result;
+    ResultSet         rs = null, count_result = null;
     String            comment_table = null;
     String            storyIdtest = request.getParameter("storyId");
 
@@ -234,11 +243,11 @@ public class ViewStory extends RubbosHttpServlet
 
     try
     {
-      stmt4 = conn
+      stmt = conn
           .prepareStatement("SELECT rating, COUNT(rating) AS count FROM "
               + comment_table + " WHERE story_id=" + storyId
               + " GROUP BY rating ORDER BY rating");
-      count_result = stmt4.executeQuery();
+      count_result = stmt.executeQuery();
 
       while (count_result.next())
       {
@@ -266,8 +275,8 @@ public class ViewStory extends RubbosHttpServlet
           i++;
         }
       }
+      stmt.close();
     }
-
     catch (Exception e2)
     {
       sp.printHTML("count_result failed " + e2 + "<br>");
@@ -291,25 +300,25 @@ public class ViewStory extends RubbosHttpServlet
 
     try
     {
-      stmt5 = conn.prepareStatement("SELECT * FROM " + comment_table
+      stmt = conn.prepareStatement("SELECT * FROM " + comment_table
           + " WHERE story_id=" + storyId + " AND parent=0 AND rating>="
           + filter);
-      rs5 = stmt5.executeQuery();
+      rs = stmt.executeQuery();
       String subject, comment, writer, link;
       int childs, parent, id;
 
-      if (rs5.first())
+      if (rs.first())
       {
         do
         {
-          username = sp.getUserName(rs5.getInt("writer"), conn);
-          subject = rs5.getString("subject");
-          rating = rs5.getInt("rating");
-          date = rs5.getString("subject");
-          comment = rs5.getString("comment");
-          id = rs5.getInt("id");
-          parent = rs5.getInt("parent");
-          childs = rs5.getInt("childs");
+          username = sp.getUserName(rs.getInt("writer"), conn);
+          subject = rs.getString("subject");
+          rating = rs.getInt("rating");
+          date = rs.getString("subject");
+          comment = rs.getString("comment");
+          id = rs.getInt("id");
+          parent = rs.getInt("parent");
+          childs = rs.getInt("childs");
 
           sp.printHTML("<br><hr><br>");
           sp
@@ -359,11 +368,10 @@ public class ViewStory extends RubbosHttpServlet
               display_follow_up(id, 1, display, filter, conn, comment_table,
                                 sp, conn);
         }
-        while (rs5.next());
+        while (rs.next());
       }
 
     }
-
     catch (Exception e)
     {
       sp.printHTML("Failed to execute Query for ViewStory: " + e);

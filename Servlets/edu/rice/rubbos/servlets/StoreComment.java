@@ -69,7 +69,7 @@ public class StoreComment extends RubbosHttpServlet
   {
 
     ServletPrinter    sp   = null;
-    PreparedStatement stmt = null, stmt2 = null;
+    PreparedStatement stmt = null;
     Connection        conn = null;
 
     String nickname, password, storyId, parent, userIdstring, subject, body;
@@ -153,18 +153,20 @@ public class StoreComment extends RubbosHttpServlet
           + ", 0, 0, NOW(), \"" + subject + "\", \"" + body + "\")");
       updateResult = stmt.executeUpdate();
 
-      stmt2 = conn.prepareStatement("UPDATE " + comment_table
+      stmt.close();
+
+      stmt = conn.prepareStatement("UPDATE " + comment_table
           + " SET childs=childs+1 WHERE id=" + parent);
-      updateResult = stmt2.executeUpdate();
+      updateResult = stmt.executeUpdate();
     }
     catch (Exception e)
     {
-      sp.printHTML("Exception getting categories: " + e + "<br>");
-    }
-    finally
-    {
       closeConnection(stmt, conn);
+      sp.printHTML("Exception getting categories: " + e + "<br>");
+      return;
     }
+
+    closeConnection(stmt, conn);
 
     sp.printHTML("Your comment has been successfully stored in the "
         + comment_table + " database table<br>\n");

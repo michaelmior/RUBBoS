@@ -68,14 +68,14 @@ public class OlderStories extends RubbosHttpServlet
   {
 
     ServletPrinter    sp = null;
-    PreparedStatement stmt = null, stmt2 = null;
+    PreparedStatement stmt = null;
     Connection        conn = null;
 
     sp = new ServletPrinter(response, "OlderStories");
 
     String day, month, year, testpage, username, testnbOfStories;
     int page = 0, nbOfStories = 0, id;
-    ResultSet rs2 = null;
+    ResultSet rs = null;
 
     testpage = request.getParameter("page");
     testnbOfStories = request.getParameter("nbOfStories");
@@ -151,17 +151,18 @@ public class OlderStories extends RubbosHttpServlet
         stmt = conn.prepareStatement("SELECT * FROM stories WHERE date>='"
             + before + "' AND date<='" + after + "' ORDER BY date DESC LIMIT "
             + page * nbOfStories + "," + nbOfStories);
-        rs2 = stmt.executeQuery();
-        if (!rs2.first())
+        rs = stmt.executeQuery();
+        if (!rs.first())
         {
-          stmt2 = conn
+	  stmt.close();
+	  stmt = conn
               .prepareStatement("SELECT * FROM old_stories WHERE date>='"
                   + before + "' AND date<='" + after
                   + "' ORDER BY date DESC LIMIT " + page * nbOfStories + ","
                   + nbOfStories);
-          rs2 = stmt2.executeQuery();
+          rs = stmt.executeQuery();
         }
-        if (!rs2.first())
+        if (!rs.first())
         {
           if (page == 0)
             sp
@@ -200,12 +201,12 @@ public class OlderStories extends RubbosHttpServlet
 
       try
       {
-        while (rs2.next())
+        while (rs.next())
         {
-          id = rs2.getInt("id");
-          title = rs2.getString("title");
-          username = sp.getUserName(rs2.getInt("writer"), conn);
-          date = rs2.getString("date");
+          id = rs.getInt("id");
+          title = rs.getString("title");
+          username = sp.getUserName(rs.getInt("writer"), conn);
+          date = rs.getString("date");
           sp
               .printHTML("<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewStory?storyId="
                   + id

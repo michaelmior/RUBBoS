@@ -85,7 +85,7 @@ public class Author extends RubbosHttpServlet
 
     String nickname, password;
     int userId = 0, access = 0;
-    ResultSet rs = null, rs2 = null;
+    ResultSet rs = null;
 
     nickname = request.getParameter("nickname");
     password = request.getParameter("password");

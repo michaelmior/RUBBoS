@@ -71,7 +71,7 @@ public class SubmitStory extends RubbosHttpServlet
     ServletPrinter    sp   = null;
     PreparedStatement stmt = null;
     Connection        conn = null;
-    ResultSet         rs = null, rs2 = null;
+    ResultSet         rs = null;
 
     sp = new ServletPrinter(response, "Submit Story");
     sp.printHTMLheader("RUBBoS: Story submission");

@@ -72,7 +72,7 @@ public class RegisterUser extends RubbosHttpServlet
   {
 
     ServletPrinter    sp = null;
-    PreparedStatement stmt = null, stmt2 = null;
+    PreparedStatement stmt = null;
     Connection        conn = null;
 
     sp = new ServletPrinter(response, "RegisterUser");
@@ -81,7 +81,7 @@ public class RegisterUser extends RubbosHttpServlet
     String password = null, creation_date = null;
     int userId;
     int access = 0, id = 0, rating = 0;
-    ResultSet rs = null, rs2 = null;
+    ResultSet rs = null;
     int updateResult;
 
     firstname = request.getParameter("firstname");
@@ -149,16 +149,17 @@ public class RegisterUser extends RubbosHttpServlet
           + firstname + "\", \"" + lastname + "\", \"" + nickname + "\", \""
           + password + "\", \"" + email + "\", 0, 0, NOW())");
       updateResult = stmt.executeUpdate();
+      stmt.close();
 
-      stmt2 = conn.prepareStatement("SELECT * FROM users WHERE nickname=\""
+      stmt = conn.prepareStatement("SELECT * FROM users WHERE nickname=\""
           + nickname + "\"");
-      rs2 = stmt2.executeQuery();
+      rs = stmt.executeQuery();
 
-      rs2.first();
-      id = rs2.getInt("id");
-      creation_date = rs2.getString("creation_date");
-      rating = rs2.getInt("rating");
-      access = rs2.getInt("access");
+      rs.first();
+      id = rs.getInt("id");
+      creation_date = rs.getString("creation_date");
+      rating = rs.getInt("rating");
+      access = rs.getInt("access");
 
     }
     catch (Exception e)
