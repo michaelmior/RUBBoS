@@ -334,7 +334,7 @@ public class ViewStory extends RubbosHttpServlet
           username = rs.getString("nickname");
           subject = rs.getString("subject");
           rating = rs.getInt("rating");
-          date = rs.getString("subject");
+          date = rs.getString("date");
           comment = rs.getString("comment");
           id = rs.getInt("id");
           parent = rs.getInt("parent");
