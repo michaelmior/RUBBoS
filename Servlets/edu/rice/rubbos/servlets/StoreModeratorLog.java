@@ -74,9 +74,9 @@ public class StoreModeratorLog extends RubbosHttpServlet
 
     String nickname, password, comment_table, commentId, ratingstring;
     int access = 0, userId = 0, rating;
-    ResultSet rs = null, rs2 = null, rs4 = null, rs5 = null, rs6 = null,
-        rs7 = null;
-    int updateResult;
+    ResultSet rs = null, rs2 = null, rs6 = null, rs7 = null;
+
+    int updateResult, updateResult4, updateResult5;
 
 
     sp = new ServletPrinter(response, "StoreModeratorLog");
@@ -193,11 +193,11 @@ public class StoreModeratorLog extends RubbosHttpServlet
           {
             stmt4 = conn.prepareStatement("UPDATE users SET rating=rating+"
                 + rating + " WHERE id=" + writer);
-            rs4 = stmt4.executeQuery();
+            updateResult4 = stmt4.executeUpdate();
 
             stmt5 = conn.prepareStatement("UPDATE " + comment_table
                 + " SET rating=rating+" + rating + " WHERE id=" + commentId);
-            rs5 = stmt5.executeQuery();
+            updateResult5 = stmt5.executeUpdate();
           }
         }
 

@@ -76,7 +76,8 @@ public class RejectStory extends RubbosHttpServlet
 
     String storyId;
 
-    ResultSet rs = null, rs2 = null;
+    ResultSet rs = null;
+    int updateResult;
 
     storyId = request.getParameter("storyId");
 
@@ -116,7 +117,7 @@ public class RejectStory extends RubbosHttpServlet
       // Delete entry from database
       stmt2 = conn.prepareStatement("DELETE FROM submissions WHERE id="
           + storyId);
-      rs2 = stmt2.executeQuery();
+      updateResult = stmt2.executeUpdate();
     }
     catch (Exception e)
     {
