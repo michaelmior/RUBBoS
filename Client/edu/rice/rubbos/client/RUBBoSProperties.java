@@ -127,22 +127,22 @@ public class RUBBoSProperties
       webSitePort = foo.intValue();
       System.out.println(webSitePort+"<br>");
       System.out.print("EJB HTML files path   : ");
-      EJBHTMLPath  = getProperty("httpd_ejb_html_path");
+      EJBHTMLPath  = getProperty("ejb_html_path");
       System.out.println(EJBHTMLPath+"<br>");
       System.out.print("EJB Script files path : ");
-      EJBScriptPath  = getProperty("httpd_ejb_script_path");
+      EJBScriptPath  = getProperty("ejb_script_path");
       System.out.println(EJBScriptPath+"<br>");
       System.out.print("Servlets HTML files path   : ");
-      ServletsHTMLPath  = getProperty("httpd_servlets_html_path");
+      ServletsHTMLPath  = getProperty("servlets_html_path");
       System.out.println(ServletsHTMLPath+"<br>");
       System.out.print("Servlets Script files path : ");
-      ServletsScriptPath  = getProperty("httpd_servlets_script_path");
+      ServletsScriptPath  = getProperty("servlets_script_path");
       System.out.println(ServletsScriptPath+"<br>");
       System.out.print("Servlets HTML files path   : ");
-      PHPHTMLPath  = getProperty("httpd_php_html_path");
+      PHPHTMLPath  = getProperty("php_html_path");
       System.out.println(PHPHTMLPath+"<br>");
       System.out.print("PHP Script files path : ");
-      PHPScriptPath  = getProperty("httpd_php_script_path");
+      PHPScriptPath  = getProperty("php_script_path");
       System.out.println(PHPScriptPath+"<br>");
       
       // # Workload
