@@ -47,7 +47,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class RubbosHttpServlet extends HttpServlet
 {
-
+  /** Controls connection pooling */
+    private static final boolean enablePooling = true;
   /** Stack of available connections (pool) */
   private Stack freeConnections = null;
   private int poolSize;
@@ -115,14 +116,17 @@ public abstract class RubbosHttpServlet extends HttpServlet
    */
   public synchronized void initializeConnections() throws SQLException
   {
-    for (int i = 0; i < poolSize; i++)
+    if (enablePooling)
     {
-      // Get connections to the database
+      for (int i = 0; i < poolSize; i++)
+      {
+        // Get connections to the database
       freeConnections.push(
         DriverManager.getConnection(
           dbProperties.getProperty("datasource.url"),
           dbProperties.getProperty("datasource.username"),
           dbProperties.getProperty("datasource.password")));
+      }
     }
   }
 
@@ -149,17 +153,17 @@ public abstract class RubbosHttpServlet extends HttpServlet
   * Closes a <code>Connection</code>.
   * @param connection to close 
   */
-//   public void closeConnection(Connection connection)
-//   {
-//     try
-//     {
-//       connection.close();
-//     }
-//     catch (Exception e)
-//     {
-//
-//     }
-//   }
+   private void closeConnection(Connection connection)
+   {
+     try
+     {
+       connection.close();
+     }
+     catch (Exception e)
+     {
+
+     }
+   }
 
   /**
    * Gets a connection from the pool (round-robin)
@@ -169,28 +173,47 @@ public abstract class RubbosHttpServlet extends HttpServlet
    */
   public synchronized Connection getConnection()
   {
-    try
+    if (enablePooling)
     {
-      // Wait for a connection to be available
-      while (freeConnections.isEmpty())
+      try
       {
-        try
+        // Wait for a connection to be available
+        while (freeConnections.isEmpty())
         {
-          wait();
+          try
+          {
+            wait();
+          }
+          catch (InterruptedException e)
+          {
+            System.out.println("Connection pool wait interrupted.");
+          }
         }
-        catch (InterruptedException e)
-        {
-          System.out.println("Connection pool wait interrupted.");
-        }
+
+        Connection c = (Connection) freeConnections.pop();
+        return c;
       }
 
-      Connection c = (Connection) freeConnections.pop();
-      return c;
+      catch (EmptyStackException e)
+      {
+        System.out.println("Out of connections.");
+        return null;
+      }
     }
-    catch (EmptyStackException e)
+    else
     {
-      System.out.println("Out of connections.");
-      return null;
+       try
+       {
+        return DriverManager.getConnection(
+        dbProperties.getProperty("datasource.url"),
+        dbProperties.getProperty("datasource.username"),
+        dbProperties.getProperty("datasource.password"));
+       } 
+       catch (SQLException ex) 
+       {
+        ex.printStackTrace();   
+        return null; 
+       }
     }
   }
 
@@ -201,12 +224,23 @@ public abstract class RubbosHttpServlet extends HttpServlet
    */
   public synchronized void releaseConnection(Connection c)
   {
-    boolean mustNotify = freeConnections.isEmpty();
-
-    freeConnections.push(c);
-    // Wake up one servlet waiting for a connection (if any)
-    if (mustNotify)
-      notifyAll();
+    if (enablePooling)
+    {
+      boolean mustNotify = freeConnections.isEmpty();
+      if (freeConnections.search(c) != -1) {
+          System.out.println("BAD BAD BAD" + this.getClass().getName()+"\n\n\n\n");
+          Exception e = new Exception();
+          e.printStackTrace();
+      }
+      freeConnections.push(c);
+      // Wake up one servlet waiting for a connection (if any)
+      if (mustNotify)
+       notifyAll();
+    }
+    else
+    {
+      closeConnection(c);
+    }
   }
 
   /**
@@ -216,11 +250,14 @@ public abstract class RubbosHttpServlet extends HttpServlet
    */
   public synchronized void finalizeConnections() throws SQLException
   {
-    Connection c = null;
-    while (!freeConnections.isEmpty())
+    if (enablePooling)
     {
-      c = (Connection) freeConnections.pop();
-      c.close();
+      Connection c = null;
+      while (!freeConnections.isEmpty())
+      {
+        c = (Connection) freeConnections.pop();
+        c.close();
+      }
     }
   }
 
