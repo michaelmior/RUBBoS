@@ -368,7 +368,7 @@ public class ViewStory extends RubbosHttpServlet
                   + "&parent="
                   + id
                   + "\">Reply to this</a>&nbsp|&nbsp"
-                  + "<a href=\"  /rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
+                  + "<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
                   + comment_table
                   + "&storyId="
                   + storyId
