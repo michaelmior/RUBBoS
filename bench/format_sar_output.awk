@@ -23,8 +23,9 @@ BEGIN {
       print $3 > FILENAME".cpu.user.dat";
 #	  print $4 > FILENAME".cpu.nice.dat";
       print $5 > FILENAME".cpu.system.dat";
-      print $6 > FILENAME".cpu.idle.dat";
-      print 100-$6 > FILENAME".cpu.busy.dat";
+#     print $6 > FILENAME".cpu.iowait.dat";
+      print $7 > FILENAME".cpu.idle.dat";
+      print 100-$7 > FILENAME".cpu.busy.dat";
     }
   if ($2 ~ /eth0/)
     { # This is the eth0 network info
