@@ -405,7 +405,6 @@ public class Search extends RubbosHttpServlet
             String date = rs.getString("date");
             title = rs.getString("title");
 
-            // String username = sp.getUserName(rs.getInt("writer"), conn);
             String username = rs.getString("nickname");
             sp
                 .printHTML("<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewStory?storyId="

@@ -142,7 +142,6 @@ public class ViewComment extends RubbosHttpServlet
         story_id = follow.getInt("story_id");
         id = follow.getInt("id");
         subject = follow.getString("subject");
-        //username = sp.getUserName(follow.getInt("writer"), conn);
         username = follow.getString("nickname");
         date = follow.getString("date");
         rating = follow.getInt("rating");

@@ -209,7 +209,6 @@ public class ViewStory extends RubbosHttpServlet
         return;
       }
 
-      //      username = sp.getUserName(rs.getInt("writer"), conn);
       username = rs.getString("nickname");
       date = rs.getString("date");
       title = rs.getString("title");
