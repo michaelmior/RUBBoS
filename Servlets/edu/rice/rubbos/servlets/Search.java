@@ -161,15 +161,14 @@ public class Search extends RubbosHttpServlet
       {
         try
         {
-          stmt = conn
-              .prepareStatement("SELECT stories.id, stories.title, "
-				+ "stories.date, users.nickname FROM"
-				+ " stories, users WHERE title LIKE '"
-				+ search + "%' " 
-				+ "AND stories.writer = users.id" 
-				+ /* OR body LIKE '$search%%' */ 
-				" ORDER BY date DESC LIMIT "
-				+ page * nbOfStories + "," + nbOfStories);
+          stmt = conn.prepareStatement("SELECT stories.id, stories.title, "
+              + "stories.date, users.nickname FROM"
+              + " stories, users WHERE title LIKE '"
+              + search + "%' " 
+              + "AND stories.writer = users.id" 
+              + /* OR body LIKE '$search%%' */ 
+              " ORDER BY date DESC LIMIT "
+              + page * nbOfStories + "," + nbOfStories);
           rs = stmt.executeQuery();
         }
         catch (Exception e)
@@ -185,13 +184,13 @@ public class Search extends RubbosHttpServlet
           {
             stmt = conn
                 .prepareStatement("SELECT old_stories.id, old_stories.title,"
-				  + " old_stories.date, users.nickname FROM"
-				  + " old_stories, users WHERE title LIKE '"
-				  + search + "%' " 
-				  + "AND old_stories.writer = users.id" 
-				  + /* OR body LIKE '$search%%' */
-				  " ORDER BY date DESC LIMIT "
-				  + page * nbOfStories + "," + nbOfStories);
+                    + " old_stories.date, users.nickname FROM"
+                    + " old_stories, users WHERE title LIKE '"
+                    + search + "%' " 
+                    + "AND old_stories.writer = users.id" 
+                    + /* OR body LIKE '$search%%' */
+                    " ORDER BY date DESC LIMIT "
+                    + page * nbOfStories + "," + nbOfStories);
             rs = stmt.executeQuery();
           }
           if (!rs.first())
@@ -238,28 +237,28 @@ public class Search extends RubbosHttpServlet
         {
           stmt = conn
               .prepareStatement("SELECT comments.id, comments.story_id, "
-				+ "comments.subject, comments.date,"
-				+ " users.nickname FROM comments, "
-				+ "users WHERE subject LIKE '"
-				+ search + "%' " 
-				+ "AND comments.writer = users.id" 
-				+ /* OR comment LIKE '$search%%' */
-				" GROUP BY story_id ORDER BY date DESC LIMIT "
-				+ page * nbOfStories + "," + nbOfStories);
+                  + "comments.subject, comments.date,"
+                  + " users.nickname FROM comments, "
+                  + "users WHERE subject LIKE '"
+                  + search + "%' " 
+                  + "AND comments.writer = users.id" 
+                  + /* OR comment LIKE '$search%%' */
+                  " GROUP BY story_id ORDER BY date DESC LIMIT "
+                  + page * nbOfStories + "," + nbOfStories);
           rs = stmt.executeQuery();
           if (!rs.first())
           {
             stmt = conn
                 .prepareStatement("SELECT old_comments.id, "
-				  + "old_comments.story_id, "
-				  + "old_comments.subject,"
-				  + " old_comments.date, users.nickname "
-				  + "FROM old_comments, users "
-				  + "WHERE subject LIKE '" + search + "%' "
-				  + "AND old_comments.writer = users.id" 
-				  + /* OR comment LIKE '$search%%' */
-				  " ORDER BY date DESC LIMIT "
-				  + page * nbOfStories + "," + nbOfStories);
+                    + "old_comments.story_id, "
+                    + "old_comments.subject,"
+                    + " old_comments.date, users.nickname "
+                    + "FROM old_comments, users "
+                    + "WHERE subject LIKE '" + search + "%' "
+                    + "AND old_comments.writer = users.id" 
+                    + /* OR comment LIKE '$search%%' */
+                    " ORDER BY date DESC LIMIT "
+                    + page * nbOfStories + "," + nbOfStories);
             rs = stmt.executeQuery();
 
             comment_table = "old_comments";
@@ -299,8 +298,7 @@ public class Search extends RubbosHttpServlet
               String story_id = rs.getString("story_id");
               String id = rs.getString("id");
               String subject = rs.getString("subject");
-              // String username = sp.getUserName(rs.getInt("writer"), conn);
-	      String username = rs.getString("nickname");
+              String username = rs.getString("nickname");
               String date = rs.getString("date");
 
               sp
@@ -332,33 +330,33 @@ public class Search extends RubbosHttpServlet
         {
           stmt = conn
               .prepareStatement("SELECT stories.id, stories.title, "
-				+ "stories.date, nickname "
-				+ "FROM stories,users WHERE writer=users.id"
-				+ " AND "
-				+ /*
-				   * (users.firstname LIKE '$search%%' 
-				   * OR users.lastname LIKE
-				   * '$search%%' OR
-				   */" users.nickname LIKE '"
-				+ search + "%'"
-				+ /* ) */" ORDER BY date DESC LIMIT "
-				+ page
-				* nbOfStories + "," + nbOfStories);
+                  + "stories.date, nickname "
+                  + "FROM stories,users WHERE writer=users.id"
+                  + " AND "
+                  + /*
+                  * (users.firstname LIKE '$search%%' 
+                  * OR users.lastname LIKE
+                  * '$search%%' OR
+                  */" users.nickname LIKE '"
+                  + search + "%'"
+                  + /* ) */" ORDER BY date DESC LIMIT "
+                  + page
+                  * nbOfStories + "," + nbOfStories);
           rs = stmt.executeQuery();
           if (!rs.first())
             stmt = conn
                 .prepareStatement("SELECT old_stories.id, old_stories.title,"
-				  + " old_stories.date, nickname "
-				  + "FROM old_stories,users "
-				  + "WHERE writer=users.id AND "
-				  + /*
-				     * (users.firstname LIKE '$search%%' 
-				     * OR users.lastname
-				     * LIKE '$search%%' OR
-				     */" users.nickname LIKE '"
-				  + search + "%'" 
-				  + /* ) */" ORDER BY date DESC LIMIT "
-				  + page * nbOfStories + "," + nbOfStories);
+                    + " old_stories.date, nickname "
+                    + "FROM old_stories,users "
+                    + "WHERE writer=users.id AND "
+                    + /*
+                    * (users.firstname LIKE '$search%%' 
+                    * OR users.lastname
+                    * LIKE '$search%%' OR
+                    */" users.nickname LIKE '"
+                    + search + "%'" 
+                    + /* ) */" ORDER BY date DESC LIMIT "
+                    + page * nbOfStories + "," + nbOfStories);
           rs = stmt.executeQuery();
 
           if (!rs.first())

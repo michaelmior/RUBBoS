@@ -171,11 +171,11 @@ public class ViewStory extends RubbosHttpServlet
     try
     {
       stmt = conn.prepareStatement("SELECT stories.id, "
-				   + "stories.title, " 
-				   + "stories.body, stories.date, "
-				   + "users.nickname FROM stories, users" 
-				   + " WHERE stories.id=" + storyId
-				   + " AND stories.writer=users.id");
+          + "stories.title, " 
+          + "stories.body, stories.date, "
+          + "users.nickname FROM stories, users" 
+          + " WHERE stories.id=" + storyId
+          + " AND stories.writer=users.id");
       rs = stmt.executeQuery();
     }
     catch (Exception e)
@@ -190,11 +190,11 @@ public class ViewStory extends RubbosHttpServlet
       if (!rs.first())
       {
         stmt = conn.prepareStatement("SELECT old_stories.id, "
-				     + "old_stories.title, "
-				     + "old_stories.body, old_stories.date, "
-				     + "users.nickname FROM old_stories, users"
-				     + " WHERE old_stories.id=" + storyId 
-				     + "AND old_stories.writer=users.id");
+            + "old_stories.title, "
+            + "old_stories.body, old_stories.date, "
+            + "users.nickname FROM old_stories, users"
+            + " WHERE old_stories.id=" + storyId 
+            + "AND old_stories.writer=users.id");
         rs = stmt.executeQuery();
         comment_table = "old_comments";
 
@@ -313,19 +313,19 @@ public class ViewStory extends RubbosHttpServlet
     try
     {
       stmt = conn.prepareStatement("SELECT " + comment_table + ".id, " 
-				   + comment_table + ".parent, " 
-				   + comment_table + ".childs, " 
-				   + comment_table + ".rating, " 
-				   + comment_table + ".date, " 
-				   + comment_table + ".subject, " 
-				   + comment_table + ".comment, "
-				   + "users.nickname FROM " 
-				   + comment_table + ", users"
-				   + " WHERE story_id=" + storyId 
-				   + " AND parent=0 AND " 
-				   + comment_table + ".rating>=" + filter 
-				   + " AND " + comment_table 
-				   + ".writer=users.id");
+          + comment_table + ".parent, " 
+          + comment_table + ".childs, " 
+          + comment_table + ".rating, " 
+          + comment_table + ".date, " 
+          + comment_table + ".subject, " 
+          + comment_table + ".comment, "
+          + "users.nickname FROM " 
+          + comment_table + ", users"
+          + " WHERE story_id=" + storyId 
+          + " AND parent=0 AND " 
+          + comment_table + ".rating>=" + filter 
+          + " AND " + comment_table 
+          + ".writer=users.id");
       rs = stmt.executeQuery();
       String subject, comment, writer, link;
       int childs, parent, id;
@@ -334,8 +334,7 @@ public class ViewStory extends RubbosHttpServlet
       {
         do
         {
-	  //username = sp.getUserName(rs.getInt("writer"), conn);
-	  username = rs.getString("nickname");
+          username = rs.getString("nickname");
           subject = rs.getString("subject");
           rating = rs.getInt("rating");
           date = rs.getString("subject");
