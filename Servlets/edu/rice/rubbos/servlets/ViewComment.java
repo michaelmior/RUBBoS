@@ -62,205 +62,6 @@ public class ViewComment extends RubbosHttpServlet
     }
 
   }
-  
-  /**
-   * This function must throw an exception as there should be only
-   * ONE close fo the connection and that close should be handled by
-   * the caller 
-   */
-  public void display_follow_up(int cid, int level, int display, int filter,
-                                Connection link, String comment_table, 
-                                boolean separator, ServletPrinter sp,
-                                Connection conn) throws Exception
-  {
-    ResultSet         follow;
-    int               childs, story_id, rating, parent, id, i;
-    String            subject, username, date, comment;
-    PreparedStatement stmtfollow = null;
-
-    try
-    {
-
-      // If display == 1, then we do not need the actual comment and
-      // therefore lets not select it
-      if (display == 1) 
-      {
-        stmtfollow = conn.prepareStatement("SELECT " 
-            + comment_table + ".id, " 
-            + comment_table + ".story_id, " 
-            + comment_table + ".parent, " 
-            + comment_table + ".childs, " 
-            + comment_table + ".rating, " 
-            + comment_table + ".date,"
-
-            + "(CASE WHEN "
-            + comment_table 
-            + ".rating>=" + filter 
-            + " THEN subject ELSE NULL END)"
-            + " as subject, "
-
-            + " users.nickname FROM " 
-            + comment_table +", users" 
-            + " WHERE parent=" + cid 
-            + " AND " 
-            + comment_table 
-            + ".writer=users.id");
-      }
-      else
-      {
-        stmtfollow = conn.prepareStatement("SELECT " 
-            + comment_table + ".id, " 
-            + comment_table + ".story_id, " 
-            + comment_table + ".parent, " 
-            + comment_table + ".childs, " 
-            + comment_table + ".rating, " 
-            + comment_table + ".date, "
-
-            + "(CASE WHEN "
-            + comment_table 
-            + ".rating>=" + filter
-            + " THEN subject ELSE NULL END)"
-            + " as subject, "
-
-            + "(CASE WHEN "+ comment_table 
-            + ".rating>=" + filter 
-            + " THEN comment ELSE NULL END)"
-            + " as comment, "
-
-            + " users.nickname FROM " 
-            + comment_table +", users" 
-            + " WHERE parent=" + cid 
-            + " AND " 
-            + comment_table 
-            + ".writer=users.id");
-      }
-      //+" AND rating>="+filter);
-      follow = stmtfollow.executeQuery();
-
-      while (follow.next())
-      {
-        story_id = follow.getInt("story_id");
-        id = follow.getInt("id");
-        subject = follow.getString("subject");
-        username = follow.getString("nickname");
-        date = follow.getString("date");
-        rating = follow.getInt("rating");
-        parent = follow.getInt("parent");
-        if(display == 1)
-        {
-          comment = "";
-        }
-        else
-        {
-          comment = follow.getString("comment");
-        }
-        childs = follow.getInt("childs");
-
-        if (rating >= filter)
-        {
-          if (!separator)
-          {
-            sp.printHTML("<br><hr><br>");
-            separator = true;
-          }
-          if (display == 1) // Preview nested comments
-          {
-            for (i = 0; i < level; i++)
-              sp.printHTML(" &nbsp &nbsp &nbsp ");
-            sp
-                .printHTML("<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
-                    + comment_table
-                    + "&storyId="
-                    + story_id
-                    + "&commentId="
-                    + id
-                    + "&filter="
-                    + filter
-                    + "&display="
-                    + display
-                    + "\">"
-                    + subject
-                    + "</a> by "
-                    + username
-                    + " on "
-                    + date
-                    + "<br>\n");
-          }
-          else
-          {
-            sp.printHTML("<TABLE bgcolor=\"#CCCCFF\"><TR>");
-            for (i = 0; i < level; i++)
-              sp.printHTML("<TD>&nbsp&nbsp&nbsp");
-            sp
-                .printHTML("<TD><FONT size=\"4\" color=\"#000000\"><B><a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
-                    + comment_table
-                    + "&storyId="
-                    + story_id
-                    + "&commentId="
-                    + id
-                    + "&filter="
-                    + filter
-                    + "&display="
-                    + display
-                    + "\">"
-                    + subject
-                    + "</a></B>&nbsp</FONT> (Score:"
-                    + rating
-                    + ")</TABLE>\n");
-            sp.printHTML("<TABLE>");
-            for (i = 0; i < level; i++)
-              sp.printHTML("<TD>&nbsp&nbsp&nbsp");
-            sp.printHTML("<TD><B>Posted by " + username + " on " + date
-                + "</B><p><TR>\n");
-            for (i = 0; i < level; i++)
-              sp.printHTML("<TD>&nbsp&nbsp&nbsp");
-            sp.printHTML("<TD>" + comment + "<TR>");
-            for (i = 0; i < level; i++)
-              sp.printHTML("<TD>&nbsp&nbsp&nbsp");
-            sp
-                .printHTML("<TD><p>[ <a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.PostComment?comment_table="
-                    + comment_table
-                    + "&storyId="
-                    + story_id
-                    + "&parent="
-                    + id
-                    + "\">Reply to this</a>"
-                    + "&nbsp|&nbsp<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
-                    + comment_table
-                    + "&storyId="
-                    + story_id
-                    + "&commentId="
-                    + parent
-                    + "&filter="
-                    + filter
-                    + "&display="
-                    + display
-                    + "\">Parent</a>&nbsp|&nbsp<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ModerateComment?comment_table="
-                    + comment_table
-                    + "&commentId="
-                    + id
-                    + "\">Moderate</a> ]</TABLE><br>");
-          }
-        }
-        if (childs > 0)
-          display_follow_up(id, level + 1, display, filter, link,
-                            comment_table, separator, sp, conn);
-      }
-    }
-    catch (Exception e)
-    {
-      sp.printHTML("Failure at display_follow_up: " + e);      
-      try 
-      {
-        stmtfollow.close();
-      } 
-      catch (Exception ignore) 
-      {
-      }
-      throw e;
-    }
-    stmtfollow.close();
-  }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -271,11 +72,9 @@ public class ViewComment extends RubbosHttpServlet
     PreparedStatement stmt = null;
     Connection        conn  = null;
 
-    String            filterstring, username,  
-        comment = null, displaystring, storyId, commentIdstring, comment_table;
-    int               parent = 0, childs, filter = 0, display = 0, 
-        commentId;
-    int               i = 0, count, rating;
+    String filterstring, displaystring,	storyId, commentIdstring, 
+    	comment_table;
+    int parent = 0, filter = 0, display = 0, commentId;
     ResultSet         rs = null;
 
     sp = new ServletPrinter(response, "ViewComment");
@@ -352,189 +151,33 @@ public class ViewComment extends RubbosHttpServlet
     }
 
     sp.printHTMLheader("RUBBoS: Viewing comments");
-    sp
-        .printHTML("<center><form action=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment\" method=POST>\n"
-            + "<input type=hidden name=commentId value="
-            + commentId
-            + ">\n"
-            + "<input type=hidden name=storyId value="
-            + storyId
-            + ">\n"
-            + "<input type=hidden name=comment_table value="
-            + comment_table
-            + ">\n" + "<B>Filter :</B>&nbsp&nbsp<SELECT name=filter>\n");
-
+    
     try
     {
-      stmt = conn
-          .prepareStatement("SELECT rating, COUNT(rating) AS count FROM "
-              + comment_table + " WHERE story_id=" + storyId
-              + " GROUP BY rating ORDER BY rating");
-      rs = stmt.executeQuery();
-
-      i = -1;
-      if (rs.first())
-      {
-        do
-        {
-          rating = rs.getInt("rating");
-          count = rs.getInt("count");
-          while ((i < 6) && (rating != i))
-          {
-            if (i == filter)
-              sp.printHTML("<OPTION selected value=\"" + i + "\">" + i
-                  + ": 0 comment</OPTION>\n");
-            else
-              sp.printHTML("<OPTION value=\"" + i + "\">" + i
-                  + ": 0 comment</OPTION>\n");
-            i++;
-          }
-          if (rating == i)
-          {
-            if (i == filter)
-              sp.printHTML("<OPTION selected value=\"" + i + "\">" + i + ": "
-                  + count + " comments</OPTION>\n");
-            else
-              sp.printHTML("<OPTION value=\"" + i + "\">" + i + ": " + count
-                  + " comments</OPTION>\n");
-            i++;
-          }
-        }
-        while (rs.next());
-      }
-      stmt.close();
+      Comment.displayFilterChooser(conn, sp, commentId, storyId, comment_table,
+          display, filter);
     }
     catch (Exception e)
     {
-      sp.printHTML("Failed to execute Query for View Comment: " + e);
+      sp.printHTML("Failed to execute Query for ViewComment: " + e);
       closeConnection(stmt, conn);
       return;
     }
-
-    while (i < 6)
-    {
-      sp.printHTML("<OPTION value=\"" + i + "\">" + i
-          + ": 0 comment</OPTION>\n");
-      i++;
-    }
-
-    sp.printHTML("</SELECT>&nbsp&nbsp&nbsp&nbsp<SELECT name=display>\n"
-        + "<OPTION value=\"0\">Main threads</OPTION>\n");
-    if (display == 1)
-      sp.printHTML("<OPTION selected value=\"1\">Nested</OPTION>\n");
-    else
-      sp.printHTML("<OPTION value=\"1\">Nested</OPTION>\n");
-    if (display == 2)
-      sp.printHTML("<OPTION selected value=\"2\">All comments</OPTION>\n");
-    else
-      sp.printHTML("<OPTION value=\"2\">All comments</OPTION>\n");
-    sp
-        .printHTML("</SELECT>&nbsp&nbsp&nbsp&nbsp<input type=submit value=\"Refresh display\"></center><p>\n");
-
-    String subject, date;
-    int id;
-    boolean separator;
+    
     try
     {
-      stmt = conn.prepareStatement("SELECT " 
-          + comment_table + ".id, " 
-          + comment_table + ".parent, " 
-          + comment_table + ".childs, " 
-          + comment_table + ".rating, " 
-          + comment_table + ".date, "
-
-          + "(CASE WHEN "
-          + comment_table + ".rating>="
-          + filter +" THEN subject ELSE NULL END)"
-          + " as subject, "
-
-          + "(CASE WHEN "
-          + comment_table + ".rating>="
-          + filter + " THEN comment ELSE NULL END)"
-          + " as comment, "
-
-          + "users.nickname FROM " 
-          + comment_table + ", users WHERE story_id=" 
-          + storyId + " AND parent=0 AND " 
-          + comment_table + ".writer=users.id");
-      rs = stmt.executeQuery();
-
-      while (rs.next())
-      {
-        username = rs.getString("nickname");
-        rating = rs.getInt("rating");
-        parent = rs.getInt("parent");
-        id = rs.getInt("id");
-        subject = rs.getString("subject");
-        date = rs.getString("date");
-        childs = rs.getInt("childs");
-        comment = rs.getString("comment");
-        separator = false;
-
-        if (rating >= filter)
-        {
-          sp.printHTML("<br><hr><br>");
-          separator = true;
-          sp
-              .printHTML("<TABLE width=\"100%\" bgcolor=\"#CCCCFF\"><TR><TD><FONT size=\"4\" color=\"#000000\"><B><a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
-                  + comment_table
-                  + "&storyId="
-                  + storyId
-                  + "&commentId="
-                  + id
-                  + "&filter="
-                  + filter
-                  + "&display="
-                  + display
-                  + "\">"
-                  + subject
-                  + "</a></B>&nbsp</FONT> (Score:"
-                  + rating
-                  + ")</TABLE>\n");
-          sp.printHTML("<TABLE><TR><TD><B>Posted by " + username + " on "
-              + date + "</B><p>\n");
-          sp.printHTML("<TR><TD>" + comment);
-          sp
-              .printHTML("<TR><TD><p>[ <a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.PostComment?comment_table="
-                  + comment_table
-                  + "&storyId="
-                  + storyId
-                  + "&parent="
-                  + id
-                  + "\">Reply to this</a>&nbsp|&nbsp"
-                  + "<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
-                  + comment_table
-                  + "&storyId="
-                  + storyId
-                  + "&commentId="
-                  + parent
-                  + "&filter="
-                  + filter
-                  + "&display="
-                  + display
-                  + "\">Parent</a>"
-                  + "&nbsp|&nbsp<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ModerateComment?comment_table="
-                  + comment_table
-                  + "&commentId="
-                  + id
-                  + "\">Moderate</a> ]</TABLE>\n");
-        }
-        if ((display > 0) && (childs > 0))
-          display_follow_up(id, 1, display, filter, conn, comment_table,
-                            separator, sp, conn);
-      }
-
-    }
+      Comment.fetchAndDisplay(sp, conn, comment_table, filter, commentId, display, storyId, parent);
+    } 
     catch (Exception e)
     {
+      sp.printHTML("Failed to execute Query for ViewComment: " + e);
       closeConnection(stmt, conn);
-      sp.printHTML("Exception getting categories: " + e + "<br>");
       return;
-    }
+    } 
 
     closeConnection(stmt, conn);
-
     sp.printHTMLfooter();
+    
 
   }
 
