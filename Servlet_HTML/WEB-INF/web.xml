@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+<!DOCTYPE web-app PUBLIC '-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN' 'http://java.sun.com/dtd/web-app_2_3.dtd'>
+-->
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+
+    <display-name>RUBBos</display-name>
+	<description>
+	Rice University Bulletin Board System
+	</description>
+
+
+
+    <servlet>
+      <servlet-name>BrowseCategories</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.BrowseCategories</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>BrowseStoriesByCategory</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.BrowseStoriesByCategory</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>ViewComment</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.ViewComment</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>ModerateComment</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.ModerateComment</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>PostComment</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.PostComment</servlet-class>
+    </servlet>
+
+   <servlet>
+      <servlet-name>StoreComment</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.StoreComment</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>SubmitStory</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.SubmitStory</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>AcceptStory</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.AcceptStory</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>RejectStory</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.RejectStory</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>ReviewStories</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.ReviewStories</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>StoreStory</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.StoreStory</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>ViewStory</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.ViewStory</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>StoriesOfTheDay</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.StoriesOfTheDay</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>Search</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.Search</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>StoreModeratorLog</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.StoreModeratorLog</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>RegisterUser</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.RegisterUser</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>Author</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.Author</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>OlderStories</servlet-name>
+      <servlet-class>edu.rice.rubbos.servlets.OlderStories</servlet-class>
+    </servlet>
+
+ 
+
+
+    <servlet-mapping>
+      <servlet-name>BrowseCategories</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.BrowseCategories</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>BrowseStoriesByCategory</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>ViewComment</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.ViewComment</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>ModerateComment</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.ModerateComment</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>PostComment</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.PostComment</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>StoreComment</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.StoreComment</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>SubmitStory</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.SubmitStory</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>AcceptStory</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.AcceptStory</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>RejectStory</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.RejectStory</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>ReviewStories</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.ReviewStories</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>StoreStory</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.StoreStory</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>ViewStory</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.ViewStory</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>StoriesOfTheDay</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.StoriesOfTheDay</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+      <servlet-name>Search</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.Search</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>StoreModeratorLog</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.StoreModeratorLog</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+       <servlet-name>RegisterUser</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.RegisterUser</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+       <servlet-name>Author</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.Author</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+       <servlet-name>OlderStories</servlet-name>
+      <url-pattern>/servlet/edu.rice.rubbos.servlets.OlderStories</url-pattern>
+    </servlet-mapping>
+
+
+    <session-config>
+      <session-timeout>30</session-timeout>    <!-- 30 minutes -->
+    </session-config>
+
+</web-app>
