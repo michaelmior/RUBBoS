@@ -83,7 +83,11 @@ public class StoriesOfTheDay extends RubbosHttpServlet
     try
     {
       stmt = conn
-          .prepareStatement("SELECT * FROM stories ORDER BY date DESC LIMIT 10");
+          .prepareStatement("SELECT  stories.id, stories.title, stories.body,"
+			    + " stories.date, stories.category, users.nickname"
+			    + " FROM stories, users "
+			    + "WHERE stories.writer=users.id"
+			    + " ORDER BY date DESC LIMIT 10");
       rs = stmt.executeQuery();
     }
     catch (Exception e)
@@ -104,7 +108,6 @@ public class StoriesOfTheDay extends RubbosHttpServlet
 
       int storyId;
       String storyTitle;
-      int writerId;
       String userName;
       String date;
       String body;
@@ -117,8 +120,8 @@ public class StoriesOfTheDay extends RubbosHttpServlet
             .printHTMLHighlighted("<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewStory?storyId="
                 + storyId + "\">" + storyTitle + "</a>");
 
-        writerId = rs.getInt("writer");
-        userName = sp.getUserName(writerId, conn);
+	// userName = sp.getUserName(writerId, conn);
+        userName = rs.getString("nickname");
         date = rs.getString("date");
         sp.printHTML("<B>Posted by " + userName + " on " + date + "</B><br>\n");
         body = rs.getString("body");

@@ -80,8 +80,60 @@ public class ViewComment extends RubbosHttpServlet
 
     try
     {
-      stmtfollow = conn.prepareStatement("SELECT * FROM " + comment_table
-          + " WHERE parent=" + cid);
+
+      // If display == 1, then we do not need the actual comment and
+      // therefore lets not select it
+	if (display == 1) 
+	 {
+	    stmtfollow = conn.prepareStatement("SELECT " 
+					       + comment_table + ".id, " 
+					       + comment_table + ".story_id, " 
+					       + comment_table + ".parent, " 
+					       + comment_table + ".childs, " 
+					       + comment_table + ".rating, " 
+					       + comment_table + ".date,"
+
+					       + "(CASE WHEN "
+					       + comment_table 
+					       + ".rating>=" + filter 
+					       + " THEN subject ELSE NULL END)"
+					       + " as subject, "
+
+					       + " users.nickname FROM " 
+					       + comment_table +", users" 
+					       + " WHERE parent=" + cid 
+					       + " AND " 
+					       + comment_table 
+					       + ".writer=users.id");
+	}
+	else
+	{
+	    stmtfollow = conn.prepareStatement("SELECT " 
+					       + comment_table + ".id, " 
+					       + comment_table + ".story_id, " 
+					       + comment_table + ".parent, " 
+					       + comment_table + ".childs, " 
+					       + comment_table + ".rating, " 
+					       + comment_table + ".date, "
+
+					       + "(CASE WHEN "
+					       + comment_table 
+					       + ".rating>=" + filter
+					       + " THEN subject ELSE NULL END)"
+					       + " as subject, "
+
+					       + "(CASE WHEN "+ comment_table 
+					       + ".rating>=" + filter 
+					       + " THEN comment ELSE NULL END)"
+					       + " as comment, "
+
+					       + " users.nickname FROM " 
+					       + comment_table +", users" 
+					       + " WHERE parent=" + cid 
+					       + " AND " 
+					       + comment_table 
+					       + ".writer=users.id");
+	}
       //+" AND rating>="+filter);
       follow = stmtfollow.executeQuery();
 
@@ -90,11 +142,20 @@ public class ViewComment extends RubbosHttpServlet
         story_id = follow.getInt("story_id");
         id = follow.getInt("id");
         subject = follow.getString("subject");
-        username = sp.getUserName(follow.getInt("writer"), conn);
+        //username = sp.getUserName(follow.getInt("writer"), conn);
+	username = follow.getString("nickname");
         date = follow.getString("date");
         rating = follow.getInt("rating");
         parent = follow.getInt("parent");
-        comment = follow.getString("comment");
+	if(display == 1)
+	{
+	    comment = "";
+
+	}
+        else
+	{
+	    comment = follow.getString("comment");
+	}
         childs = follow.getInt("childs");
 
         if (rating >= filter)
@@ -376,14 +437,33 @@ public class ViewComment extends RubbosHttpServlet
     boolean separator;
     try
     {
-      stmt = conn.prepareStatement("SELECT * FROM " + comment_table
-          + " WHERE story_id=" + storyId + " AND parent=0"); //+ parent+
-      //" AND rating>="+filter);
+      stmt = conn.prepareStatement("SELECT " 
+				   + comment_table + ".id, " 
+				   + comment_table + ".parent, " 
+				   + comment_table + ".childs, " 
+				   + comment_table + ".rating, " 
+				   + comment_table + ".date, "
+				   
+				   + "(CASE WHEN "
+				   + comment_table + ".rating>="
+				   + filter +" THEN subject ELSE NULL END)"
+				   + " as subject, "
+
+				   + "(CASE WHEN "
+				   + comment_table + ".rating>="
+				   + filter + " THEN comment ELSE NULL END)"
+				   + " as comment, "
+
+				   + "users.nickname FROM " 
+				   + comment_table + ", users WHERE story_id=" 
+				   + storyId + " AND parent=0 AND " 
+				   + comment_table + ".writer=users.id");
       rs = stmt.executeQuery();
 
       while (rs.next())
       {
-        username = sp.getUserName(rs.getInt("writer"), conn);
+	  //        username = sp.getUserName(rs.getInt("writer"), conn);
+	username = rs.getString("nickname");
         rating = rs.getInt("rating");
         parent = rs.getInt("parent");
         id = rs.getInt("id");

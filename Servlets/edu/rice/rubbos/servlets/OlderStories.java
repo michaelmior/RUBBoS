@@ -122,13 +122,14 @@ public class OlderStories extends RubbosHttpServlet
     sp
         .printHTML("<form action=\"/rubbos/servlet/edu.rice.rubbos.servlets.OlderStories\" method=POST>\n");
     sp.printHTML("<center><B>Date (day/month/year):</B><SELECT name=day>\n");
+    // XXX - Fix these values to depend on now()?
     for (int i = 1; i < 32; i++)
       sp.printHTML("<OPTION value=\"" + i + "\">" + i + "</OPTION>\n");
     sp.printHTML("</SELECT>&nbsp/&nbsp<SELECT name=month>\n");
     for (int i = 1; i < 13; i++)
       sp.printHTML("<OPTION value=\"" + i + "\">" + i + "</OPTION>\n");
     sp.printHTML("</SELECT>&nbsp/&nbsp<SELECT name=year>\n");
-    for (int i = 2000; i < 2013; i++)
+    for (int i = 2003; i < 2013; i++)
       sp.printHTML("<OPTION value=\"" + i + "\">" + i + "</OPTION>\n");
     sp
         .printHTML("</SELECT><p><input type=submit value=\"Retrieve stories from this date!\"><p>\n");
@@ -148,18 +149,25 @@ public class OlderStories extends RubbosHttpServlet
 
       try
       {
-        stmt = conn.prepareStatement("SELECT * FROM stories WHERE date>='"
-            + before + "' AND date<='" + after + "' ORDER BY date DESC LIMIT "
-            + page * nbOfStories + "," + nbOfStories);
+        stmt = conn.prepareStatement("SELECT stories.id, stories.title, "
+				     + "stories.date, users.nickname "
+				     + "FROM stories, users WHERE date>='"
+				     + before + "' AND date<='" + after 
+				     + "' AND users.id = stories.writer"
+				     + " ORDER BY date DESC LIMIT "
+				     + page * nbOfStories + "," + nbOfStories);
         rs = stmt.executeQuery();
         if (!rs.first())
         {
 	  stmt.close();
 	  stmt = conn
-              .prepareStatement("SELECT * FROM old_stories WHERE date>='"
-                  + before + "' AND date<='" + after
-                  + "' ORDER BY date DESC LIMIT " + page * nbOfStories + ","
-                  + nbOfStories);
+              .prepareStatement("SELECT old_stories.id, old_stories.title,"
+				+ " old_stories.date, users.nickname "
+				+ "FROM old_stories, users WHERE date>='"
+				+ before + "' AND date<='" + after
+				+ "' AND users.id = old_stories.writer"
+				+ " ORDER BY date DESC LIMIT " 
+				+ page * nbOfStories + "," + nbOfStories);
           rs = stmt.executeQuery();
         }
         if (!rs.first())
@@ -205,7 +213,8 @@ public class OlderStories extends RubbosHttpServlet
         {
           id = rs.getInt("id");
           title = rs.getString("title");
-          username = sp.getUserName(rs.getInt("writer"), conn);
+          //username = sp.getUserName(rs.getInt("writer"), conn);
+	  username = rs.getString("nickname");
           date = rs.getString("date");
           sp
               .printHTML("<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewStory?storyId="
