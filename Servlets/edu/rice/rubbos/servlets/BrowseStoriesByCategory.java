@@ -187,7 +187,7 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
               + URLEncoder.encode(categoryName)
               + "&page="
               + (page + 1)
-              + "nbOfStories=nbOfStories\">Next page</a>\n</CENTER>\n");
+              + "&nbOfStories="+nbOfStories+"\">Next page</a>\n</CENTER>\n");
     else
       sp
           .printHTML("<p><CENTER>\n<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory?category="
@@ -196,14 +196,14 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
               + URLEncoder.encode(categoryName)
               + "&page="
               + (page - 1)
-              + "nbOfStories=nbOfStories\">Previous page</a>\n&nbsp&nbsp&nbsp"
+              + "&nbOfStories="+nbOfStories+"\">Previous page</a>\n&nbsp&nbsp&nbsp"
               + "<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.BrowseStoriesByCategory?category="
               + categoryId
               + "&categoryName="
               + URLEncoder.encode(categoryName)
               + "&page="
               + (page + 1)
-              + "nbOfStories=nbOfStories\">Next page</a>\n\n</CENTER>\n");
+              + "&nbOfStories="+nbOfStories+"\">Next page</a>\n\n</CENTER>\n");
 
     sp.printHTMLfooter();
 
