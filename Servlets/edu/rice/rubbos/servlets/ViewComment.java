@@ -272,9 +272,9 @@ public class ViewComment extends RubbosHttpServlet
     PreparedStatement stmt = null;
     Connection        conn  = null;
 
-    String            categoryName, filterstring, username, categoryId, 
+    String            filterstring, username,  
         comment = null, displaystring, storyId, commentIdstring, comment_table;
-    int               parent = 0, childs, page = 0, filter = 0, display = 0, 
+    int               parent = 0, childs, filter = 0, display = 0, 
         commentId;
     int               i = 0, count, rating;
     ResultSet         rs = null;

@@ -145,10 +145,10 @@ public class ViewStory extends RubbosHttpServlet
     PreparedStatement stmt = null;
     Connection        conn = null;
 
-    String            categoryName, nickname, title = null, body = null, 
+    String            title = null, body = null, 
         category, table;
-    String            password = null, date = null, username = null;
-    int               userId, access, storyId = 0;
+    String            date = null, username = null;
+    int               storyId = 0;
     ResultSet         rs = null, count_result = null;
     String            comment_table = null;
     String            storyIdtest = request.getParameter("storyId");
