@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -39,21 +39,27 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class RegisterUser extends RubbosHttpServlet
 {
-  private ServletPrinter sp = null;
-  private PreparedStatement stmt = null, stmt2 = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
       if (stmt != null)
         stmt.close(); // close statement
+    }
+    catch (Exception ignore)
+    {
+    }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
     }
     catch (Exception ignore)
     {
@@ -65,6 +71,10 @@ public class RegisterUser extends RubbosHttpServlet
       throws IOException, ServletException
   {
 
+    ServletPrinter    sp = null;
+    PreparedStatement stmt = null, stmt2 = null;
+    Connection        conn = null;
+
     sp = new ServletPrinter(response, "RegisterUser");
 
     String categoryName, nickname, firstname, lastname, email;
@@ -72,14 +82,13 @@ public class RegisterUser extends RubbosHttpServlet
     int userId;
     int access = 0, id = 0, rating = 0;
     ResultSet rs = null, rs2 = null;
+    int updateResult;
 
     firstname = request.getParameter("firstname");
     lastname = request.getParameter("lastname");
     nickname = request.getParameter("nickname");
     email = request.getParameter("email");
     password = request.getParameter("password");
-
-    conn = getConnection();
 
     if (firstname == null)
     {
@@ -111,6 +120,8 @@ public class RegisterUser extends RubbosHttpServlet
       return;
     }
 
+    conn = getConnection();
+
     //Authenticate the user
 
     try
@@ -122,7 +133,7 @@ public class RegisterUser extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("ERROR: Nickname query failed" + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
     try
@@ -131,13 +142,13 @@ public class RegisterUser extends RubbosHttpServlet
       {
         sp
             .printHTML("The nickname you have chosen is already taken by someone else. Please choose a new nickname.<br>\n");
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
       stmt = conn.prepareStatement("INSERT INTO users VALUES (NULL, \""
           + firstname + "\", \"" + lastname + "\", \"" + nickname + "\", \""
           + password + "\", \"" + email + "\", 0, 0, NOW())");
-      rs = stmt.executeQuery();
+      updateResult = stmt.executeUpdate();
 
       stmt2 = conn.prepareStatement("SELECT * FROM users WHERE nickname=\""
           + nickname + "\"");
@@ -153,8 +164,11 @@ public class RegisterUser extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Exception registering user " + e + "<br>");
-      closeConnection();
+      closeConnection(stmt, conn);
+      return;
     }
+
+    closeConnection(stmt, conn);
 
     sp
         .printHTML("<h2>Your registration has been processed successfully</h2><br>\n");

@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,17 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ViewComment extends RubbosHttpServlet
 {
-  private ServletPrinter    sp    = null;
-  private PreparedStatement stmt5 = null, stmtfollow = null, stmt = null,
-      stmt2 = null;
-  private Connection        conn  = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -55,14 +51,33 @@ public class ViewComment extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
-  }
 
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
+  }
+  
+  /**
+   * This function must throw an exception as there should be only
+   * ONE close fo the connection and that close should be handled by
+   * the caller 
+   */
   public void display_follow_up(int cid, int level, int display, int filter,
-      Connection link, String comment_table, boolean separator)
+                                Connection link, String comment_table, 
+                                boolean separator, ServletPrinter sp,
+                                Connection conn) throws Exception
   {
-    ResultSet follow;
-    int childs, story_id, rating, parent, id, i;
-    String subject, username, date, comment;
+    ResultSet         follow;
+    int               childs, story_id, rating, parent, id, i;
+    String            subject, username, date, comment;
+    PreparedStatement stmtfollow = null;
+
     try
     {
       stmtfollow = conn.prepareStatement("SELECT * FROM " + comment_table
@@ -170,14 +185,13 @@ public class ViewComment extends RubbosHttpServlet
         }
         if (childs > 0)
           display_follow_up(id, level + 1, display, filter, link,
-              comment_table, separator);
+                            comment_table, separator, sp, conn);
       }
     }
     catch (Exception e)
     {
       sp.printHTML("Failure at display_follow_up: " + e);
-      closeConnection();
-      return;
+      throw e;
     }
   }
 
@@ -185,15 +199,19 @@ public class ViewComment extends RubbosHttpServlet
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
+
+    ServletPrinter    sp    = null;
+    PreparedStatement stmt5 = null, stmt = null, stmt2 = null;
+    Connection        conn  = null;
+
+    String            categoryName, filterstring, username, categoryId, 
+        comment = null, displaystring, storyId, commentIdstring, comment_table;
+    int               parent = 0, childs, page = 0, filter = 0, display = 0, 
+        commentId;
+    int               i = 0, count, rating;
+    ResultSet         rs = null, rs5 = null, rs2 = null;
+
     sp = new ServletPrinter(response, "ViewComment");
-
-    conn = getConnection();
-
-    String categoryName, filterstring, username, categoryId, comment = null, displaystring, storyId, commentIdstring, comment_table;
-    int parent = 0, childs, page = 0, filter = 0, display = 0, commentId;
-    int i = 0, count, rating;
-
-    ResultSet rs = null, rs5 = null, rs2 = null;
 
     filterstring = request.getParameter("filter");
     storyId = request.getParameter("storyId");
@@ -236,8 +254,9 @@ public class ViewComment extends RubbosHttpServlet
       sp.printHTML("Viewing comment: You must provide a comment table!<br>");
     }
 
-    if (commentId == 0)
+    conn = getConnection();
 
+    if (commentId == 0)
       parent = 0;
     else
     {
@@ -250,7 +269,7 @@ public class ViewComment extends RubbosHttpServlet
         {
           sp
               .printHTML("<h3>ERROR: Sorry, but this comment does not exist.</h3><br>\n");
-          closeConnection();
+          closeConnection(stmt, conn);
           return;
         }
         parent = rs5.getInt("parent");
@@ -258,10 +277,11 @@ public class ViewComment extends RubbosHttpServlet
       catch (Exception e)
       {
         sp.printHTML("Failure at stmt5: " + e);
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
     }
+
     sp.printHTMLheader("RUBBoS: Viewing comments");
     sp
         .printHTML("<center><form action=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment\" method=POST>\n"
@@ -317,7 +337,7 @@ public class ViewComment extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Failed to execute Query for View Comment: " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
 
@@ -413,14 +433,17 @@ public class ViewComment extends RubbosHttpServlet
         }
         if ((display > 0) && (childs > 0))
           display_follow_up(id, 1, display, filter, conn, comment_table,
-              separator);
+                            separator, sp, conn);
       }
 
     }
     catch (Exception e)
     {
       sp.printHTML("Exception getting categories: " + e + "<br>");
-      closeConnection();
+    }
+    finally
+    {
+      closeConnection(stmt, conn);
     }
 
     sp.printHTMLfooter();

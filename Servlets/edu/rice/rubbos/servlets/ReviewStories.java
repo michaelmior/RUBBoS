@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,16 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ReviewStories extends RubbosHttpServlet
 {
-  private ServletPrinter sp = null;
-  private PreparedStatement stmt = null, stmt2 = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -54,21 +51,33 @@ public class ReviewStories extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
+
+    ServletPrinter    sp = null;
+    PreparedStatement stmt = null;
+    Connection        conn = null;
+    String            date, title, id, body, username;
+    ResultSet         rs = null;
+
     sp = new ServletPrinter(response, "ReviewStories");
+    sp.printHTMLheader("RUBBoS: Review Stories");
 
     conn = getConnection();
-
-    String date, title, id, body, username;
-
-    ResultSet rs = null;
-
-    sp.printHTMLheader("RUBBoS: Review Stories");
 
     try
     {
@@ -79,16 +88,17 @@ public class ReviewStories extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Failed to execute Query for ReviewStories " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
+
     try
     {
       if (!rs.first())
       {
         sp
             .printHTML("<h2>Sorry, but there is no submitted story available at this time.</h2><br>\n");
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
       do
@@ -114,7 +124,10 @@ public class ReviewStories extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Exception rejecting story: " + e + "<br>");
-      closeConnection();
+    }
+    finally
+    {
+      closeConnection(stmt, conn);
     }
 
     sp.printHTMLfooter();

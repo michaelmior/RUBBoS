@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,17 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class StoreComment extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null, stmt2 = null, stmt3 = null,
-      stmt4 = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -55,19 +51,33 @@ public class StoreComment extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
-    sp = new ServletPrinter(response, "StoreComment");
 
-    conn = getConnection();
+    ServletPrinter    sp   = null;
+    PreparedStatement stmt = null, stmt2 = null;
+    Connection        conn = null;
 
-    String nickname, password, storyId, parent, userIdstring, subject, body, comment_table;
+    String nickname, password, storyId, parent, userIdstring, subject, body;
+    String comment_table;
     int page = 0, nbOfStories = 0, userId;
-    ResultSet rs = null, rs2 = null, rs3 = null, rs4 = null;
+    int updateResult;
+
+    sp = new ServletPrinter(response, "StoreComment");
 
     nickname = request.getParameter("nickname");
     password = request.getParameter("password");
@@ -123,6 +133,8 @@ public class StoreComment extends RubbosHttpServlet
 
     sp.printHTML("<center><h2>Comment submission result:</h2></center><p>\n");
 
+    conn = getConnection();
+
     // Authenticate the user
     userIdstring = sp.authenticate(nickname, password, conn);
     userId = (Integer.valueOf(userIdstring)).intValue();
@@ -139,16 +151,19 @@ public class StoreComment extends RubbosHttpServlet
       stmt = conn.prepareStatement("INSERT INTO " + comment_table
           + " VALUES (NULL, " + userId + ", " + storyId + ", " + parent
           + ", 0, 0, NOW(), \"" + subject + "\", \"" + body + "\")");
-      rs = stmt.executeQuery();
+      updateResult = stmt.executeUpdate();
 
       stmt2 = conn.prepareStatement("UPDATE " + comment_table
           + " SET childs=childs+1 WHERE id=" + parent);
-      rs2 = stmt2.executeQuery();
+      updateResult = stmt2.executeUpdate();
     }
     catch (Exception e)
     {
       sp.printHTML("Exception getting categories: " + e + "<br>");
-      closeConnection();
+    }
+    finally
+    {
+      closeConnection(stmt, conn);
     }
 
     sp.printHTML("Your comment has been successfully stored in the "

@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -34,21 +34,27 @@ import javax.servlet.http.HttpServletResponse;
 
 public class PostComment extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
       if (stmt != null)
         stmt.close(); // close statement
+    }
+    catch (Exception ignore)
+    {
+    }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
     }
     catch (Exception ignore)
     {
@@ -59,9 +65,10 @@ public class PostComment extends RubbosHttpServlet
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
-    sp = new ServletPrinter(response, "BrowseCategoriesByCategory");
 
-    conn = getConnection();
+    ServletPrinter    sp   = null;
+
+    sp = new ServletPrinter(response, "BrowseCategoriesByCategory");
 
     String storyIdtest, categoryId, testparent, comment_table;
     int parent = 0, storyId = 0;

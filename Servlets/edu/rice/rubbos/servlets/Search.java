@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -36,16 +36,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class Search extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -55,19 +52,32 @@ public class Search extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
-    sp = new ServletPrinter(response, "Search");
+    ServletPrinter    sp   = null;
+    PreparedStatement stmt = null;
+    Connection        conn = null;
 
-    conn = getConnection();
-
-    String testtype, search, testpage, testnbOfStories, table, title = null, comment_table;
+    String testtype, search, testpage, testnbOfStories, table, title = null;
+    String comment_table;
     int page = 0, type, nbOfStories = 0;
     ResultSet rs = null;
+
+    sp = new ServletPrinter(response, "Search");
 
     testtype = request.getParameter("type");
     testnbOfStories = request.getParameter("nbOfStories");
@@ -145,6 +155,8 @@ public class Search extends RubbosHttpServlet
       sp.printHTML("<br><h2>" + title + " matching <i>" + search
           + "</i></h2></center><br>");
 
+      conn = getConnection();
+
       if (type == 0)
       {
         try
@@ -161,7 +173,7 @@ public class Search extends RubbosHttpServlet
         {
           sp.printHTML("Failed to execute Query for BrowseStoriesByCategory: "
               + e);
-          closeConnection();
+          closeConnection(stmt, conn);
           return;
         }
         try
@@ -200,6 +212,7 @@ public class Search extends RubbosHttpServlet
             }
 
             sp.printHTMLfooter();
+            closeConnection(stmt, conn);
             return;
           }
         }
@@ -207,9 +220,10 @@ public class Search extends RubbosHttpServlet
         catch (Exception e)
         {
           sp.printHTML("Exception searching type 0: " + e + "<br>");
-          closeConnection();
+          closeConnection(stmt, conn);
+          return;
         }
-      }
+      } // if (type == 0)
 
       if (type == 1)
       { // Look for comments
@@ -258,6 +272,7 @@ public class Search extends RubbosHttpServlet
             }
 
             sp.printHTMLfooter();
+            closeConnection(stmt, conn);
             return;
           }
           else
@@ -290,9 +305,10 @@ public class Search extends RubbosHttpServlet
         catch (Exception e4)
         {
           sp.printHTML(e4 + "Exception in type==1");
-          closeConnection();
+          closeConnection(stmt, conn);
+          return;
         }
-      }
+      } // if (type == 1)
 
       if (type == 2)
       { // Look for stories of an author
@@ -347,15 +363,17 @@ public class Search extends RubbosHttpServlet
             }
 
             sp.printHTMLfooter();
+            closeConnection(stmt, conn);
             return;
           }
         }
         catch (Exception e6)
         {
           sp.printHTML(e6 + "Exception in type==2");
-          closeConnection();
+          closeConnection(stmt, conn);
+          return;
         }
-      }
+      }// if (type == 2)
 
       try
       {
@@ -421,8 +439,15 @@ public class Search extends RubbosHttpServlet
       {
         sp.printHTML(e7 + "Exception in type!=1");
       }
-    }
+      finally 
+      {
+        closeConnection(stmt, conn);
+      }
+    } // end else
 
+    // We do not need to do a closeConnection() here as a connection
+    // is only grabbed in a large if () clause above and we take care
+    // of closing it.
     sp.printHTMLfooter();
 
   }

@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,16 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ModerateComment extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -54,15 +51,28 @@ public class ModerateComment extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
-    sp = new ServletPrinter(response, "ModerateComment");
 
-    conn = getConnection();
+    ServletPrinter    sp   = null;
+    PreparedStatement stmt = null;
+    Connection        conn = null;
+
+    sp = new ServletPrinter(response, "ModerateComment");
 
     String comment_table, commentId;
 
@@ -86,6 +96,8 @@ public class ModerateComment extends RubbosHttpServlet
 
     sp.printHTMLheader("RUBBoS: Comment moderation");
 
+    conn = getConnection();
+
     try
     {
       stmt = conn.prepareStatement("SELECT * FROM " + comment_table
@@ -95,23 +107,25 @@ public class ModerateComment extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Failed to execute Query for ModerateComment: " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
+
     try
     {
       if (!rs.first())
       {
         sp
             .printHTML("<h3>ERROR: Sorry, but this comment does not exist.</h3><br>\n");
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
     }
     catch (Exception e)
     {
       sp.printHTML("Exception moderating comments: " + e + "<br>");
-      closeConnection();
+      closeConnection(stmt, conn);
+      return;
     }
 
     try
@@ -121,7 +135,7 @@ public class ModerateComment extends RubbosHttpServlet
           .printHTML("<p><br><center><h2>Moderate a comment !</h2></center><br>\n<br><hr><br>");
       String username = sp.getUserName(rs.getInt("writer"), conn);
       sp
-          .printHTML("<TABLE width=\"100%\" bgcolor=\"#CCCCFF\"><TR><TD><FONT size=\"4\" color=\"#000000\"><center><B><a href=\"/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
+          .printHTML("<TABLE width=\"100%\" bgcolor=\"#CCCCFF\"><TR><TD><FONT size=\"4\" color=\"#000000\"><center><B><a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
               + comment_table
               + "&storyId="
               + storyId
@@ -138,7 +152,7 @@ public class ModerateComment extends RubbosHttpServlet
           .printHTML("<TR><TD>"
               + rs.getString("comment")
               + "</TABLE><p><hr><p>\n"
-              + "<form action=\"/servlet/edu.rice.rubbos.servlets.StoreModeratorLog\" method=POST>\n"
+              + "<form action=\"/rubbos/servlet/edu.rice.rubbos.servlets.StoreModeratorLog\" method=POST>\n"
               + "<input type=hidden name=commentId value="
               + commentId
               + ">\n"
@@ -158,7 +172,10 @@ public class ModerateComment extends RubbosHttpServlet
     catch (Exception e2)
     {
       sp.printHTML("Exception moderating comments part 2: " + e2 + "<br>");
-      closeConnection();
+    } 
+    finally
+    {
+      closeConnection(stmt, conn);
     }
     sp.printHTMLfooter();
 

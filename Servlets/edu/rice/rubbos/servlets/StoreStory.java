@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -40,16 +40,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class StoreStory extends RubbosHttpServlet
 {
-  private ServletPrinter sp = null;
-  private PreparedStatement stmt = null, stmt2 = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -59,6 +56,16 @@ public class StoreStory extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
@@ -66,20 +73,23 @@ public class StoreStory extends RubbosHttpServlet
       throws IOException, ServletException
   {
 
-    sp = new ServletPrinter(response, "StoreStory");
+    ServletPrinter    sp = null;
+    PreparedStatement stmt = null, stmt2 = null;
+    Connection        conn = null;
 
     String categoryName, nickname, title, body, category, table;
     String password = null;
     int userId, access;
-    ResultSet rs = null, rs2 = null;
+    ResultSet rs = null;
+    int updateResult;
+
+    sp = new ServletPrinter(response, "StoreStory");
 
     nickname = request.getParameter("nickname");
     password = request.getParameter("password");
     title = request.getParameter("title");
     body = request.getParameter("body");
     category = request.getParameter("category");
-
-    conn = getConnection();
 
     if (title == null)
     {
@@ -107,6 +117,8 @@ public class StoreStory extends RubbosHttpServlet
     userId = 0;
     access = 0;
 
+    conn = getConnection();
+
     if ((nickname != null) && (password != null))
     {
       try
@@ -119,7 +131,7 @@ public class StoreStory extends RubbosHttpServlet
       catch (Exception e)
       {
         sp.printHTML("ERROR: Authentification query failed" + e);
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
       try
@@ -134,7 +146,8 @@ public class StoreStory extends RubbosHttpServlet
       catch (Exception e)
       {
         sp.printHTML("Exception storing story " + e + "<br>");
-        closeConnection();
+        closeConnection(stmt, conn);
+        return;
       }
     }
 
@@ -160,20 +173,22 @@ public class StoreStory extends RubbosHttpServlet
           + " VALUES (NULL, \"" + title + "\", \"" + body + "\", NOW(), \""
           + userId + "\", " + category + ")");
 
-      rs2 = stmt2.executeQuery();
-      if (!rs.first())
+      updateResult = stmt2.executeUpdate();
+      if (updateResult != 1)
       {
-        sp.printHTML(" ERROR: Failed to insert new story in database.");
-        closeConnection();
+        sp.printHTML(" ERROR: Failed to insert new story in database. Number of rows updated == " + updateResult +".");
+        closeConnection(stmt, conn);
         return;
       }
     }
     catch (SQLException e)
     {
       sp.printHTML("Failed to execute Query for StoreStory: " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
+
+    closeConnection(stmt, conn);
 
     sp.printHTML("Your story has been successfully stored in the " + table
         + " database table<br>\n");

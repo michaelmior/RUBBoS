@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,16 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class Author extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -54,12 +51,26 @@ public class Author extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
+    ServletPrinter    sp   = null;
+    Connection        conn = null;
+    PreparedStatement stmt = null;
+
     sp = new ServletPrinter(response, "Author");
 
     conn = getConnection();
@@ -82,12 +93,14 @@ public class Author extends RubbosHttpServlet
     if (nickname == null)
     {
       sp.printHTML("Author: You must provide a nick name!<br>");
+      closeConnection(stmt, conn);
       return;
     }
 
     if (password == null)
     {
       sp.printHTML("Author: You must provide a password!<br>");
+      closeConnection(stmt, conn);
       return;
     }
 
@@ -104,7 +117,7 @@ public class Author extends RubbosHttpServlet
       catch (Exception e)
       {
         sp.printHTML(" Failed to execute Query for Author: " + e);
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
       try
@@ -118,9 +131,14 @@ public class Author extends RubbosHttpServlet
       catch (Exception e)
       {
         sp.printHTML("Exception verifying author: " + e + "<br>");
-        closeConnection();
+        closeConnection(stmt, conn);
+        /* To make sure there is no double free for the connection */
+        conn = null;
+        stmt = null;
       }
     }
+
+    closeConnection(stmt, conn);
 
     if ((userId == 0) || (access == 0))
     {

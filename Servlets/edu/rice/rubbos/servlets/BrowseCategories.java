@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -36,16 +36,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class BrowseCategories extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -55,12 +52,27 @@ public class BrowseCategories extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
+
+    ServletPrinter    sp   = null;
+    PreparedStatement stmt = null;
+    Connection        conn = null;
+
     sp = new ServletPrinter(response, "BrowseCategories");
     sp.printHTMLheader("RUBBoS available categories");
 
@@ -75,7 +87,7 @@ public class BrowseCategories extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Failed to execute Query for BrowseCategories: " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
     try
@@ -84,7 +96,7 @@ public class BrowseCategories extends RubbosHttpServlet
       {
         sp
             .printHTML("<h2>Sorry, but there is no category available at this time. Database table is empty</h2><br>\n");
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
       else
@@ -111,7 +123,10 @@ public class BrowseCategories extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Exception getting categories: " + e + "<br>");
-      closeConnection();
+    } 
+    finally 
+    {
+        closeConnection(stmt, conn);
     }
 
     sp.printHTMLfooter();

@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,17 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class StoreModeratorLog extends RubbosHttpServlet
 {
-  private ServletPrinter sp = null;
-  private PreparedStatement stmt = null, stmt2 = null, stmt3 = null,
-      stmt4 = null, stmt5 = null, stmt6 = null, stmt7 = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -55,19 +51,35 @@ public class StoreModeratorLog extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
-    sp = new ServletPrinter(response, "StoreModeratorLog");
-
-    conn = getConnection();
+    ServletPrinter    sp = null;
+    PreparedStatement stmt = null, stmt2 = null, stmt3 = null, stmt4 = null,
+        stmt5 = null, stmt6 = null, stmt7 = null;
+    Connection        conn = null;
 
     String nickname, password, comment_table, commentId, ratingstring;
     int access = 0, userId = 0, rating;
-    ResultSet rs = null, rs2 = null, rs3 = null, rs4 = null, rs5 = null, rs6 = null, rs7 = null;
+    ResultSet rs = null, rs2 = null, rs4 = null, rs5 = null, rs6 = null,
+        rs7 = null;
+    int updateResult;
+
+
+    sp = new ServletPrinter(response, "StoreModeratorLog");
 
     nickname = request.getParameter("nickname");
     password = request.getParameter("password");
@@ -109,6 +121,8 @@ public class StoreModeratorLog extends RubbosHttpServlet
     else
       rating = (Integer.valueOf(request.getParameter("rating"))).intValue();
 
+    conn = getConnection();
+
     if ((nickname != null) && (password != null))
     {
       try
@@ -122,7 +136,7 @@ public class StoreModeratorLog extends RubbosHttpServlet
       {
         sp.printHTML("Failed to execute Query for BrowseStoriesByCategory: "
             + e);
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
 
@@ -138,7 +152,8 @@ public class StoreModeratorLog extends RubbosHttpServlet
       catch (Exception e)
       {
         sp.printHTML("Exception StoreModeratorLog: " + e + "<br>");
-        closeConnection();
+        closeConnection(stmt, conn);
+        return;
       }
     }
 
@@ -209,7 +224,7 @@ public class StoreModeratorLog extends RubbosHttpServlet
         stmt3 = conn
             .prepareStatement("INSERT INTO moderator_log VALUES (NULL, "
                 + userId + ", " + commentId + ", " + rating + ", NOW())");
-        rs3 = stmt3.executeQuery();
+        updateResult = stmt3.executeUpdate();
 
         sp.printHTML("New comment rating is :" + comment_row_rating + "<br>\n");
         sp.printHTML("New user rating is :" + user_row_rating + "<br>\n");
@@ -223,6 +238,8 @@ public class StoreModeratorLog extends RubbosHttpServlet
       }
 
     }
+    closeConnection(stmt, conn);
+
     sp.printHTMLfooter();
   }
 

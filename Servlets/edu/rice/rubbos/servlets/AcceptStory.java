@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,17 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AcceptStory extends RubbosHttpServlet
 {
-  private ServletPrinter    sp      = null;
-  private PreparedStatement stmt    = null;
-  private PreparedStatement stmtdel = null;
-  private Connection        conn    = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -55,12 +51,27 @@ public class AcceptStory extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
+
+    ServletPrinter    sp   = null;
+    Connection        conn = null;
+    PreparedStatement stmt = null, stmtdel = null;
+
     sp = new ServletPrinter(response, "AcceptStory");
     sp.printHTMLheader("RUBBoS: Story submission result");
     sp.printHTML("<center><h2>Story submission result:</h2></center><p>\n");
@@ -75,7 +86,8 @@ public class AcceptStory extends RubbosHttpServlet
       return;
     }
 
-    ResultSet rs = null, rs2 = null;
+    ResultSet rs = null;
+    int updateResult;
 
     try
     {
@@ -86,7 +98,7 @@ public class AcceptStory extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML(" Failed to execute Query for AcceptStory: " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
     try
@@ -95,7 +107,7 @@ public class AcceptStory extends RubbosHttpServlet
       {
         sp
             .printHTML("<h3>ERROR: Sorry, but this story does not exist.</h3><br>");
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
 
@@ -112,14 +124,17 @@ public class AcceptStory extends RubbosHttpServlet
       stmtdel = conn
           .prepareStatement("DELETE FROM submissions WHERE id=storyId");
 
-      rs = stmt.executeQuery();
-      rs2 = stmtdel.executeQuery();
+      updateResult = stmt.executeUpdate();
+      updateResult = stmtdel.executeUpdate();
     }
     catch (Exception e)
     {
       sp.printHTML("Exception accepting stories: " + e + "<br>");
-      closeConnection();
+      closeConnection(stmt, conn);
+      return;
     }
+
+    closeConnection(stmt, conn);
 
     sp
         .printHTML("The story has been successfully moved from the submission to the stories database table<br>\n");

@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,16 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SubmitStory extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -54,17 +51,33 @@ public class SubmitStory extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
+
+    ServletPrinter    sp   = null;
+    PreparedStatement stmt = null;
+    Connection        conn = null;
+    ResultSet         rs = null, rs2 = null;
+
     sp = new ServletPrinter(response, "Submit Story");
     sp.printHTMLheader("RUBBoS: Story submission");
     sp.printHTML("<center><h2>Submit your incredible story !</h2><br>\n");
     sp
-        .printHTML("<form action=\"/servlet/edu.rice.rubbos.servlets.StoreStory\" method=POST>\n"
+        .printHTML("<form action=\"/rubbos/servlet/edu.rice.rubbos.servlets.StoreStory\" method=POST>\n"
             + "<center><table>\n"
             + "<tr><td><b>Nickname</b><td><input type=text size=20 name=nickname>\n"
             + "<tr><td><b>Password</b><td><input type=text size=20 name=password>\n"
@@ -81,8 +94,6 @@ public class SubmitStory extends RubbosHttpServlet
      * identifier ! <br></h3> "); return; }
      */
 
-    ResultSet rs = null, rs2 = null;
-
     try
     {
       stmt = conn.prepareStatement("SELECT * FROM categories");
@@ -91,16 +102,17 @@ public class SubmitStory extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML(" Failed to execute Query for SubmitStory: " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
+
     try
     {
       if (!rs.first())
       {
         sp
             .printHTML("<h3>ERROR: Sorry, but this story does not exist.</h3><br>");
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
 
@@ -119,7 +131,10 @@ public class SubmitStory extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Exception accepting stories: " + e + "<br>");
-      closeConnection();
+    }
+    finally
+    {
+      closeConnection(stmt, conn);
     }
 
     sp

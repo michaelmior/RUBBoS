@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -35,21 +35,27 @@ import javax.servlet.http.HttpServletResponse;
 
 public class OlderStories extends RubbosHttpServlet
 {
-  private ServletPrinter sp = null;
-  private PreparedStatement stmt = null, stmt2 = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
       if (stmt != null)
         stmt.close(); // close statement
+    }
+    catch (Exception ignore)
+    {
+    }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
     }
     catch (Exception ignore)
     {
@@ -60,9 +66,12 @@ public class OlderStories extends RubbosHttpServlet
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
-    sp = new ServletPrinter(response, "OlderStories");
 
-    conn = getConnection();
+    ServletPrinter    sp = null;
+    PreparedStatement stmt = null, stmt2 = null;
+    Connection        conn = null;
+
+    sp = new ServletPrinter(response, "OlderStories");
 
     String day, month, year, testpage, username, testnbOfStories;
     int page = 0, nbOfStories = 0, id;
@@ -134,6 +143,9 @@ public class OlderStories extends RubbosHttpServlet
       String before, after;
       before = year + "-" + month + "-" + day + " 0:0:0";
       after = year + "-" + month + "-" + day + " 23:59:59";
+
+      conn = getConnection();
+
       try
       {
         stmt = conn.prepareStatement("SELECT * FROM stories WHERE date>='"
@@ -172,13 +184,15 @@ public class OlderStories extends RubbosHttpServlet
                     + "\">Previous page</a>\n</CENTER>\n");
           }
           sp.printHTMLfooter();
+          closeConnection(stmt, conn);
           return;
         }
       }
       catch (Exception e)
       {
         sp.printHTML("Exception getting older stories: " + e + "<br>");
-        closeConnection();
+        closeConnection(stmt, conn);
+        return;
       }
 
       String title, date;
@@ -207,7 +221,10 @@ public class OlderStories extends RubbosHttpServlet
       catch (Exception e2)
       {
         sp.printHTML("Exception getting strings: " + e2 + "<br>");
-        closeConnection();
+      }
+      finally
+      {
+          closeConnection(stmt, conn);
       }
       if (page == 0)
         sp

@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -36,16 +36,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class BrowseStoriesByCategory extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -55,15 +52,28 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   /** Build the html page for the response */
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException
   {
-    sp = new ServletPrinter(response, "BrowseStoriesByCategory");
 
-    conn = getConnection();
+    ServletPrinter    sp   = null;
+    PreparedStatement stmt = null;
+    Connection        conn = null;
+
+    sp = new ServletPrinter(response, "BrowseStoriesByCategory");
 
     String categoryName, username, categoryId, testpage, testnbOfStories;
     int page = 0, nbOfStories = 0;
@@ -113,6 +123,8 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
     sp.printHTMLheader("RUBBoS Browse Stories By Category");
     sp.printHTML("<br><h2>Stories in category " + categoryName + "</h2><br>");
 
+    conn = getConnection();
+
     try
     {
       stmt = conn.prepareStatement("SELECT * FROM stories WHERE category= "
@@ -123,7 +135,7 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Failed to execute Query for BrowseStoriesByCategory: " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
     try
@@ -146,10 +158,10 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
                   + URLEncoder.encode(categoryName)
                   + "&page="
                   + (page - 1)
-                  + "nbOfStories=nbOfStories\">Previous page</a>\n</CENTER>\n");
+                  + "&nbOfStories=nbOfStories\">Previous page</a>\n</CENTER>\n");
         }
         sp.printHTMLfooter();
-        closeConnection();
+        closeConnection(stmt, conn);
         return;
       }
 
@@ -176,7 +188,10 @@ public class BrowseStoriesByCategory extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Exception getting categories: " + e + "<br>");
-      closeConnection();
+    }
+    finally 
+    {
+      closeConnection(stmt, conn);
     }
 
     if (page == 0)

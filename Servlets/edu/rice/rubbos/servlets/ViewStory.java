@@ -19,7 +19,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
  * Initial developer(s): Emmanuel Cecchet.
- * Contributor(s): ______________________.
+ * Contributor(s): Niraj Tolia.
  */
 
 package edu.rice.rubbos.servlets;
@@ -39,17 +39,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ViewStory extends RubbosHttpServlet
 {
-  private ServletPrinter    sp   = null;
-  private PreparedStatement stmt = null, stmt2 = null, stmt3 = null,
-      stmt4 = null, stmt5 = null;
-  private Connection        conn = null;
 
   public int getPoolSize()
   {
     return Config.BrowseCategoriesPoolSize;
   }
 
-  private void closeConnection()
+  private void closeConnection(PreparedStatement stmt, Connection conn)
   {
     try
     {
@@ -59,16 +55,28 @@ public class ViewStory extends RubbosHttpServlet
     catch (Exception ignore)
     {
     }
+
+    try
+    {
+      if (conn != null)
+          releaseConnection(conn);
+    }
+    catch (Exception ignore)
+    {
+    }
+
   }
 
   public void display_follow_up(int cid, int level, int display, int filter,
-      Connection link, String comment_table)
+                                Connection link, String comment_table,
+                                ServletPrinter sp, Connection conn)
+      throws Exception
   {
-    int i, childs;
-    int story_id, id, writer;
-    String subject, date;
-    ResultSet rs2;
 
+    int               i, childs, story_id, id, writer;
+    String            subject, date;
+    ResultSet         rs2;
+    PreparedStatement stmt2 = null;
     try
     {
 
@@ -106,7 +114,7 @@ public class ViewStory extends RubbosHttpServlet
                   + subject + "</a> by " + writer + " on " + date + "<br>\n");
           if (childs > 0)
             display_follow_up(id, level + 1, display, filter, link,
-                comment_table);
+                              comment_table, sp, conn);
         }
         while (rs2.next());
       }
@@ -114,6 +122,7 @@ public class ViewStory extends RubbosHttpServlet
     catch (Exception e3)
     {
       sp.printHTML(e3 + ": Exception in method display_follow_up");
+      throw e3;
     }
 
   }
@@ -123,16 +132,19 @@ public class ViewStory extends RubbosHttpServlet
       throws IOException, ServletException
   {
 
+    ServletPrinter    sp   = null;
+    PreparedStatement stmt = null, stmt3 = null, stmt4 = null, stmt5 = null;
+    Connection        conn = null;
+
+    String            categoryName, nickname, title = null, body = null, 
+        category, table;
+    String            password = null, date = null, username = null;
+    int               userId, access, storyId = 0;
+    ResultSet         rs = null, rs3 = null, rs5, count_result;
+    String            comment_table = null;
+    String            storyIdtest = request.getParameter("storyId");
+
     sp = new ServletPrinter(response, "ViewStory");
-
-    String categoryName, nickname, title = null, body = null, category, table;
-    String password = null, date = null, username = null;
-    int userId, access, storyId = 0;
-    ResultSet rs = null, rs3 = null, rs5, count_result;
-    String comment_table = null;
-    String storyIdtest = request.getParameter("storyId");
-
-    conn = getConnection();
 
     if (storyIdtest == null)
     {
@@ -145,6 +157,8 @@ public class ViewStory extends RubbosHttpServlet
       storyId = (Integer.valueOf(request.getParameter("storyId"))).intValue();
     }
 
+    conn = getConnection();
+
     try
     {
       stmt = conn.prepareStatement("SELECT * FROM stories WHERE id=" + storyId);
@@ -153,7 +167,7 @@ public class ViewStory extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("ERROR: ViewStory query failed" + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
 
@@ -187,7 +201,8 @@ public class ViewStory extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Exception viewing story " + e + "<br>");
-      closeConnection();
+      closeConnection(stmt, conn);
+      return;
     }
 
     sp.printHTMLheader("RUBBoS: Viewing story " + title);
@@ -341,7 +356,8 @@ public class ViewStory extends RubbosHttpServlet
                   + id
                   + "\">Moderate</a> ]</TABLE>\n");
           if (childs > 0)
-            display_follow_up(id, 1, display, filter, conn, comment_table);
+              display_follow_up(id, 1, display, filter, conn, comment_table,
+                                sp, conn);
         }
         while (rs5.next());
       }
@@ -351,9 +367,11 @@ public class ViewStory extends RubbosHttpServlet
     catch (Exception e)
     {
       sp.printHTML("Failed to execute Query for ViewStory: " + e);
-      closeConnection();
+      closeConnection(stmt, conn);
       return;
     }
+
+    closeConnection(stmt, conn);
 
     sp.printHTMLfooter();
 
