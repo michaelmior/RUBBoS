@@ -579,7 +579,8 @@ public class UserSession extends Thread
     String word = null;
     try
     {
-      int pos = rand.nextInt((int)dictionary.length());
+      // We don't want to seek to the end of the file
+      int pos = rand.nextInt((int)dictionary.length()-250);
       dictionary.seek(pos);
       word = dictionary.readLine(); // we surely only get the end of a word
       word = dictionary.readLine(); // this one should be ok
