@@ -161,10 +161,7 @@ public class ViewStory extends RubbosHttpServlet
       return;
     }
 
-    if (storyIdtest != null)
-    {
-      storyId = (Integer.valueOf(request.getParameter("storyId"))).intValue();
-    }
+    storyId = (Integer.valueOf(request.getParameter("storyId"))).intValue();
 
     conn = getConnection();
 
