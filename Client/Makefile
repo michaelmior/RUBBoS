@@ -16,7 +16,7 @@ client: $(all_client_obj)
 all: client
 
 emulator:
-	${JAVA} -classpath . edu.rice.rubbos.client.ClientEmulator
+	${JAVA} -Xmx256m -Xms128m -server -classpath . edu.rice.rubbos.client.ClientEmulator
 
 javadoc :
 	${MKDIR} -p doc
