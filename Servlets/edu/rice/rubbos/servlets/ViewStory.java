@@ -145,8 +145,7 @@ public class ViewStory extends RubbosHttpServlet
     PreparedStatement stmt = null;
     Connection        conn = null;
 
-    String            title = null, body = null, 
-        category, table;
+    String            title = null, body = null;
     String            date = null, username = null;
     int               storyId = 0;
     ResultSet         rs = null, count_result = null;
