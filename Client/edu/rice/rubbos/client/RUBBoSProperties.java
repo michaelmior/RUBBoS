@@ -60,7 +60,6 @@ public class RUBBoSProperties
   private Integer oldestStoryYear;
   private Integer oldestStoryMonth;
 
-  private Integer maxCommentsPerStory;
   private Integer commentMaxLength;
 
 
@@ -296,10 +295,10 @@ public class RUBBoSProperties
       useVersion = getProperty("httpd_use_version");
       if (useVersion.compareTo("PHP") == 0)
         urlGen = new URLGeneratorPHP(webSiteName, webSitePort, PHPHTMLPath, PHPScriptPath);
-//       else if (useVersion.compareTo("EJB") == 0)
-//         urlGen = new URLGeneratorEJB(webSiteName, webSitePort, EJBHTMLPath, EJBScriptPath);
+      //       else if (useVersion.compareTo("EJB") == 0)
+      //         urlGen = new URLGeneratorEJB(webSiteName, webSitePort, EJBHTMLPath, EJBScriptPath);
       else if (useVersion.compareTo("Servlets") == 0)
-	  urlGen = new URLGeneratorServlets(webSiteName, webSitePort, ServletsHTMLPath, ServletsScriptPath);
+        urlGen = new URLGeneratorServlets(webSiteName, webSitePort, ServletsHTMLPath, ServletsScriptPath);
       else
       {
         System.err.println("Sorry but '"+useVersion+"' is not supported. Only PHP, EJB and Servlets are accepted.");
