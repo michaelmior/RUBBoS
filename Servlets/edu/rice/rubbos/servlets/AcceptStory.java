@@ -126,6 +126,7 @@ public class AcceptStory extends RubbosHttpServlet
 
       updateResult = stmt.executeUpdate();
       updateResult = stmtdel.executeUpdate();
+      stmtdel.close();
     }
     catch (Exception e)
     {
@@ -133,7 +134,6 @@ public class AcceptStory extends RubbosHttpServlet
       closeConnection(stmt, conn);
       return;
     }
-    stmtdel.close();
     closeConnection(stmt, conn);
 
     sp
