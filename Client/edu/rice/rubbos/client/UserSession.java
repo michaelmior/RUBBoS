@@ -211,7 +211,7 @@ public class UserSession extends Thread
     if (keyIndex == -1)
     {
       if (debugLevel>0)
-        System.err.println("Thread "+this.getName()+": Cannot found "+key+" in last HTML reply<br>");
+        System.err.println("Thread "+this.getName()+": Cannot find "+key+" in last HTML reply<br>");
       if (debugLevel>1)
         System.err.println("Thread "+this.getName()+": Last HTML reply is: "+lastHTMLReply+"<br>");
     }
@@ -249,7 +249,7 @@ public class UserSession extends Thread
     if ((count == 0) || (skipFirst && (count <= 1)))
     {
       if (debugLevel>0)
-        System.err.println("Thread "+this.getName()+": Cannot found "+key+" in last HTML reply<br>");
+        System.err.println("Thread "+this.getName()+": Cannot find "+key+" in last HTML reply<br>");
       if (debugLevel>1)
         System.err.println("Thread "+this.getName()+": Last HTML reply is: "+lastHTMLReply+"<br>");
       return null;
@@ -555,7 +555,7 @@ public class UserSession extends Thread
     if (keyIndex == -1)
     {
       if (debugLevel > 0)
-        System.err.println("Thread "+this.getName()+": Cannot found "+key+" in last HTML reply<br>");
+        System.err.println("Thread "+this.getName()+": Cannot find "+key+" in last HTML reply<br>");
       if (debugLevel > 1)
         System.err.println("Thread "+this.getName()+": Last HTML reply is: "+lastHTMLReply+"<br>");
       return -1;
