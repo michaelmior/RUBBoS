@@ -2,6 +2,9 @@
 httpd_hostname = sci23
 httpd_port = 80
 
+# C/JDBC server to monitor (if any)
+cjdbc_hostname =
+
 # Precise which version to use. Valid options are : PHP, Servlets, EJB
 httpd_use_version = Servlets
 
