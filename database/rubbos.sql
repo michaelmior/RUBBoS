@@ -78,7 +78,9 @@ CREATE TABLE comments (
    comment      TEXT,
    PRIMARY KEY(id),
    INDEX story (story_id),
-   INDEX search (subject(10))
+   INDEX search (subject(10)),
+   INDEX parent_id (parent),
+   INDEX rating_num (rating)
 );
 
 
@@ -94,7 +96,9 @@ CREATE TABLE old_comments (
    comment      TEXT,
    PRIMARY KEY(id),
    INDEX story (story_id),
-   INDEX search (subject(10))
+   INDEX search (subject(10)),
+   INDEX parent_id (parent),
+   INDEX rating_num (rating)
 );
 
 CREATE TABLE moderator_log (
