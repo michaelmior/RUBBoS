@@ -389,7 +389,8 @@ public class UserSession extends Thread
         System.err.println("Thread "+this.getName()+": There is no previous HTML reply<br>");
       return null;
     }
-
+    // The boolean is true because we do not want to pick the first ViewComment
+    // which is used for redisplaying stories
     int[] pos = randomComputeLastIndex(scriptName, true);
     if (pos == null)
       return null;
