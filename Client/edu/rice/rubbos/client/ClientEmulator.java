@@ -307,7 +307,7 @@ public class ClientEmulator
         // Monitor remote clients
         for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
         {
-          System.out.println("ClientEmulator: Starting monitoring program locally on client<br>\n");
+          System.out.println("ClientEmulator: Starting monitoring program on remote clients<br>\n");
           String[] rcmdClient = new String[6];
           rcmdClient[0] = client.rubbos.getMonitoringRsh();
           rcmdClient[1] = "-x";
@@ -635,8 +635,15 @@ public class ClientEmulator
       {
         for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
         {
-          remoteClientMonitor[i].waitFor();
-          remoteClient[i].waitFor();
+          // The waitFor method only does not work: it hangs forever
+          if (remoteClientMonitor[i].exitValue() != 0)
+	  {
+	    remoteClientMonitor[i].waitFor();
+	  }
+	  if (remoteClient[i].exitValue() != 0)
+	  {
+	      remoteClient[i].waitFor();
+	  }
         }
         webServerMonitor.waitFor();
         dbServerMonitor.waitFor();
