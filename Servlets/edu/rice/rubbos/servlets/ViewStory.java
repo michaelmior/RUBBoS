@@ -186,7 +186,7 @@ public class ViewStory extends RubbosHttpServlet
 
     catch (Exception e)
     {
-      sp.printHTML("Exception storing story " + e + "<br>");
+      sp.printHTML("Exception viewing story " + e + "<br>");
       closeConnection();
     }
 
@@ -255,7 +255,7 @@ public class ViewStory extends RubbosHttpServlet
 
     catch (Exception e2)
     {
-      sp.printHTML("count_result failed" + e2 + "<br>");
+      sp.printHTML("count_result failed " + e2 + "<br>");
     }
 
     while (i < 6)
@@ -350,7 +350,7 @@ public class ViewStory extends RubbosHttpServlet
 
     catch (Exception e)
     {
-      sp.printHTML("Failed to execute Query for StoreStory: " + e);
+      sp.printHTML("Failed to execute Query for ViewStory: " + e);
       closeConnection();
       return;
     }
