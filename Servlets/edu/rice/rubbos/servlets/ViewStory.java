@@ -289,6 +289,8 @@ public class ViewStory extends RubbosHttpServlet
     catch (Exception e2)
     {
       sp.printHTML("count_result failed " + e2 + "<br>");
+      closeConnection(stmt, conn);
+      return;
     }
 
     while (i < 6)
