@@ -133,6 +133,7 @@ public class ModerateComment extends RubbosHttpServlet
       String storyId = rs.getString("story_id");
       sp
           .printHTML("<p><br><center><h2>Moderate a comment !</h2></center><br>\n<br><hr><br>");
+      // XXX - Get rid of this getUserName()
       String username = sp.getUserName(rs.getInt("writer"), conn);
       sp
           .printHTML("<TABLE width=\"100%\" bgcolor=\"#CCCCFF\"><TR><TD><FONT size=\"4\" color=\"#000000\"><center><B><a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewComment?comment_table="
