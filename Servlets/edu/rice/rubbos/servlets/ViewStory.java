@@ -190,7 +190,7 @@ public class ViewStory extends RubbosHttpServlet
             + "old_stories.body, old_stories.date, "
             + "users.nickname FROM old_stories, users"
             + " WHERE old_stories.id=" + storyId 
-            + "AND old_stories.writer=users.id");
+            + " AND old_stories.writer=users.id");
         rs = stmt.executeQuery();
         comment_table = "old_comments";
 
