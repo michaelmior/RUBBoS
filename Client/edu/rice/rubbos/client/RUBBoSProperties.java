@@ -23,6 +23,7 @@ public class RUBBoSProperties
   // Information about web server
   private String webSiteName;
   private int    webSitePort;
+  private String cjdbcSiteName;
   private String EJBHTMLPath;
   private String EJBScriptPath;
   private String ServletsHTMLPath;
@@ -127,6 +128,9 @@ public class RUBBoSProperties
       Integer foo  = new Integer(getProperty("httpd_port"));
       webSitePort = foo.intValue();
       System.out.println(webSitePort+"<br>");
+      System.out.print("CJDBC server name : ");
+      cjdbcSiteName  = getProperty("cjdbc_hostname");
+      System.out.println(cjdbcSiteName+"<br>");
       System.out.print("EJB HTML files path   : ");
       EJBHTMLPath  = getProperty("ejb_html_path");
       System.out.println(EJBHTMLPath+"<br>");
@@ -322,6 +326,16 @@ public class RUBBoSProperties
   public String getWebServerName()
   {
     return webSiteName;
+  }
+
+  /**
+   * Get the CJDBC server name
+   *
+   * @return CJDBC server name
+   */
+  public String getCJDBCServerName()
+  {
+    return cjdbcSiteName;
   }
 
 
