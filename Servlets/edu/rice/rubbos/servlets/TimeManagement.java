@@ -62,12 +62,12 @@ public class TimeManagement
     String result;
     int year, month, day, hour, minute, second;
 
-    year = d.get(d.YEAR);
-    month = d.get(d.MONTH) + 1;
-    day = d.get(d.DATE);
-    hour = d.get(d.HOUR_OF_DAY);
-    minute = d.get(d.MINUTE);
-    second = d.get(d.SECOND);
+    year = d.get(GregorianCalendar.YEAR);
+    month = d.get(GregorianCalendar.MONTH) + 1;
+    day = d.get(GregorianCalendar.DATE);
+    hour = d.get(GregorianCalendar.HOUR_OF_DAY);
+    minute = d.get(GregorianCalendar.MINUTE);
+    second = d.get(GregorianCalendar.SECOND);
     result = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":"
         + second;
     return result;
@@ -88,15 +88,15 @@ public class TimeManagement
     int year, month, day, hour, minute, second, millis;
     String result = "";
 
-    year = endDate.get(endDate.YEAR) - startDate.get(startDate.YEAR);
-    month = endDate.get(endDate.MONTH) - startDate.get(startDate.MONTH);
-    day = endDate.get(endDate.DATE) - startDate.get(startDate.DATE);
-    hour = endDate.get(endDate.HOUR_OF_DAY)
-        - startDate.get(startDate.HOUR_OF_DAY);
-    minute = endDate.get(endDate.MINUTE) - startDate.get(startDate.MINUTE);
-    second = endDate.get(endDate.SECOND) - startDate.get(startDate.SECOND);
-    millis = endDate.get(endDate.MILLISECOND)
-        - startDate.get(startDate.MILLISECOND);
+    year = endDate.get(GregorianCalendar.YEAR) - startDate.get(GregorianCalendar.YEAR);
+    month = endDate.get(GregorianCalendar.MONTH) - startDate.get(GregorianCalendar.MONTH);
+    day = endDate.get(GregorianCalendar.DATE) - startDate.get(GregorianCalendar.DATE);
+    hour = endDate.get(GregorianCalendar.HOUR_OF_DAY)
+        - startDate.get(GregorianCalendar.HOUR_OF_DAY);
+    minute = endDate.get(GregorianCalendar.MINUTE) - startDate.get(GregorianCalendar.MINUTE);
+    second = endDate.get(GregorianCalendar.SECOND) - startDate.get(GregorianCalendar.SECOND);
+    millis = endDate.get(GregorianCalendar.MILLISECOND)
+        - startDate.get(GregorianCalendar.MILLISECOND);
 
     if (millis < 0)
     {
@@ -120,7 +120,7 @@ public class TimeManagement
     }
     if (day < 0)
     {
-      day = day + startDate.getActualMaximum(startDate.DAY_OF_MONTH); // is the
+      day = day + startDate.getActualMaximum(GregorianCalendar.DAY_OF_MONTH); // is the
                                                                       // same as
                                                                       // startDate.DATE
       month = month - 1;
@@ -187,7 +187,7 @@ public class TimeManagement
       int durationInDays)
   {
     GregorianCalendar date = (GregorianCalendar) startDate.clone();
-    date.add(date.DATE, durationInDays);
+    date.add(GregorianCalendar.DATE, durationInDays);
     return date;
   }
 }
