@@ -753,7 +753,7 @@ public class UserSession extends Thread
           subject += randomWordFromDictionary(true);
         while ((subject != null) && (subject.length() < size));
         
-        size = rand.nextInt(rubbos.getCommentMaximumLength());
+        size = rand.nextInt(rubbos.getCommentMaxLength());
         do
           body += randomWordFromDictionary(true);
         while ((body != null) && (body.length() < size));
