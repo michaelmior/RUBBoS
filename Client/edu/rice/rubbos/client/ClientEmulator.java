@@ -416,8 +416,18 @@ public class ClientEmulator
       try
       {
         File dir = new File(".");
-        String nodeInfoProgram = dir.getCanonicalPath()+"/bench/node_info.sh";
-      
+        String nodeInfoProgram = "/bin/echo \"Host  : \"`/bin/hostname` ; " +
+            "/bin/echo \"Kernel: \"`/bin/cat /proc/version` ; " +
+            "/bin/grep net /proc/pci ; " +
+            "/bin/grep processor /proc/cpuinfo ; " +
+            "/bin/grep vendor_id /proc/cpuinfo ; " +
+            "/bin/grep model /proc/cpuinfo ; " +
+            "/bin/grep MHz /proc/cpuinfo ; " +
+            "/bin/grep cache /proc/cpuinfo ; " +
+            "/bin/grep MemTotal /proc/meminfo ; " +
+            "/bin/grep SwapTotal /proc/meminfo ";
+
+
         // Web server
         System.out.println("<B>Web server</B><br>");
         String[] cmdWeb = new String[3];
