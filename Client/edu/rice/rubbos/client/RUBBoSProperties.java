@@ -651,7 +651,7 @@ public class RUBBoSProperties
   }
 
   /**
-   * Get scp rsh program path that should be used to fetch remote files
+   * Get scp program path that should be used to fetch remote files
    *
    * @return rsh program path
    */
