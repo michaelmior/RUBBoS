@@ -227,11 +227,6 @@ public abstract class RubbosHttpServlet extends HttpServlet
     if (enablePooling)
     {
       boolean mustNotify = freeConnections.isEmpty();
-      if (freeConnections.search(c) != -1) {
-          System.out.println("BAD BAD BAD" + this.getClass().getName()+"\n\n\n\n");
-          Exception e = new Exception();
-          e.printStackTrace();
-      }
       freeConnections.push(c);
       // Wake up one servlet waiting for a connection (if any)
       if (mustNotify)
