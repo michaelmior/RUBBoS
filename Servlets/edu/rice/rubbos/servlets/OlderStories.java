@@ -150,24 +150,23 @@ public class OlderStories extends RubbosHttpServlet
       try
       {
         stmt = conn.prepareStatement("SELECT stories.id, stories.title, "
-				     + "stories.date, users.nickname "
-				     + "FROM stories, users WHERE date>='"
-				     + before + "' AND date<='" + after 
-				     + "' AND users.id = stories.writer"
-				     + " ORDER BY date DESC LIMIT "
-				     + page * nbOfStories + "," + nbOfStories);
+            + "stories.date, users.nickname "
+            + "FROM stories, users WHERE date>='" + before + "' AND date<='"
+            + after + "' AND users.id = stories.writer"
+            + " ORDER BY date DESC LIMIT " + page * nbOfStories + ","
+            + nbOfStories);
         rs = stmt.executeQuery();
         if (!rs.first())
         {
-	  stmt.close();
-	  stmt = conn
+          stmt.close();
+          stmt = conn
               .prepareStatement("SELECT old_stories.id, old_stories.title,"
-				+ " old_stories.date, users.nickname "
-				+ "FROM old_stories, users WHERE date>='"
-				+ before + "' AND date<='" + after
-				+ "' AND users.id = old_stories.writer"
-				+ " ORDER BY date DESC LIMIT " 
-				+ page * nbOfStories + "," + nbOfStories);
+                  + " old_stories.date, users.nickname "
+                  + "FROM old_stories, users WHERE date>='" + before
+                  + "' AND date<='" + after
+                  + "' AND users.id = old_stories.writer"
+                  + " ORDER BY date DESC LIMIT " + page * nbOfStories + ","
+                  + nbOfStories);
           rs = stmt.executeQuery();
         }
         if (!rs.first())
@@ -213,8 +212,7 @@ public class OlderStories extends RubbosHttpServlet
         {
           id = rs.getInt("id");
           title = rs.getString("title");
-          //username = sp.getUserName(rs.getInt("writer"), conn);
-	  username = rs.getString("nickname");
+          username = rs.getString("nickname");
           date = rs.getString("date");
           sp
               .printHTML("<a href=\"/rubbos/servlet/edu.rice.rubbos.servlets.ViewStory?storyId="

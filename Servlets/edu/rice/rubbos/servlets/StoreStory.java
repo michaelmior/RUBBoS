@@ -141,7 +141,7 @@ public class StoreStory extends RubbosHttpServlet
           userId = rs.getInt("id");
           access = rs.getInt("access");
         }
-	stmt.close();
+        stmt.close();
       }
       catch (Exception e)
       {
