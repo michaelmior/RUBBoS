@@ -109,6 +109,7 @@ public class ClientEmulator
     Process[]         remoteClientMonitor = null;
     Process[]         remoteClient = null;
     String            reportDir = "";
+    String            tmpDir = "/tmp/";
     boolean           isMainClient = args.length == 0; // Check if we are the main client
 
     if (isMainClient)
@@ -203,7 +204,7 @@ public class ClientEmulator
         cmdWeb[2] = "/bin/bash";
         cmdWeb[3] = "-c";
         cmdWeb[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"web_server'";
+          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+tmpDir+"web_server'";
         webServerMonitor = Runtime.getRuntime().exec(cmdWeb);
         System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+"<br>\n");
       
@@ -215,7 +216,7 @@ public class ClientEmulator
         cmdDB[2] = "/bin/bash";
         cmdDB[3] = "-c";
         cmdDB[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"db_server'";
+          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+tmpDir+"db_server'";
         dbServerMonitor = Runtime.getRuntime().exec(cmdDB);
         System.out.println("&nbsp &nbsp Command is: "+cmdDB[0]+" "+cmdDB[1]+" "+cmdDB[2]+" "+cmdDB[3]+" "+cmdDB[4]+"<br>\n");
 
@@ -242,7 +243,7 @@ public class ClientEmulator
           rcmdClient[2] = "/bin/bash";
           rcmdClient[3] = "-c";
           rcmdClient[4] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-            client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+reportDir+"client"+(i+1)+"'";
+            client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" > "+tmpDir+"client"+(i+1)+"'";
           remoteClientMonitor[i] = Runtime.getRuntime().exec(rcmdClient);
           System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+" "+rcmdClient[3]+" "+rcmdClient[4]+"<br>\n");
         }
@@ -553,7 +554,30 @@ public class ClientEmulator
       {
         System.out.println("An error occured while waiting for remote processes termination ("+e.getMessage()+")");
       }
-      
+
+      // scp the sar log files over at this point
+      try
+      {
+	  String [] scpCmd = new String[3];
+	  for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
+	  {
+	      scpCmd[0] =  client.rubbos.getMonitoringScp();
+	      scpCmd[1] = (String)client.rubbos.getRemoteClients().get(i) + ":"+tmpDir+"/client"+(i+1);
+	      scpCmd[2] = reportDir+"/";
+	      Runtime.getRuntime().exec(scpCmd);
+	  }
+	  scpCmd[0] =  client.rubbos.getMonitoringScp();
+	  scpCmd[1] =  client.rubbos.getWebServerName() + ":"+tmpDir+"/web_server";
+	  scpCmd[2] = reportDir+"/";
+	  Runtime.getRuntime().exec(scpCmd);
+	  scpCmd[0] =  client.rubbos.getMonitoringScp();
+	  scpCmd[1] =  client.rubbos.getDBServerName() + ":"+tmpDir+"/db_server";
+	  scpCmd[2] = reportDir+"/";
+	  Runtime.getRuntime().exec(scpCmd);
+      } catch (Exception e) {
+	  System.out.println("An error occured while scping the files over ("+e.getMessage()+")");
+      }
+
       // Generate the graphics 
       try
       {

@@ -71,6 +71,7 @@ public class RUBBoSProperties
   private String  monitoringOptions;
   private Integer monitoringSampling;
   private String  monitoringRsh;
+  private String  monitoringScp;
   private String  monitoringGnuPlot;
   
   /**
@@ -281,6 +282,9 @@ public class RUBBoSProperties
       System.out.print("Monitoring rsh                 : ");
       monitoringRsh      = getProperty("monitoring_rsh");
       System.out.println(monitoringRsh+"<br>");
+      System.out.print("Monitoring scp                 : ");
+      monitoringScp      = getProperty("monitoring_scp");
+      System.out.println(monitoringScp+"<br>");
       System.out.print("Monitoring Gnuplot Terminal    : ");
       monitoringGnuPlot  = getProperty("monitoring_gnuplot_terminal");
       System.out.println(monitoringGnuPlot+"<br>");
@@ -644,6 +648,16 @@ public class RUBBoSProperties
   public String getMonitoringRsh()
   {
     return monitoringRsh;
+  }
+
+  /**
+   * Get scp rsh program path that should be used to fetch remote files
+   *
+   * @return rsh program path
+   */
+  public String getMonitoringScp()
+  {
+    return monitoringScp;
   }
 
 

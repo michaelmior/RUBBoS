@@ -61,4 +61,5 @@ monitoring_program = /usr/bin/sar
 monitoring_options = -n DEV -n SOCK -rubcw
 monitoring_sampling_in_seconds = 1
 monitoring_rsh = /usr/bin/rsh
+monitoring_scp = /usr/bin/scp
 monitoring_gnuplot_terminal = gif
