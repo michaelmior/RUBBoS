@@ -181,7 +181,7 @@ public class ClientEmulator
           System.out.println("ClientEmulator: Starting remote client on "+client.rubbos.getRemoteClients().get(i)+"<br>\n");
           String[] rcmdClient = new String[4];
           rcmdClient[0] = client.rubbos.getMonitoringRsh();
-	  rcmdClient[1] = "-x ";
+	  rcmdClient[1] = "-x";
           rcmdClient[2] = (String)client.rubbos.getRemoteClients().get(i);
           rcmdClient[3] = client.rubbos.getClientsRemoteCommand()+" "+tmpDir+"trace_client"+(i+1)+".html "+tmpDir+"stat_client"+(i+1)+".html";
           remoteClient[i] = Runtime.getRuntime().exec(rcmdClient);
@@ -205,7 +205,7 @@ public class ClientEmulator
 	  String[] delFiles = new String[4];
 	  Process delProcess;
 	  delFiles[0] = client.rubbos.getMonitoringRsh();
-	  delFiles[1] = "-x ";
+	  delFiles[1] = "-x";
 	  // Web server
 	  delFiles[2] = client.rubbos.getWebServerName();
 	  delFiles[3] = "rm -f "+tmpDir+"web_server";
@@ -255,7 +255,7 @@ public class ClientEmulator
         System.out.println("ClientEmulator: Starting monitoring program on Web server "+client.rubbos.getWebServerName()+"<br>\n");
         String[] cmdWeb = new String[6];
         cmdWeb[0] = client.rubbos.getMonitoringRsh();
-        cmdWeb[1] = "-x ";
+        cmdWeb[1] = "-x";
         cmdWeb[2] = client.rubbos.getWebServerName();                                               
         cmdWeb[3] = "/bin/bash";
         cmdWeb[4] = "-c";
@@ -269,7 +269,7 @@ public class ClientEmulator
 	   && !client.rubbos.getCJDBCServerName().equals("")) {
 	    System.out.println("ClientEmulator: Starting monitoring program on CJDBC server "+client.rubbos.getCJDBCServerName()+"<br>\n");
 	    cmdWeb[0] = client.rubbos.getMonitoringRsh();
-	    cmdWeb[1] = "-x ";
+	    cmdWeb[1] = "-x";
 	    cmdWeb[2] = client.rubbos.getCJDBCServerName();                                               
 	    cmdWeb[3] = "/bin/bash";
 	    cmdWeb[4] = "-c";
@@ -283,7 +283,7 @@ public class ClientEmulator
         System.out.println("ClientEmulator: Starting monitoring program on Database server "+client.rubbos.getDBServerName()+"<br>\n");
         String[] cmdDB = new String[6];
         cmdDB[0] = client.rubbos.getMonitoringRsh();
-        cmdDB[1] = "-x ";
+        cmdDB[1] = "-x";
         cmdDB[2] = client.rubbos.getDBServerName();
         cmdDB[3] = "/bin/bash";
         cmdDB[4] = "-c";
@@ -296,7 +296,7 @@ public class ClientEmulator
         System.out.println("ClientEmulator: Starting monitoring program locally on client<br>\n");
         String[] cmdClient = new String[6];
         cmdClient[0] = client.rubbos.getMonitoringRsh();
-        cmdClient[1] = "-x ";
+        cmdClient[1] = "-x";
         cmdClient[2] = "localhost";
         cmdClient[3] = "/bin/bash";
         cmdClient[4] = "-c";
@@ -312,7 +312,7 @@ public class ClientEmulator
           System.out.println("ClientEmulator: Starting monitoring program locally on client<br>\n");
           String[] rcmdClient = new String[6];
           rcmdClient[0] = client.rubbos.getMonitoringRsh();
-          rcmdClient[1] = "-x ";
+          rcmdClient[1] = "-x";
           rcmdClient[2] = (String)client.rubbos.getRemoteClients().get(i);
           rcmdClient[3] = "/bin/bash";
           rcmdClient[4] = "-c";
