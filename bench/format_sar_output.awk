@@ -15,6 +15,7 @@ BEGIN {
 {
   if ($1 ~ /Average/)
     { # Skip the Average values
+      n = "";
       next;
     }
 
@@ -74,12 +75,12 @@ BEGIN {
       if (n == "proc/s")
 	{ # This is the proc/s info
 	  print $2 > FILENAME".proc.dat";
-	  n = "";
+#	  n = "";
 	}
       if (n == "cswch/s")
 	{ # This is the context switches per second info
 	  print $2 > FILENAME".ctxsw.dat";
-	  n = "";
+#	  n = "";
 	}
       if (n == "tps")
 	{ # This is the disk info
@@ -88,7 +89,7 @@ BEGIN {
 	  print $4 > FILENAME".disk.wtps.dat"; # write requests per second
 	  print $5 > FILENAME".disk.brdps.dat"; # block reads per second
 	  print $6 > FILENAME".disk.bwrps.dat"; # block writes per second
-	  n = "";
+#	  n = "";
 	}
       if (n == "kbmemfree")
 	{ # This is the mem info
@@ -102,7 +103,7 @@ BEGIN {
 #	  print $7 > FILENAME".mem.kbswpfree.dat"; # Amount of free swap space in kilobytes.
 #	  print $8 > FILENAME".mem.kbswpused.dat"; # Amount of used swap space in kilobytes.
 	  print $9 > FILENAME".mem.swpused.dat"; # Percentage of used swap space.
-	  n = "";
+#	  n = "";
  	}
       if (n == "totsck")
 	{ # This is the socket info
@@ -111,7 +112,7 @@ BEGIN {
 #	  print $4 > FILENAME".sock.udpsck.dat"; # Number of UDP sockets currently in use.
 #	  print $5 > FILENAME".sock.rawsck.dat"; # Number of RAW sockets currently in use.
 #	  print $6 > FILENAME".sock.ip-frag.dat"; # Number of IP fragments currently in use.
-	  n = "";
+#	  n = "";
  	}
     }
 }
