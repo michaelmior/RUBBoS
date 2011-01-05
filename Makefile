@@ -8,9 +8,9 @@
 #    Environment variables   #
 ##############################
 
-JAVA  = /usr/java/jdk1.3.1/bin/java
+JAVA  = /usr/bin/java
 # JAVAC = /usr/java/jdk1.3.1/bin/javac
-JAVAC = /usr/bin/jikes
+JAVAC = /usr/bin/javac
 JAVACOPTS = +E -deprecation
 JAVACC = $(JAVAC) $(JAVACOPTS)
 RMIC = /usr/java/jdk1.3.1/bin/rmic
@@ -85,7 +85,7 @@ initDB:
 	${JAVA} -classpath .:./database edu.rice.rubbos.client.InitDB ${PARAM}
 
 emulator:
-	${JAVA} -classpath . edu.rice.rubbos.client.ClientEmulator
+	${JAVA} -classpath .:Client/rubbos_client.jar edu.rice.rubbos.client.ClientEmulator
 
 
 ############################

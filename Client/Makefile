@@ -5,13 +5,13 @@ include ../config.mk
 ####################
 
 ClientFiles = URLGenerator URLGeneratorServlets URLGeneratorPHP RUBBoSProperties Stats \
-	      TransitionTable ClientEmulator UserSession  ../beans/TimeManagement
+	      TransitionTable ClientEmulator UserSession 
 
 all_client_sources =  $(addprefix edu/rice/rubbos/client/, $(addsuffix .java, $(ClientFiles)))
 all_client_obj = $(addprefix edu/rice/rubbos/client/, $(addsuffix .class, $(ClientFiles)))
 
 client: $(all_client_obj)
-	${JAR} cvf rubbos_client.jar $(all_client_obj)
+	${JAR} cvf rubbos_client.jar $(all_client_obj) edu/rice/rubbos/beans/TimeManagement.class
 
 all: client
 

@@ -3,9 +3,8 @@
 ##############################
 
 JAVA  = $(JAVA_HOME)/bin/java
-# JAVAC = $(JAVA_HOME)/bin/javac
-JAVAC = /usr/local/bin/jikes
-JAVACOPTS = +E -deprecation
+JAVAC = $(JAVA_HOME)/bin/javac
+JAVACOPTS = -deprecation
 JAVACC = $(JAVAC) $(JAVACOPTS)
 RMIC = $(JAVA_HOME)/bin/rmic
 RMIREGISTRY= $(JAVA_HOME)/bin/rmiregistry
