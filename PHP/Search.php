@@ -39,7 +39,7 @@
     printHTMLheader("RUBBoS search");
 
     // Display the search form
-    print("<form action=\"/PHP/Search.php\" method=POST>\n".
+    print("<form action=\"/PHP/Search.php\" method=GET>\n".
           "<center><table>\n".
           "<tr><td><b>Search</b><td><input type=text size=50 name=search value=$search>\n".
           "<tr><td><b>in</b><td><SELECT name=type>\n");

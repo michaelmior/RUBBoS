@@ -9,8 +9,6 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
   $follow = mysql_query("SELECT * FROM $comment_table WHERE parent=$cid AND rating>=$filter", $link) or die("ERROR: Query failed");
   while ($follow_row = mysql_fetch_array($follow))
   {
-    if ($rating >= $filter)
-      {
 	if (!$separator)
 	  {
 	    print("<br><hr><br>");
@@ -43,7 +41,6 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
 		  "&filter=$filter&display=$display\">Parent</a>&nbsp|&nbsp<a href=\"/PHP/ModerateComment.php?comment_table=$comment_table&commentId=".
 		  $follow_row["id"]."\">Moderate</a> ]</TABLE><br>");
 	  }
-      }
     if ($follow_row["childs"] > 0)
       display_follow_up($follow_row["id"], $level+1, $display, $filter, $link, $comment_table, $separator);
   }
@@ -120,7 +117,7 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     printHTMLheader("RUBBoS: Viewing comments");
 
     // Display comment filter chooser
-    print("<center><form action=\"/PHP/ViewComment.php\" method=POST>\n".
+    print("<center><form action=\"/PHP/ViewComment.php\" method=GET>\n".
           "<input type=hidden name=commentId value=$commentId>\n".
           "<input type=hidden name=storyId value=$storyId>\n".
           "<input type=hidden name=comment_table value=$comment_table>\n".
@@ -165,12 +162,9 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     print("</SELECT>&nbsp&nbsp&nbsp&nbsp<input type=submit value=\"Refresh display\"></center><p>\n");          
 
     // Display the comments
-$comment = mysql_query("SELECT * FROM $comment_table WHERE story_id=$storyId AND parent=0", $link) or die("ERROR: Query failed");
+$comment = mysql_query("SELECT * FROM $comment_table WHERE story_id=$storyId AND parent=0 AND rating>=$filter", $link) or die("ERROR: Query failed");
     while ($comment_row = mysql_fetch_array($comment))
     {
-      $separator=false;
-      if ($rating>= $filter)
-	{
 	  $separator=true;
 	  print("<br><hr><br>");
 	  $username = getUserName($comment_row["writer"], $link);
@@ -180,7 +174,6 @@ $comment = mysql_query("SELECT * FROM $comment_table WHERE story_id=$storyId AND
 	  print("<TR><TD><p>[ <a href=\"/PHP/PostComment.php?comment_table=$comment_table&storyId=$storyId&parent=".$comment_row["id"]."\">Reply to this</a>&nbsp|&nbsp".
 		"<a href=\"/PHP/ViewComment.php?comment_table=$comment_table&storyId=$storyId&commentId=".$comment_row["parent"]."&filter=$filter&display=$display\">Parent</a>".
 		"&nbsp|&nbsp<a href=\"/PHP/ModerateComment.php?comment_table=$comment_table&commentId=".$comment_row["id"]."\">Moderate</a> ]</TABLE>\n");
-	}
       if (($display > 0) &&($comment_row["childs"] > 0))
         display_follow_up($comment_row["id"], 1, $display, $filter, $link, $comment_table, $separator);
     }
