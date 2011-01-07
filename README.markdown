@@ -22,7 +22,7 @@ First, complete the installation procedure to set up the web application and com
 
 A `rubbos.properties` file must now be prepared with all parameters required to run the benchmark. Samples are given in the `bench` subdirectory. The most important configuration options are the hostnames of the database and web servers and the remote client nodes. `workload_remote_client_command` should be updated with the version of Java which should be used. You may find that connection to remote clients may only work with `monitoring_rsh` will only work with `/usr/bin/ssh`.
 
-Each remote client will require installations of Java, gnuplot, and sysstat. These machines will also require a copy of the client emulator. The easiest method is to simply copy the entire repository onto each machine. A script such as the one below should suffice. Each remote client will need to allow the host running the benchmark access without password.
+Each remote client will require installations of Java and sysstat. These machines will also require a copy of the client emulator. The easiest method is to simply copy the entire repository onto each machine. A script such as the one below should suffice. Each remote client will need to allow the host running the benchmark access without password.
 
     #!/bin/bash
     
@@ -34,7 +34,7 @@ Each remote client will require installations of Java, gnuplot, and sysstat. The
         scp -rq RUBBoS $host:
     done
 
-The simplest way to change the amount of load generated is to change the number of remote clients as well as `workload_number_of_clients_per_node`. Finally, `workload_user_transition_table` and `workload_author_transition_table` can be set to the defaults found in the `workload` subdirectory.
+To produce graphs of the data, the main client will require gnuplot. The simplest way to change the amount of load generated is to change the number of remote clients as well as `workload_number_of_clients_per_node`. Finally, `workload_user_transition_table` and `workload_author_transition_table` can be set to the defaults found in the `workload` subdirectory.
 
 To execute the benchmark, change into the repository directory and run `make emulator`. Extensive HTML output will be generated in a subfolder of `bench`.
 
