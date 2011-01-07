@@ -29,7 +29,7 @@ Each remote client will require installations of Java, gnuplot, and sysstat. The
     # Add all remote client nodes as array elements below
     hosts=()
     
-    for host in $hosts; do
+    for host in ${hosts[@]}; do
         ssh $host rm -rf RUBBoS
         scp -rq RUBBoS $host:
     done
