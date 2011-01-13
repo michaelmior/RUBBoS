@@ -4,6 +4,8 @@
 # $2 is the Gnuplot terminal to use (gif, jpeg, ...)
 # $3 is the number of clients
 
+export GNUTERM=dumb
+
 if [ -d $1 ]; then
   # Generate data files
   gunzip $1"db_server.gz"
