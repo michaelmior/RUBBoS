@@ -102,7 +102,6 @@ public class ClientEmulator
     GregorianCalendar downRampDate;
     GregorianCalendar endDownRampDate;
     Process           webServerMonitor = null;
-    Process           cjdbcServerMonitor = null;
     Process           dbServerMonitor = null;
     Process           clientMonitor = null;
     Process[]         remoteClientMonitor = null;
@@ -210,16 +209,6 @@ public class ClientEmulator
           System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+" "+delFiles[3]+"<br>\n");
           delProcess = Runtime.getRuntime().exec(delFiles);
           delProcess.waitFor();
-          // CJDBC server	
-          if(client.rubbos.getCJDBCServerName() != null
-              && !client.rubbos.getCJDBCServerName().equals("")) 
-          {
-            delFiles[2] = client.rubbos.getCJDBCServerName();
-            delFiles[3] = "rm -f "+tmpDir+"cjdbc_server";
-            System.out.println("&nbsp &nbsp Command is: "+delFiles[0]+" "+delFiles[1]+" "+delFiles[2]+" "+delFiles[3]+"<br>\n");
-            delProcess = Runtime.getRuntime().exec(delFiles);
-            delProcess.waitFor();
-          }
           // Database Server
           delFiles[2] = client.rubbos.getDBServerName();
           delFiles[3] = "rm -f "+tmpDir+"db_server";
@@ -261,21 +250,6 @@ public class ClientEmulator
         client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"web_server'";
         webServerMonitor = Runtime.getRuntime().exec(cmdWeb);
         System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+" "+cmdWeb[5]+"<br>\n");
-        
-        // Monitor C-JDBC server (if any)
-        if(client.rubbos.getCJDBCServerName() != null
-            && !client.rubbos.getCJDBCServerName().equals("")) {
-          System.out.println("ClientEmulator: Starting monitoring program on CJDBC server "+client.rubbos.getCJDBCServerName()+"<br>\n");
-          cmdWeb[0] = client.rubbos.getMonitoringRsh();
-          cmdWeb[1] = "-x";
-          cmdWeb[2] = client.rubbos.getCJDBCServerName();                                               
-          cmdWeb[3] = "/bin/bash";
-          cmdWeb[4] = "-c";
-          cmdWeb[5] = "'LANG=en_GB.UTF-8 "+client.rubbos.getMonitoringProgram()+" "+client.rubbos.getMonitoringOptions()+" "+
-          client.rubbos.getMonitoringSampling()+" "+fullTimeInSec+" -o "+tmpDir+"cjdbc_server'";
-          cjdbcServerMonitor = Runtime.getRuntime().exec(cmdWeb);
-          System.out.println("&nbsp &nbsp Command is: "+cmdWeb[0]+" "+cmdWeb[1]+" "+cmdWeb[2]+" "+cmdWeb[3]+" "+cmdWeb[4]+" "+cmdWeb[5]+"<br>\n");
-        }
         
         // Monitor Database server
         System.out.println("ClientEmulator: Starting monitoring program on Database server "+client.rubbos.getDBServerName()+"<br>\n");
@@ -515,22 +489,6 @@ public class ClientEmulator
           System.out.println(msg+"<br>");
         read.close();
         
-        // CJDBC Server
-        if(client.rubbos.getCJDBCServerName() != null
-            && !client.rubbos.getCJDBCServerName().equals("")) {
-          System.out.println("<br><B>CJDBC server</B><br>");
-          cmdWeb[0] = client.rubbos.getMonitoringRsh();
-          cmdWeb[1] = "-x";
-          cmdWeb[2] = client.rubbos.getCJDBCServerName();
-          cmdWeb[3] = nodeInfoProgram;
-          p = Runtime.getRuntime().exec(cmdWeb);
-          read = new BufferedReader(new InputStreamReader(p.getInputStream()));
-          while ((msg = read.readLine()) != null)
-            System.out.println(msg+"<br>");
-          read.close();
-        }
-        
-        
         // Database server
         System.out.println("<br><B>Database server</B><br>");
         String[] cmdDB = new String[4];
@@ -647,7 +605,6 @@ public class ClientEmulator
         }
         webServerMonitor.waitFor();
         dbServerMonitor.waitFor();
-        cjdbcServerMonitor.waitFor();
       }
       
       catch (Exception e)
@@ -671,12 +628,6 @@ public class ClientEmulator
         scpCmd[1] =  client.rubbos.getWebServerName() + ":"+tmpDir+"/web_server";
         p = Runtime.getRuntime().exec(scpCmd);
         p.waitFor();
-        if(client.rubbos.getCJDBCServerName() != null
-            && !client.rubbos.getCJDBCServerName().equals("")) {
-          scpCmd[1] =  client.rubbos.getCJDBCServerName() + ":"+tmpDir+"/cjdbc_server";
-          p = Runtime.getRuntime().exec(scpCmd);
-          p.waitFor();
-        }
         scpCmd[1] =  client.rubbos.getDBServerName() + ":"+tmpDir+"/db_server";
         p = Runtime.getRuntime().exec(scpCmd);
         p.waitFor();
@@ -709,15 +660,6 @@ public class ClientEmulator
         p = Runtime.getRuntime().exec(cmd);
         p.waitFor();
         
-        // CJDBC server	
-        if(client.rubbos.getCJDBCServerName() != null
-            && !client.rubbos.getCJDBCServerName().equals("")) 
-        {
-          cmd = "mv "+reportDir+"/"+"cjdbc_server "+reportDir+"/"+"cjdbc_server.bin";
-          p = Runtime.getRuntime().exec(cmd);
-          p.waitFor();
-        }
-        
         // Database Server
         cmd = "mv "+reportDir+"/"+"db_server "+reportDir+"/"+"db_server.bin";
         p = Runtime.getRuntime().exec(cmd);
@@ -749,15 +691,6 @@ public class ClientEmulator
         convCmd[5] = common+"web_server.bin > "+reportDir+""+"web_server'";
         System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+" "+convCmd[5]+"<br>\n");
         p = Runtime.getRuntime().exec(convCmd); 
-        
-        if(client.rubbos.getCJDBCServerName() != null
-            && !client.rubbos.getCJDBCServerName().equals("")) 
-        {
-          convCmd[5] = common+"cjdbc_server.bin > "+reportDir+""+"cjdbc_server'";
-          System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+" "+convCmd[5]+"<br>\n");
-          p = Runtime.getRuntime().exec(convCmd);
-          p.waitFor();
-        }
         
         convCmd[5] = common+"db_server.bin > "+reportDir+""+"db_server'";
         System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+" "+convCmd[5]+"<br>\n");
@@ -806,95 +739,41 @@ public class ClientEmulator
         System.out.println("An error occured while generating the graphs ("+e.getMessage()+")");
       }
     }
-    boolean cjdbcFlag = false;
-    if(client.rubbos.getCJDBCServerName() != null
-        && !client.rubbos.getCJDBCServerName().equals("")) 
-    {
-      cjdbcFlag = true;
-    }
     System.out.println("<br><A NAME=\"cpu_graph\"></A>");
     System.out.println("<br><h3>CPU Usage graphs</h3><p>");
     System.out.println("<TABLE>");
     System.out.println("<TR><TD><IMG SRC=\"cpu_busy."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_cpu_busy."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_cpu_busy."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("<TR><TD><IMG SRC=\"cpu_idle."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_cpu_idle."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_cpu_idle."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("<TR><TD><IMG SRC=\"cpu_user_kernel."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_cpu_user_kernel."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_cpu_user_kernel."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("</TABLE><p>");
     
     System.out.println("<br><A NAME=\"procs_graph\"></A>");
     System.out.println("<TABLE>");
     System.out.println("<br><h3>Processes Usage graphs</h3><p>");
     System.out.println("<TR><TD><IMG SRC=\"procs."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_procs."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_procs."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("<TR><TD><IMG SRC=\"ctxtsw."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_ctxtsw."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_ctxtsw."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("</TABLE><p>");
     
     System.out.println("<br><A NAME=\"mem_graph\"></A>");
     System.out.println("<br><h3>Memory Usage graph</h3><p>");
     System.out.println("<TABLE>");
     System.out.println("<TR><TD><IMG SRC=\"mem_usage."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_mem_usage."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_mem_usage."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("<TR><TD><IMG SRC=\"mem_cache."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_mem_cache."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_mem_cache."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("</TABLE><p>");
     
     System.out.println("<br><A NAME=\"disk_graph\"></A>");
     System.out.println("<br><h3>Disk Usage graphs</h3><p>");
     System.out.println("<TABLE>");
     System.out.println("<TR><TD><IMG SRC=\"disk_rw_req."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_disk_rw_req."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_disk_rw_req."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("<TR><TD><IMG SRC=\"disk_tps."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_disk_tps."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_disk_tps."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("</TABLE><p>");
     
     System.out.println("<br><A NAME=\"net_graph\"></A>");
     System.out.println("<br><h3>Network Usage graphs</h3><p>");
     System.out.println("<TABLE>");
     System.out.println("<TR><TD><IMG SRC=\"net_rt_byt."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_net_rt_byt."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_net_rt_byt."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("<TR><TD><IMG SRC=\"net_rt_pack."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_net_rt_pack."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_net_rt_pack."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("<TR><TD><IMG SRC=\"socks."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_socks."+client.rubbos.getGnuPlotTerminal()+"\">");
-    if(cjdbcFlag)
-    {
-      System.out.println("<TR><TD><IMG SRC=\"cjdbc_server_socks."+client.rubbos.getGnuPlotTerminal()+"\">");
-    }
     System.out.println("</TABLE><p>");
     
     
