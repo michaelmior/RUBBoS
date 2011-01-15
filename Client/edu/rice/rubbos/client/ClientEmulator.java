@@ -24,7 +24,7 @@ public class ClientEmulator
   private URLGenerator    urlGen = null;        // URL generator corresponding to the version to be used (PHP, EJB or Servlets)
   private static float    slowdownFactor = 0;
   private static boolean  endOfSimulation = false;
-  
+
   /**
    * Creates a new <code>ClientEmulator</code> instance.
    * The program is stopped on any error reading the configuration files.
@@ -47,8 +47,8 @@ public class ClientEmulator
     else
       transition.displayMatrix("Author");
   }
-  
-  
+
+
   /**
    * Updates the slowdown factor.
    *
@@ -58,8 +58,8 @@ public class ClientEmulator
   {
     slowdownFactor = newValue;
   }
-  
-  
+
+
   /**
    * Get the slowdown factor corresponding to current ramp (up, session or down).
    */
@@ -67,8 +67,8 @@ public class ClientEmulator
   {
     return slowdownFactor;
   }
-  
-  
+
+
   /**
    * Set the end of the current simulation
    */
@@ -76,8 +76,8 @@ public class ClientEmulator
   {
     endOfSimulation = true;
   }
-  
-  
+
+
   /**
    * True if end of simulation has been reached.
    */
@@ -85,8 +85,8 @@ public class ClientEmulator
   {
     return endOfSimulation;
   }
-  
-  
+
+
   /**
    * Main program take an optional output file argument only 
    * if it is run on as a remote client.
@@ -109,7 +109,7 @@ public class ClientEmulator
     String            reportDir = "";
     String            tmpDir = "/tmp/";
     boolean           isMainClient = args.length == 0; // Check if we are the main client
-    
+
     if (isMainClient)
     { 
       // Start by creating a report directory and redirecting output to an index.html file
@@ -141,12 +141,12 @@ public class ClientEmulator
       System.out.println("<h2>RUBBoS client emulator - (C) Rice University/INRIA 2001</h2><p>\n");
       startDate = new GregorianCalendar();
       System.out.println("<h3>Test date: "+TimeManagement.dateToString(startDate)+"</h3><br>\n");
-      
+    
       System.out.println("<A HREF=\"#config\">Test configuration</A><br>");
       System.out.println("<A HREF=\"trace_client0.html\">Test trace</A><br>");
       System.out.println("<A HREF=\"perf.html\">Test performance report</A><br><p>");
       System.out.println("<p><hr><p>");
-      
+
       System.out.println("<CENTER><A NAME=\"config\"></A><h2>*** Test configuration ***</h2></CENTER>");
     }
     else
@@ -154,9 +154,9 @@ public class ClientEmulator
       System.out.println("RUBBoS remote client emulator - (C) Rice University/INRIA 2001\n");
       startDate = new GregorianCalendar();
     }
-    
+
     ClientEmulator client = new ClientEmulator(); // Get also rubbos.properties info
-    
+
     Stats          stats = new Stats(client.rubbos.getNbOfRows());
     Stats          upRampStats = new Stats(client.rubbos.getNbOfRows());
     Stats          runSessionStats = new Stats(client.rubbos.getNbOfRows());
@@ -165,7 +165,7 @@ public class ClientEmulator
     UserSession[]  sessions = new UserSession[client.rubbos.getNbOfClients()];
     
     System.out.println("<p><hr><p>");
-    
+
     if (isMainClient)
     {
       // Start remote clients
@@ -189,12 +189,12 @@ public class ClientEmulator
           System.out.println("An error occured while executing remote client ("+ioe.getMessage()+")");
         }
       }
-      
+
       // Start monitoring programs
       System.out.println("<CENTER></A><A NAME=\"trace\"><h2>*** Monitoring ***</h2></CENTER>");
       try
       {
-        
+
         // First clean up all of the log files as we could be
         // recording binary files. Sar by default "appends"
         try
@@ -236,7 +236,7 @@ public class ClientEmulator
           ie.printStackTrace();
         }
         System.out.println("&nbsp &nbsp Finished deleting old files<br>\n");
-        
+
         // Monitor Web server
         int fullTimeInSec = (client.rubbos.getUpRampTime()+client.rubbos.getSessionTime()+client.rubbos.getDownRampTime())/1000 + 5; // Give 5 seconds extra for init
         System.out.println("ClientEmulator: Starting monitoring program on Web server "+client.rubbos.getWebServerName()+"<br>\n");
@@ -293,7 +293,7 @@ public class ClientEmulator
           remoteClientMonitor[i] = Runtime.getRuntime().exec(rcmdClient);
           System.out.println("&nbsp &nbsp Command is: "+rcmdClient[0]+" "+rcmdClient[1]+" "+rcmdClient[2]+" "+rcmdClient[3]+" "+rcmdClient[4]+" "+rcmdClient[5]+"<br>\n");
         }
-        
+
         // Redirect output for traces
         PrintStream outputStream = new PrintStream(new FileOutputStream(reportDir+"trace_client0.html"));
         System.setOut(outputStream);
@@ -320,12 +320,12 @@ public class ClientEmulator
       }
       startDate = new GregorianCalendar();
     }
-    
-    
+
+
     // #############################
     // ### TEST TRACE BEGIN HERE ###
     // #############################
-    
+
     System.out.println("<CENTER></A><A NAME=\"trace\"><h2>*** Test trace ***</h2></CENTER><p>");
     System.out.println("<A HREF=\"trace_client0.html\">Main client traces</A><br>");
     for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
@@ -334,7 +334,7 @@ public class ClientEmulator
     System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#up\">Up ramp trace</A><br>");
     System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#run\">Runtime session trace</A><br>");
     System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#down\">Down ramp trace</A><br><p><p>");
-    
+
     // Run user sessions
     System.out.println("ClientEmulator: Starting "+client.rubbos.getNbOfClients()+" session threads<br>");
     Random rand = new Random();   // random number generator
@@ -346,7 +346,7 @@ public class ClientEmulator
         sessions[i] = new UserSession("UserSession"+i, client.urlGen, client.rubbos, stats, false);
       sessions[i].start();
     }
-    
+
     // Start up-ramp
     System.out.println("<br><A NAME=\"up\"></A>");
     System.out.println("<h3>ClientEmulator: Switching to ** UP RAMP **</h3><br><p>");
@@ -362,7 +362,7 @@ public class ClientEmulator
     }
     upRampStats.merge(stats);
     stats.reset(); // Note that as this is not atomic we may lose some stats here ...
-    
+
     // Start runtime session
     System.out.println("<br><A NAME=\"run\"></A>");
     System.out.println("<h3>ClientEmulator: Switching to ** RUNTIME SESSION **</h3><br><p>");
@@ -378,7 +378,7 @@ public class ClientEmulator
     }
     runSessionStats.merge(stats);
     stats.reset(); // Note that as this is not atomic we may lose some stats here ...
-    
+
     // Start down-ramp
     System.out.println("<br><A NAME=\"down\"></A>");
     System.out.println("<h3>ClientEmulator: Switching to ** DOWN RAMP **</h3><br><p>");
@@ -394,7 +394,7 @@ public class ClientEmulator
     }
     downRampStats.merge(stats);
     endDownRampDate = new GregorianCalendar();
-    
+
     // Wait for completion
     client.setEndOfSimulation();
     System.out.println("ClientEmulator: Shutting down threads ...<br>");
@@ -415,12 +415,12 @@ public class ClientEmulator
     allStats.merge(runSessionStats);
     allStats.merge(upRampStats);
     System.out.println("<p><hr><p>");
-    
-    
+
+
     // #############################################
     // ### EXPERIMENT IS OVER, COLLECT THE STATS ###
     // #############################################
-    
+
     // All clients completed, here is the performance report !
     // but first redirect the output
     try
@@ -437,13 +437,13 @@ public class ClientEmulator
     {
       System.out.println("Output redirection failed, displaying results on standard output ("+e.getMessage()+")");
     }
-    
+
     System.out.println("<center><h2>*** Performance Report ***</h2></center><br>");    
     System.out.println("<A HREF=\"perf.html\">Overall performance report</A><br>");
     System.out.println("<A HREF=\"stat_client0.html\">Main client (localhost) statistics</A><br>");
     for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
       System.out.println("<A HREF=\"stat_client"+(i+1)+".html\">client1 ("+client.rubbos.getRemoteClients().get(i)+") statistics</A><br>");
-    
+
     System.out.println("<p><br>&nbsp&nbsp&nbsp<A HREF=\"perf.html#node\">Node information</A><br>");
     System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#time\">Test timing information</A><br>");
     System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#up_stat\">Up ramp statistics</A><br>");
@@ -455,7 +455,7 @@ public class ClientEmulator
     System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#mem_graph\">Memory usage graph</A><br>");
     System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#disk_graph\">Disk usage graphs</A><br>");
     System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#net_graph\">Network usage graphs</A><br>");
-    
+
     if (isMainClient)
     {
       // Get information about each node
@@ -473,8 +473,8 @@ public class ClientEmulator
         "/bin/grep cache /proc/cpuinfo ; " +
         "/bin/grep MemTotal /proc/meminfo ; " +
         "/bin/grep SwapTotal /proc/meminfo ";
-        
-        
+
+
         // Web server
         System.out.println("<B>Web server</B><br>");
         String[] cmdWeb = new String[4];
@@ -488,7 +488,7 @@ public class ClientEmulator
         while ((msg = read.readLine()) != null)
           System.out.println(msg+"<br>");
         read.close();
-        
+
         // Database server
         System.out.println("<br><B>Database server</B><br>");
         String[] cmdDB = new String[4];
@@ -501,7 +501,7 @@ public class ClientEmulator
         while ((msg = read.readLine()) != null)
           System.out.println(msg+"<br>");
         read.close();
-        
+
         // Client
         System.out.println("<br><B>Local client</B><br>");
         String[] cmdClient = new String[4];
@@ -514,7 +514,7 @@ public class ClientEmulator
         while ((msg = read.readLine()) != null)
           System.out.println(msg+"<br>");
         read.close();
-        
+
         // Remote Clients
         for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
         {
@@ -530,7 +530,7 @@ public class ClientEmulator
             System.out.println(msg+"<br>");
           read.close();
         }
-        
+
         PrintStream outputStream = new PrintStream(new FileOutputStream(reportDir+"stat_client0.html"));
         System.setOut(outputStream);
         System.setErr(outputStream);
@@ -550,14 +550,14 @@ public class ClientEmulator
         System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#mem_graph\">Memory usage graph</A><br>");
         System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#disk_graph\">Disk usage graphs</A><br>");
         System.out.println("&nbsp&nbsp&nbsp<A HREF=\"#net_graph\">Network usage graphs</A><br>");
-        
+
       }
       catch (Exception ioe)
       {
         System.out.println("An error occured while getting node information ("+ioe.getMessage()+")");
       }
     }
-    
+
     // Test timing information
     System.out.println("<br><p><A NAME=\"time\"></A><h3>Test timing information</h3><p>");
     System.out.println("<TABLE BORDER=1>");
@@ -574,7 +574,7 @@ public class ClientEmulator
         " (requested "+client.rubbos.getDownRampTime()+" ms)");
     System.out.println("<TR><TD><B>Total test length</B><TD>"+TimeManagement.diffTime(startDate, endDate));
     System.out.println("</TABLE><p>");
-    
+
     // Stats for each ramp
     System.out.println("<br><A NAME=\"up_stat\"></A>");
     upRampStats.display_stats("Up ramp", TimeManagement.diffTimeInMs(upRampDate, runSessionDate), false);
@@ -584,8 +584,8 @@ public class ClientEmulator
     downRampStats.display_stats("Down ramp", TimeManagement.diffTimeInMs(downRampDate, endDownRampDate), false);
     System.out.println("<br><A NAME=\"all_stat\"></A>");
     allStats.display_stats("Overall", TimeManagement.diffTimeInMs(upRampDate, endDownRampDate), false);
-    
-    
+
+
     if (isMainClient)
     {
       // Wait for end of all monitors and remote clients
@@ -606,12 +606,12 @@ public class ClientEmulator
         webServerMonitor.waitFor();
         dbServerMonitor.waitFor();
       }
-      
+
       catch (Exception e)
       {
         System.out.println("An error occured while waiting for remote processes termination ("+e.getMessage()+")");
       }
-      
+
       // scp the sar log files over at this point
       try
       {
@@ -628,6 +628,7 @@ public class ClientEmulator
         scpCmd[1] =  client.rubbos.getWebServerName() + ":"+tmpDir+"/web_server";
         p = Runtime.getRuntime().exec(scpCmd);
         p.waitFor();
+
         scpCmd[1] =  client.rubbos.getDBServerName() + ":"+tmpDir+"/db_server";
         p = Runtime.getRuntime().exec(scpCmd);
         p.waitFor();
@@ -648,8 +649,7 @@ public class ClientEmulator
       {
         System.out.println("An error occured while scping the files over ("+e.getMessage()+")");
       }
-      
-      
+ 
       // Time to go and convert the binary files into something that generate_graphs.sh can understand
       try
       {
@@ -659,12 +659,12 @@ public class ClientEmulator
         cmd = "mv "+reportDir+"/"+"web_server "+reportDir+"/"+"web_server.bin";
         p = Runtime.getRuntime().exec(cmd);
         p.waitFor();
-        
+
         // Database Server
         cmd = "mv "+reportDir+"/"+"db_server "+reportDir+"/"+"db_server.bin";
         p = Runtime.getRuntime().exec(cmd);
         p.waitFor();
-        
+
         // Localhost
         cmd = "mv "+reportDir+"/"+"client0 "+reportDir+"/"+"client0.bin";
         p = Runtime.getRuntime().exec(cmd);
@@ -677,7 +677,7 @@ public class ClientEmulator
           p = Runtime.getRuntime().exec(cmd);
           p.waitFor();
         }
-        
+
         // All files rename at this point in time. Time to go forth and convert them into ascii
         String[] convCmd = new String[6];  
         int fullTimeInSec = (client.rubbos.getUpRampTime()+client.rubbos.getSessionTime()+client.rubbos.getDownRampTime())/1000 + 5; // Give 5 seconds extra for init
@@ -701,7 +701,7 @@ public class ClientEmulator
         System.out.println("&nbsp &nbsp Command is: "+convCmd[0]+" "+convCmd[1]+" "+convCmd[2]+" "+convCmd[3]+" "+convCmd[4]+" "+convCmd[5]+"<br>\n");
         p = Runtime.getRuntime().exec(convCmd);
         p.waitFor();
-        
+
         for (int i = 0 ; i < client.rubbos.getRemoteClients().size() ; i++)
         {
           convCmd[5] =common+"client"+(i+1)+".bin > "+reportDir+""+"client"+(i+1)+"'";
@@ -709,14 +709,13 @@ public class ClientEmulator
           p = Runtime.getRuntime().exec(convCmd);
           p.waitFor();
         }
-        
-        
+
       }
       catch (Exception e)
       {
         System.out.println("An error occured while convering log files ("+e.getMessage()+")");
       }
-      
+
       // Generate the graphics 
       try
       {
@@ -746,28 +745,28 @@ public class ClientEmulator
     System.out.println("<TR><TD><IMG SRC=\"cpu_idle."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_cpu_idle."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("<TR><TD><IMG SRC=\"cpu_user_kernel."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_cpu_user_kernel."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("</TABLE><p>");
-    
+
     System.out.println("<br><A NAME=\"procs_graph\"></A>");
     System.out.println("<TABLE>");
     System.out.println("<br><h3>Processes Usage graphs</h3><p>");
     System.out.println("<TR><TD><IMG SRC=\"procs."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_procs."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("<TR><TD><IMG SRC=\"ctxtsw."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_ctxtsw."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("</TABLE><p>");
-    
+
     System.out.println("<br><A NAME=\"mem_graph\"></A>");
     System.out.println("<br><h3>Memory Usage graph</h3><p>");
     System.out.println("<TABLE>");
     System.out.println("<TR><TD><IMG SRC=\"mem_usage."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_mem_usage."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("<TR><TD><IMG SRC=\"mem_cache."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_mem_cache."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("</TABLE><p>");
-    
+
     System.out.println("<br><A NAME=\"disk_graph\"></A>");
     System.out.println("<br><h3>Disk Usage graphs</h3><p>");
     System.out.println("<TABLE>");
     System.out.println("<TR><TD><IMG SRC=\"disk_rw_req."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_disk_rw_req."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("<TR><TD><IMG SRC=\"disk_tps."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_disk_tps."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("</TABLE><p>");
-    
+
     System.out.println("<br><A NAME=\"net_graph\"></A>");
     System.out.println("<br><h3>Network Usage graphs</h3><p>");
     System.out.println("<TABLE>");
@@ -775,8 +774,8 @@ public class ClientEmulator
     System.out.println("<TR><TD><IMG SRC=\"net_rt_pack."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_net_rt_pack."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("<TR><TD><IMG SRC=\"socks."+client.rubbos.getGnuPlotTerminal()+"\"><TD><IMG SRC=\"client_socks."+client.rubbos.getGnuPlotTerminal()+"\">");
     System.out.println("</TABLE><p>");
-    
-    
+
+
     if (isMainClient)
     {
       // Compute the global stats
@@ -803,8 +802,8 @@ public class ClientEmulator
         System.out.println("An error occured while generating the graphs ("+e.getMessage()+")");
       }
     }
-    
+
     Runtime.getRuntime().exit(0);
   }
-  
+
 }
