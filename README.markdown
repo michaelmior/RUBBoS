@@ -5,10 +5,6 @@ Installation
 ============
 Only the PHP version of this benchmark is being maintained in this codebase. To install, simply copy the `PHP` directory somewhere into the path of an Apache web server with PHP support. The absolute path of this directory should be specified as `php_html_path` and `php_script_path` in any `rubbos.properties` files used to run the benchmark.
 
-If you are using PHP5, you will have to add the following line to your `php.ini`. Use of "long arrays" such as `$HTTP_GET_VARS` is deprecated as of PHP 5.3.0. The use of long arrays is planned to be removed in later versions to avoid this issue.
-
-    register_long_arrays = On
-
 To build the client emulator, change into the `Client` directory and run `make`. This will create `rubbos_client.jar` which will be used to run the benchmark.
 
 Database setup
