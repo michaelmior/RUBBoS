@@ -21,7 +21,7 @@ import java.util.Random;
 public class ClientEmulator
 {
   private RUBBoSProperties rubbos = null;        // access to rubbos.properties file
-  private URLGenerator    urlGen = null;        // URL generator corresponding to the version to be used (PHP, EJB or Servlets)
+  private URLGenerator    urlGen = null;        // URL generator corresponding to the version to be used (PHP)
   private static float    slowdownFactor = 0;
   private static boolean  endOfSimulation = false;
 

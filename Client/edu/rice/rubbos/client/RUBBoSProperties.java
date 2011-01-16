@@ -21,10 +21,6 @@ public class RUBBoSProperties
   // Information about web server
   private String webSiteName;
   private int    webSitePort;
-  private String EJBHTMLPath;
-  private String EJBScriptPath;
-  private String ServletsHTMLPath;
-  private String ServletsScriptPath;
   private String PHPHTMLPath;
   private String PHPScriptPath;
   private String useVersion;
@@ -124,19 +120,6 @@ public class RUBBoSProperties
       Integer foo  = new Integer(getProperty("httpd_port"));
       webSitePort = foo.intValue();
       System.out.println(webSitePort+"<br>");
-      System.out.print("EJB HTML files path   : ");
-      EJBHTMLPath  = getProperty("ejb_html_path");
-      System.out.println(EJBHTMLPath+"<br>");
-      System.out.print("EJB Script files path : ");
-      EJBScriptPath  = getProperty("ejb_script_path");
-      System.out.println(EJBScriptPath+"<br>");
-      System.out.print("Servlets HTML files path   : ");
-      ServletsHTMLPath  = getProperty("servlets_html_path");
-      System.out.println(ServletsHTMLPath+"<br>");
-      System.out.print("Servlets Script files path : ");
-      ServletsScriptPath  = getProperty("servlets_script_path");
-      System.out.println(ServletsScriptPath+"<br>");
-      System.out.print("Servlets HTML files path   : ");
       PHPHTMLPath  = getProperty("php_html_path");
       System.out.println(PHPHTMLPath+"<br>");
       System.out.print("PHP Script files path : ");
@@ -291,13 +274,9 @@ public class RUBBoSProperties
       useVersion = getProperty("httpd_use_version");
       if (useVersion.compareTo("PHP") == 0)
         urlGen = new URLGeneratorPHP(webSiteName, webSitePort, PHPHTMLPath, PHPScriptPath);
-      //       else if (useVersion.compareTo("EJB") == 0)
-      //         urlGen = new URLGeneratorEJB(webSiteName, webSitePort, EJBHTMLPath, EJBScriptPath);
-      else if (useVersion.compareTo("Servlets") == 0)
-        urlGen = new URLGeneratorServlets(webSiteName, webSitePort, ServletsHTMLPath, ServletsScriptPath);
       else
       {
-        System.err.println("Sorry but '"+useVersion+"' is not supported. Only PHP, EJB and Servlets are accepted.");
+        System.err.println("Sorry but '"+useVersion+"' is not supported. Only PHP is accepted.");
         return null;
       }
       System.out.println("Using "+useVersion+" version.<br>");

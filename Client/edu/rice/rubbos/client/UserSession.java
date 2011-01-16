@@ -18,7 +18,7 @@ import java.util.Vector;
 public class UserSession extends Thread
 {
   private RUBBoSProperties rubbos = null;         // access to rubbos.properties file
-  private URLGenerator     urlGen = null;         // URL generator corresponding to the version to be used (PHP, EJB or Servlets)
+  private URLGenerator     urlGen = null;         // URL generator corresponding to the version to be used (PHP)
   private TransitionTable  transition = null;     // transition table user for this session
   private String           lastHTMLReply = null;  // last HTML reply received from 
   private Random           rand = new Random();   // random number generator

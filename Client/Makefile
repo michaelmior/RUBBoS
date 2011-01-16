@@ -4,7 +4,7 @@ include ../config.mk
 #       Client     #
 ####################
 
-ClientFiles = URLGenerator URLGeneratorServlets URLGeneratorPHP RUBBoSProperties Stats \
+ClientFiles = URLGenerator URLGeneratorPHP RUBBoSProperties Stats \
 	      TransitionTable ClientEmulator UserSession 
 
 all_client_sources =  $(addprefix edu/rice/rubbos/client/, $(addsuffix .java, $(ClientFiles)))

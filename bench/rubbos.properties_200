@@ -2,18 +2,8 @@
 httpd_hostname = sci23
 httpd_port = 80
 
-# Precise which version to use. Valid options are : PHP, Servlets, EJB
-httpd_use_version = Servlets
-
-# EJB server information
-ejb_server =
-ejb_html_path =
-ejb_script_path =
-
-# Servlets server information
-servlets_server = sci21 
-servlets_html_path = /Servlet_HTML
-servlets_script_path = /servlet
+# Precise which version to use. Only valid option is PHP.
+httpd_use_version = PHP
 
 # PHP information
 php_html_path = /PHP

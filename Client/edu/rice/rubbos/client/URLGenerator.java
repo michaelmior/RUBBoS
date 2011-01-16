@@ -22,7 +22,7 @@ public abstract class URLGenerator
 
 
  /**
-   * Returns the name of the Search script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Search script according to the implementation (PHP).
    *
    * @return Search script name
    */
@@ -30,119 +30,119 @@ public abstract class URLGenerator
 
 
   /**
-   * Returns the name of the Browse Categories script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Browse Categories script according to the implementation (PHP).
    *
    * @return Browse Categories script name
    */
   public abstract String BrowseCategoriesScript();
 
   /**
-   * Returns the name of the Stories of the day script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Stories of the day script according to the implementation (PHP).
    *
    * @return Stories of the day script name
    */
   public abstract String StoriesOfTheDayScript();
 
   /**
-   * Returns the name of the Older stories script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Older stories script according to the implementation (PHP).
    *
    * @return Older stories script name
    */
   public abstract String OlderStoriesScript();
 
   /**
-   * Returns the name of the Submit story script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Submit story script according to the implementation (PHP).
    *
    * @return Submit story script name
    */
   public abstract String SubmitStoryScript();
 
   /**
-   * Returns the name of the Post Comment script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Post Comment script according to the implementation (PHP).
    *
    * @return Post Comment script name
    */
   public abstract String PostCommentScript();
 
   /**
-   * Returns the name of the Register User script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Register User script according to the implementation (PHP).
    *
    * @return Register User script name
    */
   public abstract String RegisterUserScript();
 
   /**
-   * Returns the name of the Browse stories By Category script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Browse stories By Category script according to the implementation (PHP).
    *
    * @return Browse stories by category By Category script name
    */
   public abstract String BrowseStoriesByCategoryScript();
 
   /**
-   * Returns the name of the Store Comment script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Store Comment script according to the implementation (PHP).
    *
    * @return Store Store comment script name
    */
   public abstract String StoreCommentScript();
 
   /**
-   * Returns the name of the Store Story script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Store Story script according to the implementation (PHP).
    *
    * @return Store Story script name
    */
   public abstract String StoreStoryScript();
 
   /**
-   * Returns the name of the View Story script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the View Story script according to the implementation (PHP).
    *
    * @return View Story script name
    */
   public abstract String ViewStoryScript();
 
   /**
-   * Returns the name of the View Comment script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the View Comment script according to the implementation (PHP).
    *
    * @return View Comment script name
    */
   public abstract String ViewCommentScript();
 
   /**
-   * Returns the name of the Moderate Comment script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Moderate Comment script according to the implementation (PHP).
    *
    * @return Moderate Comment script name
    */
   public abstract String ModerateCommentScript();
 
   /**
-   * Returns the name of the Store Moderate Log script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Store Moderate Log script according to the implementation (PHP).
    *
    * @return Store Moderate Log script name
    */
   public abstract String StoreModerateLogScript();
 
   /**
-   * Returns the name of the Author Tasks script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Author Tasks script according to the implementation (PHP).
    *
    * @return Author Tasks script name
    */
   public abstract String AuthorTasksScript();
 
   /**
-   * Returns the name of the Review Stories script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Review Stories script according to the implementation (PHP).
    *
    * @return Review Stories script name
    */
   public abstract String ReviewStoriesScript();
 
   /**
-   * Returns the name of the Accept Story script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Accept Story script according to the implementation (PHP).
    *
    * @return Accept Story script name
    */
   public abstract String AcceptStoryScript();
 
   /**
-   * Returns the name of the Accept Story script according to the implementation (PHP, EJB or Servlets).
+   * Returns the name of the Accept Story script according to the implementation (PHP).
    *
    * @return Accept Story script name
    */
@@ -199,7 +199,7 @@ public abstract class URLGenerator
    * For example: 
    * <pre>
    * URLGenerator urlGen = new URLGenerator();
-   * urlGen.setScriptPath("/servlet");
+   * urlGen.setScriptPath("/PHP");
    * </pre>
    *
    * @param p HTML files path
