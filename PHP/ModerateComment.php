@@ -6,10 +6,10 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $comment_table = $HTTP_POST_VARS['comment_table'];
+    $comment_table = $_POST['comment_table'];
     if ($comment_table == null)
     {
-      $comment_table = $HTTP_GET_VARS['comment_table'];
+      $comment_table = $_GET['comment_table'];
       if ($comment_table == null)
       {
          printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!<br>");
@@ -17,10 +17,10 @@
       }
     }
 
-    $commentId = $HTTP_POST_VARS['commentId'];
+    $commentId = $_POST['commentId'];
     if ($commentId == null)
     {
-      $commentId = $HTTP_GET_VARS['commentId'];
+      $commentId = $_GET['commentId'];
       if ($commentId == null)
       {
          printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!<br>");

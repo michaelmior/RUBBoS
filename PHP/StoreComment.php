@@ -6,22 +6,22 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $nickname = $HTTP_POST_VARS['nickname'];
+    $nickname = $_POST['nickname'];
     if ($nickname == null)
     {
-      $nickname = $HTTP_GET_VARS['nickname'];
+      $nickname = $_GET['nickname'];
     }
 
-    $password = $HTTP_POST_VARS['password'];
+    $password = $_POST['password'];
     if ($password == null)
     {
-      $password = $HTTP_GET_VARS['password'];
+      $password = $_GET['password'];
     }
 
-    $storyId = $HTTP_POST_VARS['storyId'];
+    $storyId = $_POST['storyId'];
     if ($storyId == null)
     {
-      $storyId = $HTTP_GET_VARS['storyId'];
+      $storyId = $_GET['storyId'];
       if ($storyId == null)
       {
          printError($scriptName, $startTime, "StoreComment", "You must provide a story identifier!<br>");
@@ -29,10 +29,10 @@
       }
     }
 
-    $parent = $HTTP_POST_VARS['parent'];
+    $parent = $_POST['parent'];
     if ($parent == null)
     {
-      $parent = $HTTP_GET_VARS['parent'];
+      $parent = $_GET['parent'];
       if ($parent == null)
       {
          printError($scriptName, $startTime, "StoreComment", "You must provide a follow up identifier!<br>");
@@ -40,10 +40,10 @@
       }
     }
 
-    $subject = $HTTP_POST_VARS['subject'];
+    $subject = $_POST['subject'];
     if ($subject == null)
     {
-      $subject = $HTTP_GET_VARS['subject'];
+      $subject = $_GET['subject'];
       if ($subject == null)
       {
          printError($scriptName, $startTime, "StoreComment", "You must provide a comment subject!<br>");
@@ -51,10 +51,10 @@
       }
     }
 
-    $body = $HTTP_POST_VARS['body'];
+    $body = $_POST['body'];
     if ($body == null)
     {
-      $body = $HTTP_GET_VARS['body'];
+      $body = $_GET['body'];
       if ($body == null)
       {
          printError($scriptName, $startTime, "StoreComment", "<h3>You must provide a comment body!<br></h3>");
@@ -62,10 +62,10 @@
       }
     }
       
-    $comment_table = $HTTP_POST_VARS['comment_table'];
+    $comment_table = $_POST['comment_table'];
     if ($comment_table == null)
     {
-      $comment_table = $HTTP_GET_VARS['comment_table'];
+      $comment_table = $_GET['comment_table'];
       if ($comment_table == null)
       {
          printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");

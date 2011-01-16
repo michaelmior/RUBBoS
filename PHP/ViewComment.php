@@ -52,26 +52,26 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     include("PHPprinter.php");
     $startTime = getMicroTime();
     
-    $filter = $HTTP_POST_VARS['filter'];
+    $filter = $_POST['filter'];
     if ($filter == null)
     {
-      $filter = $HTTP_GET_VARS['filter'];
+      $filter = $_GET['filter'];
       if ($filter == null)
         $filter = 0;
     }
 
-    $display = $HTTP_POST_VARS['display'];
+    $display = $_POST['display'];
     if ($display == null)
     {
-      $display = $HTTP_GET_VARS['display'];
+      $display = $_GET['display'];
       if ($display == null)
         $display = 0;
     }
 
-    $storyId = $HTTP_POST_VARS['storyId'];
+    $storyId = $_POST['storyId'];
     if ($storyId == null)
     {
-      $storyId = $HTTP_GET_VARS['storyId'];
+      $storyId = $_GET['storyId'];
       if ($storyId == null)
       {
          printError($scriptName, $startTime, "Viewing comment", "You must provide a story identifier!<br>");
@@ -79,10 +79,10 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
       }
     }
       
-    $commentId = $HTTP_POST_VARS['commentId'];
+    $commentId = $_POST['commentId'];
     if ($commentId == null)
     {
-      $commentId = $HTTP_GET_VARS['commentId'];
+      $commentId = $_GET['commentId'];
       if ($commentId == null)
       {
          printError($scriptName, $startTime, "Viewing comment", "You must provide a comment identifier!<br>");
@@ -90,10 +90,10 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
       }
     }
 
-    $comment_table = $HTTP_POST_VARS['comment_table'];
+    $comment_table = $_POST['comment_table'];
     if ($comment_table == null)
     {
-      $comment_table = $HTTP_GET_VARS['comment_table'];
+      $comment_table = $_GET['comment_table'];
       if ($comment_table == null)
       {
          printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");

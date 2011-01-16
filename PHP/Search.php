@@ -6,32 +6,32 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $type = $HTTP_POST_VARS['type'];
+    $type = $_POST['type'];
     if ($type == null)
     {
-      $type = $HTTP_GET_VARS['type'];
+      $type = $_GET['type'];
       if ($type == null)
         $type = 0;
     }
 
-    $search = $HTTP_POST_VARS['search'];
+    $search = $_POST['search'];
     if ($search == null)
     {
-      $search = $HTTP_GET_VARS['search'];
+      $search = $_GET['search'];
     }
 
-    $page = $HTTP_POST_VARS['page'];
+    $page = $_POST['page'];
     if ($page == null)
     {
-      $page = $HTTP_GET_VARS['page'];
+      $page = $_GET['page'];
       if ($page == null)
         $page = 0;
     }
       
-    $nbOfStories = $HTTP_POST_VARS['nbOfStories'];
+    $nbOfStories = $_POST['nbOfStories'];
     if ($nbOfStories == null)
     {
-      $nbOfStories = $HTTP_GET_VARS['nbOfStories'];
+      $nbOfStories = $_GET['nbOfStories'];
       if ($nbOfStories == null)
         $nbOfStories = 25;
     }

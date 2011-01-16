@@ -6,10 +6,10 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $nickname = $HTTP_POST_VARS['nickname'];
+    $nickname = $_POST['nickname'];
     if ($nickname == null)
     {
-      $nickname = $HTTP_GET_VARS['nickname'];
+      $nickname = $_GET['nickname'];
       if ($nickname == null)
       {
          printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
@@ -17,10 +17,10 @@
       }
     }
 
-    $password = $HTTP_POST_VARS['password'];
+    $password = $_POST['password'];
     if ($password == null)
     {
-      $password = $HTTP_GET_VARS['password'];
+      $password = $_GET['password'];
       if ($password == null)
       {
          printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
@@ -28,10 +28,10 @@
       }
     }
 
-    $comment_table = $HTTP_POST_VARS['comment_table'];
+    $comment_table = $_POST['comment_table'];
     if ($comment_table == null)
     {
-      $comment_table = $HTTP_GET_VARS['comment_table'];
+      $comment_table = $_GET['comment_table'];
       if ($comment_table == null)
       {
          printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!<br>");
@@ -39,10 +39,10 @@
       }
     }
 
-    $commentId = $HTTP_POST_VARS['commentId'];
+    $commentId = $_POST['commentId'];
     if ($commentId == null)
     {
-      $commentId = $HTTP_GET_VARS['commentId'];
+      $commentId = $_GET['commentId'];
       if ($commentId == null)
       {
          printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!<br>");
@@ -50,10 +50,10 @@
       }
     }
 
-    $rating = $HTTP_POST_VARS['rating'];
+    $rating = $_POST['rating'];
     if ($rating == null)
     {
-      $rating = $HTTP_GET_VARS['rating'];
+      $rating = $_GET['rating'];
       if ($rating == null)
       {
          printError($scriptName, $startTime, "Moderating comment", "You must provide a rating!<br>");

@@ -6,10 +6,10 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $storyId = $HTTP_POST_VARS['storyId'];
+    $storyId = $_POST['storyId'];
     if ($storyId == null)
     {
-      $storyId = $HTTP_GET_VARS['storyId'];
+      $storyId = $_GET['storyId'];
       if ($storyId == null)
       {
          printError($scriptName, $startTime, "AcceptStory", "<h3>You must provide a story identifier !<br></h3>");

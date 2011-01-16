@@ -6,36 +6,36 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $day = $HTTP_POST_VARS['day'];
+    $day = $_POST['day'];
     if ($day == null)
     {
-      $day = $HTTP_GET_VARS['day'];
+      $day = $_GET['day'];
     }
       
-    $month = $HTTP_POST_VARS['month'];
+    $month = $_POST['month'];
     if ($month == null)
     {
-      $month = $HTTP_GET_VARS['month'];
+      $month = $_GET['month'];
     }
       
-    $year = $HTTP_POST_VARS['year'];
+    $year = $_POST['year'];
     if ($year == null)
     {
-      $year = $HTTP_GET_VARS['year'];
+      $year = $_GET['year'];
     }
       
-    $page = $HTTP_POST_VARS['page'];
+    $page = $_POST['page'];
     if ($page == null)
     {
-      $page = $HTTP_GET_VARS['page'];
+      $page = $_GET['page'];
       if ($page == null)
         $page = 0;
     }
       
-    $nbOfStories = $HTTP_POST_VARS['nbOfStories'];
+    $nbOfStories = $_POST['nbOfStories'];
     if ($nbOfStories == null)
     {
-      $nbOfStories = $HTTP_GET_VARS['nbOfStories'];
+      $nbOfStories = $_GET['nbOfStories'];
       if ($nbOfStories == null)
         $nbOfStories = 25;
     }

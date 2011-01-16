@@ -6,20 +6,20 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $storyId = $HTTP_POST_VARS['storyId'];
+    $storyId = $_POST['storyId'];
     if ($storyId == null)
     {
-      $storyId = $HTTP_GET_VARS['storyId'];
+      $storyId = $_GET['storyId'];
       if ($storyId == null)
       {
          printError($scriptName, $startTime, "Posting comment", "You must provide a story identifier!<br>");
          exit();
       }
     }
-    $parent = $HTTP_POST_VARS['parent'];
+    $parent = $_POST['parent'];
     if ($parent == null)
     {
-      $parent = $HTTP_GET_VARS['parent'];
+      $parent = $_GET['parent'];
       if ($parent == null)
       {
          printError($scriptName, $startTime, "Posting comment", "You must provide a follow up identifier!<br>");
@@ -27,10 +27,10 @@
       }
     }
 
-    $comment_table = $HTTP_POST_VARS['comment_table'];
+    $comment_table = $_POST['comment_table'];
     if ($comment_table == null)
     {
-      $comment_table = $HTTP_GET_VARS['comment_table'];
+      $comment_table = $_GET['comment_table'];
       if ($comment_table == null)
       {
          printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");

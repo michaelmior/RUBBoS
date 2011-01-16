@@ -6,22 +6,22 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $nickname = $HTTP_POST_VARS['nickname'];
+    $nickname = $_POST['nickname'];
     if ($nickname == null)
     {
-      $nickname = $HTTP_GET_VARS['nickname'];
+      $nickname = $_GET['nickname'];
     }
 
-    $password = $HTTP_POST_VARS['password'];
+    $password = $_POST['password'];
     if ($password == null)
     {
-      $password = $HTTP_GET_VARS['password'];
+      $password = $_GET['password'];
     }
 
-    $title = $HTTP_POST_VARS['title'];
+    $title = $_POST['title'];
     if ($title == null)
     {
-      $title = $HTTP_GET_VARS['title'];
+      $title = $_GET['title'];
       if ($title == null)
       {
          printError($scriptName, $startTime, "SubmitStory", "You must provide a story title!<br>");
@@ -29,10 +29,10 @@
       }
     }
 
-    $body = $HTTP_POST_VARS['body'];
+    $body = $_POST['body'];
     if ($body == null)
     {
-      $body = $HTTP_GET_VARS['body'];
+      $body = $_GET['body'];
       if ($body == null)
       {
          printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a story body!<br></h3>");
@@ -40,10 +40,10 @@
       }
     }
       
-    $category = $HTTP_POST_VARS['category'];
+    $category = $_POST['category'];
     if ($category == null)
     {
-      $category = $HTTP_GET_VARS['category'];
+      $category = $_GET['category'];
       if ($category == null)
       {
          printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a category !<br></h3>");
