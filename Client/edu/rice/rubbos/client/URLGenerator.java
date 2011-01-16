@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 public abstract class URLGenerator
 {
   private static final String protocol = "http";
+  private static final String encoding = "UTF-8";
   private String webSiteName;
   private int    webSitePort;
   private String HTMLPath;
@@ -325,16 +326,16 @@ public abstract class URLGenerator
   {
     try
     {
-      firstname  = URLEncoder.encode(firstname);
-      lastname   = URLEncoder.encode(lastname);
-      nickname   = URLEncoder.encode(nickname);
-      email      = URLEncoder.encode(email);
-      password   = URLEncoder.encode(password);
+      firstname  = URLEncoder.encode(firstname, encoding);
+      lastname   = URLEncoder.encode(lastname, encoding);
+      nickname   = URLEncoder.encode(nickname, encoding);
+      email      = URLEncoder.encode(email, encoding);
+      password   = URLEncoder.encode(password, encoding);
       URL url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+RegisterUserScript()+"?firstname="+firstname+"&lastname="+
       lastname+"&nickname="+nickname+"&email="+email+"&password="+password);
       return url;
     }
-    catch (java.net.MalformedURLException e)
+    catch (Exception e)
     {
       System.out.println("Error while generating register user page URL: "+e.getMessage());
       return null;
@@ -445,12 +446,12 @@ public abstract class URLGenerator
   {
     try
     {
-      categoryName = URLEncoder.encode(categoryName);
+      categoryName = URLEncoder.encode(categoryName, encoding);
       URL url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+BrowseStoriesByCategoryScript()+
                         "?category="+categoryId+"&categoryName="+categoryName+"&page="+page+"&nbOfStories="+nbOfStories);
       return url;
     }
-    catch (java.net.MalformedURLException e)
+    catch (Exception e)
     {
       System.out.println("Error while generating 'browse all stories in a category' script URL: "+e.getMessage());
       return null;
@@ -497,10 +498,10 @@ public abstract class URLGenerator
         url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+SearchScript());
       else
         url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+SearchScript()+
-                      "?type="+URLEncoder.encode(searchType)+"&search="+URLEncoder.encode(keyword)+"&page="+page+"&nbOfStories="+nbOfStories);
+                      "?type="+URLEncoder.encode(searchType, encoding)+"&search="+URLEncoder.encode(keyword, encoding)+"&page="+page+"&nbOfStories="+nbOfStories);
       return url;
     }
-    catch (java.net.MalformedURLException e)
+    catch (Exception e)
     {
       System.out.println("Error while generating 'Search' script URL: "+e.getMessage());
       return null;
@@ -524,11 +525,11 @@ public abstract class URLGenerator
   {
     try
     {
-      comment_table = URLEncoder.encode(comment_table);
+      comment_table = URLEncoder.encode(comment_table, encoding);
       URL url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+PostCommentScript()+"?storyId="+storyId+"&parent="+parent+"&comment_table="+comment_table);
       return url;
     }
-    catch (java.net.MalformedURLException e)
+    catch (Exception e)
     {
       System.out.println("Error while generating 'Post Comment' script URL: "+e.getMessage());
       return null;
@@ -552,15 +553,15 @@ public abstract class URLGenerator
   {
     try
     {
-      name = URLEncoder.encode(name);
-      pwd = URLEncoder.encode(pwd);
-      subject = URLEncoder.encode(subject);
-      body = URLEncoder.encode(body);
+      name = URLEncoder.encode(name, encoding);
+      pwd = URLEncoder.encode(pwd, encoding);
+      subject = URLEncoder.encode(subject, encoding);
+      body = URLEncoder.encode(body, encoding);
       URL url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+StoreCommentScript()+"?comment_table="+comment_table
                         +"&nickname="+name+"&password="+pwd+"&storyId="+storyId+"&parent="+parent+"&subject="+subject+"&body="+body);
       return url;
     }
-    catch (java.net.MalformedURLException e)
+    catch (Exception e)
     {
       System.out.println("Error while generating StoreComment script URL: "+e.getMessage());
       return null;
@@ -633,13 +634,13 @@ public abstract class URLGenerator
   {
     try
     {
-      name = URLEncoder.encode(name);
-      pwd = URLEncoder.encode(pwd);
+      name = URLEncoder.encode(name, encoding);
+      pwd = URLEncoder.encode(pwd, encoding);
       URL url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+StoreModerateLogScript()+"?comment_table="+comment_table
                         +"&nickname="+name+"&password="+pwd+"&commentId="+commentId+"&rating="+rating);
       return url;
     }
-    catch (java.net.MalformedURLException e)
+    catch (Exception e)
     {
       System.out.println("Error while generating StoreComment script URL: "+e.getMessage());
       return null;
@@ -684,14 +685,14 @@ public abstract class URLGenerator
   {
     try
     {
-      name = URLEncoder.encode(name);
-      pwd  = URLEncoder.encode(pwd);
-      title = URLEncoder.encode(title);
-      body = URLEncoder.encode(body);
+      name = URLEncoder.encode(name, encoding);
+      pwd  = URLEncoder.encode(pwd, encoding);
+      title = URLEncoder.encode(title, encoding);
+      body = URLEncoder.encode(body, encoding);
       URL url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+StoreStoryScript()+"?nickname="+name+"&password="+pwd+"&category="+categoryId+"&title="+title+"&body="+body);
       return url;
     }
-    catch (java.net.MalformedURLException e)
+    catch (Exception e)
     {
       System.out.println("Error while generating 'Store Story' script URL: "+e.getMessage());
       return null;
@@ -733,12 +734,12 @@ public abstract class URLGenerator
   {
     try
     {
-      name = URLEncoder.encode(name);
-      pwd  = URLEncoder.encode(pwd);
+      name = URLEncoder.encode(name, encoding);
+      pwd  = URLEncoder.encode(pwd, encoding);
       URL url = new URL(protocol, webSiteName, webSitePort, scriptPath+"/"+AuthorTasksScript()+"?nickname="+name+"&password="+pwd);
       return url;
     }
-    catch (java.net.MalformedURLException e)
+    catch (Exception e)
     {
       System.out.println("Error while generating 'Author tasks' script URL: "+e.getMessage());
       return null;
