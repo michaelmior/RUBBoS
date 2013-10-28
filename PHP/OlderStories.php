@@ -95,7 +95,7 @@
         print("<p><CENTER>\n<a href=\"/PHP/OlderStories.php?day=$day&month=$month&year=$year&page=".($page+1)."&nbOfStories=$nbOfStories\">Next page</a>\n</CENTER>\n");
       else
         print("<p><CENTER>\n<a href=\"/PHP/OlderStories.php?day=$day&month=$month&year=$year&page=".($page-1)."&nbOfStories=$nbOfStories\">Previous page</a>\n&nbsp&nbsp&nbsp".
-              "<a href=\"/PHP/OlderStories.php?category=$day=$day&month=$month&year=$year&page=".($page+1)."&nbOfStories=$nbOfStories\">Next page</a>\n\n</CENTER>\n");
+              "<a href=\"/PHP/OlderStories.php?day=$day&month=$month&year=$year&page=".($page+1)."&nbOfStories=$nbOfStories\">Next page</a>\n\n</CENTER>\n");
       
       mysql_free_result($result);
       mysql_close($link);
