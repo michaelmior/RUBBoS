@@ -1,9 +1,9 @@
 <?php
- 
+require dirname(__FILE__) . "/../vendor/autoload.php";
+
 function getDatabaseLink(&$link)
 {
-  $link = mysql_pconnect("localhost", "cecchet", "") or die ("ERROR: Could not connect to database");
-  mysql_select_db("rubbos", $link) or die("ERROR: Couldn't select RUBBoS database");
+  $link = new phpcassa\Connection\ConnectionPool("RUBBoS", array("127.0.0.1:9160"));
 }
 
 function getMicroTime()

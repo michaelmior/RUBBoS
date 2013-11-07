@@ -64,21 +64,38 @@
     getDatabaseLink($link);
 
     // Check if the nick name already exists
-    $nicknameResult = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link) or die("ERROR: Nickname query failed");
-    if (mysql_num_rows($nicknameResult) > 0)
-    {
-      printError($scriptName, $startTime, "Register user", "The nickname you have choosen is already taken by someone else. Please choose a new nickname.<br>\n");
-      mysql_free_result($nicknameResult);
-      exit();
+    $users = new phpcassa\ColumnFamily($link, "Users");
+    try {
+        $nicknameResult = $users->get($nickname);
+    } catch (cassandra\NotFoundException $e) {
+        $nicknameResult = null;
+    } catch (Exception $e) {
+        die("ERROR: Nickname query failed");
     }
-    mysql_free_result($nicknameResult);
+
+    if ($nicknameResult) {
+        printError($scriptName, $startTime, "Register user", "The nickname you have choosen is already taken by someone else. Please choose a new nickname.<br>\n");
+        exit();
+    }
 
     // Add user to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO users VALUES (NULL, \"$firstname\", \"$lastname\", \"$nickname\", \"$password\", \"$email\", 0, 0, '$now')", $link) or die("ERROR: Failed to insert new user in database.");
+    try {
+        $users->insert($nickname, array(
+            "firstname" => $firstname,
+            "lastname" => $lastname,
+            "nickname" => $nickname,
+            "password" => $password,
+            "email" => $email,
+            "rating" => 0,
+            "access" => 0,
+            "creation_date" => $now
+        ));
+    } catch(Exception $e) {
+        die("ERROR: Failed to insert new user in database.");
+    }
 
-    $result = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link) or die("ERROR: Query user failed");
-    $row = mysql_fetch_array($result);
+    $row = $users->get($nickname);
 
     printHTMLheader("RUBBoS: Welcome to $nickname");
     print("<h2>Your registration has been processed successfully</h2><br>\n");
@@ -94,10 +111,7 @@
     print("Creation date :".$row["creation_date"]."<br>\n");
     print("Rating        :".$row["rating"]."<br>\n");
     print("Access        :".$row["access"]."<br>\n");
-    
-    mysql_free_result($result);
-    mysql_close($link);
-    
+
     printHTMLfooter($scriptName, $startTime);
     ?>
   </body>
