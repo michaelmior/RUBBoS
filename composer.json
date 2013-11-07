@@ -1,0 +1,5 @@
+{
+    "require": {
+        "thobbs/phpcassa": "1.1.0"
+    }
+}

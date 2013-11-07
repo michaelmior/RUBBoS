@@ -1,0 +1,68 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "537763f2d8fc81a129746f07262d3161",
+    "packages": [
+        {
+            "name": "thobbs/phpcassa",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thobbs/phpcassa.git",
+                "reference": "de64e1af0bc884cda2950dd7652d3f0cf91e5942"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thobbs/phpcassa/zipball/de64e1af0bc884cda2950dd7652d3f0cf91e5942",
+                "reference": "de64e1af0bc884cda2950dd7652d3f0cf91e5942",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-thrift_protocol": "Enabling the thrift protocol extension is crucial for phpcassa's performance"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tyler Hobbs",
+                    "homepage": "https://github.com/thobbs/phpcassa"
+                }
+            ],
+            "description": "PHP Cassandra Library",
+            "homepage": "https://github.com/thobbs/phpcassa",
+            "keywords": [
+                "cassandra"
+            ],
+            "time": "2013-07-31 22:42:56"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ],
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}
