@@ -35,6 +35,30 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
       printError($scriptName, $startTime, "Viewing story", "You must provide a story identifier!<br>");
       exit();
     }
+	if (isset($_POST['filter']))
+	{
+    	$filter = $_POST['filter'];
+	}
+    elseif (isset($_GET['filter']))
+    {
+      $filter = $_GET['filter'];
+	}
+	else
+    {
+	  $filter = 0;
+    }
+	if (isset($_POST['display']))
+	{
+    	$display = $_POST['display'];
+	}
+    elseif (isset($_GET['display']))
+    {
+      $display = $_GET['display'];
+	}
+	else
+    {
+	  $display = 1;
+    }
       
     getDatabaseLink($link);
     $result = mysql_query("SELECT * FROM stories WHERE id=$storyId") or die("ERROR: Query failed");
@@ -96,8 +120,6 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
           "<OPTION selected value=\"1\">Nested</OPTION>\n".
           "<OPTION value=\"2\">All comments</OPTION>\n".
           "</SELECT>&nbsp&nbsp&nbsp&nbsp<input type=submit value=\"Refresh display\"></center><p>\n");          
-    $display = 1;
-    $filter = 0;
 
     // Display the comments
     $comment = mysql_query("SELECT * FROM $comment_table WHERE story_id=$storyId AND parent=0 AND rating>=$filter", $link) or die("ERROR: Query failed");
