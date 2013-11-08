@@ -112,7 +112,7 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
             "<a href=\"/PHP/ViewComment.php?comment_table=$comment_table&storyId=$storyId&commentId=".$comment_row["parent"]."&filter=$filter&display=$display\">Parent</a>".
             "&nbsp|&nbsp<a href=\"/PHP/ModerateComment.php?comment_table=$comment_table&commentId=".$comment_row["id"]."\">Moderate</a> ]</TABLE>\n");
       if ($comment_row["childs"] > 0)
-        display_follow_up($comment_row[id], 1, $display, $filter, $link, $comment_table);
+        display_follow_up($comment_row["id"], 1, $display, $filter, $link, $comment_table);
     }
 
     mysql_free_result($result);
