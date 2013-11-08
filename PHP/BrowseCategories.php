@@ -9,20 +9,25 @@
     getDatabaseLink($link);
 
     printHTMLheader("RUBBoS available categories");
-    
-    $result = mysql_query("SELECT * FROM categories", $link) or die("ERROR: Query failed");
-    if (mysql_num_rows($result) == 0)
+
+    $categories = new phpcassa\ColumnFamily($link, "Categories");
+    try {
+      $result = $categories->get_range();
+    } catch (cassandra\NotFoundException $e) {
+      $result = array();
+    } catch (Exception $e) {
+      die("ERROR: Query failed");
+    }
+    if (empty($result))
       print("<h2>Sorry, but there is no category available at this time. Database table is empty</h2><br>\n");
     else
       print("<h2>Currently available categories</h2><br>\n");
 
-    while ($row = mysql_fetch_array($result))
+    foreach ($result as $row)
     {
-      print("<a href=\"/PHP/BrowseStoriesByCategory.php?category=".$row["id"]."&categoryName=".urlencode($row["name"])."\">".$row["name"]."</a><br>\n");
+      print("<a href=\"/PHP/BrowseStoriesByCategory.php?category=".$row["name"]."&categoryName=".urlencode($row["name"])."\">".$row["name"]."</a><br>\n");
     }
-    mysql_free_result($result);
-    mysql_close($link);
-    
+
     printHTMLfooter($scriptName, $startTime);
     ?>
   </body>
