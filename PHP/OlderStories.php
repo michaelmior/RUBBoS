@@ -87,7 +87,7 @@
     print("</SELECT><p><input type=submit value=\"Retrieve stories from this date!\"><p>\n");
 
     // Display the results
-    if (($day == null) || ($month == null) || ($year == null))
+    if (is_null($day) || is_null($month) || is_null($year))
       print("<br><h2>Please select a date</h2><br>");
     else
     {

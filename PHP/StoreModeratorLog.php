@@ -81,7 +81,7 @@
     // Authenticate the user
     $userId = 0;
     $access = 0;
-    if (($nickname != null) && ($password != null))
+    if (!is_null($nickname) && !is_null($password))
     {
       $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentification query failed");
       if (mysql_num_rows($result) != 0)

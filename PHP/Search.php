@@ -94,7 +94,7 @@
 
 
     // Display the results
-    if ($search == null)
+    if (is_null($search))
       print("<br><center><h2>Please select a text to search for</h2></center><br>");
     else
     {
