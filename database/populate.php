@@ -23,6 +23,9 @@ $sys->create_keyspace("RUBBoS", array(
 $sys->create_column_family("RUBBoS", "Users");
 $sys->create_column_family("RUBBoS", "Categories");
 $sys->create_column_family("RUBBoS", "Stories");
+$sys->create_column_family("RUBBoS", "OldStories");
+$sys->create_column_family("RUBBoS", "Comments");
+$sys->create_column_family("RUBBoS", "OldComments");
 $sys->create_column_family("RUBBoS", "CategoryStories", array(
     "comparator_type" => "LongType"));
 

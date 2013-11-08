@@ -32,20 +32,32 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
          exit();
       }
     }
-      
+
     getDatabaseLink($link);
-    $result = mysql_query("SELECT * FROM stories WHERE id=$storyId") or die("ERROR: Query failed");
-    if (mysql_num_rows($result) == 0)
+
+    function get_story($storyId, $table) {
+        global $link;
+        $table = new phpcassa\ColumnFamily($link, $table);
+        try {
+          return $table->get($storyId);
+        } catch (cassandra\NotFoundException $e) {
+          return null;
+        } catch (Exception $e) {
+          die("ERROR: Query failed");
+        }
+    }
+
+    $row = get_story($storyId, "Stories");
+    if (empty($row))
     {
-      $result = mysql_query("SELECT * FROM old_stories WHERE id=$storyId") or die("ERROR: Query failed");
-      $comment_table = "old_comments";
+      $row = get_story($storyId, "OldStories");
+      $comment_table = "OldComments";
     }
     else
-      $comment_table = "comments";
-    if (mysql_num_rows($result) == 0)
+      $comment_table = "Comments";
+    if (empty($row))
       die("<h3>ERROR: Sorry, but this story does not exist.</h3><br>\n");
-    $row = mysql_fetch_array($result);
-    $username = getUserName($row["writer"], $link);
+    $username = $row["writer"];
 
     // Display the story
     printHTMLheader("RUBBoS: Viewing story ".$row["title"]);
@@ -61,6 +73,7 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
           "<input type=hidden name=storyId value=$storyId>\n".
           "<input type=hidden name=comment_table value=$comment_table>\n".
           "<B>Filter :</B>&nbsp&nbsp<SELECT name=filter>\n");
+    /* TODO Comment rating
     $count_result = mysql_query("SELECT rating, COUNT(rating) AS count FROM $comment_table WHERE story_id=$storyId GROUP BY rating ORDER BY rating", $link) or die("ERROR: Query failed");
     $i = -1;
     while ($count_row = mysql_fetch_array($count_result))
@@ -87,6 +100,7 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
       print("<OPTION value=\"$i\">$i: 0 comment</OPTION>\n");
       $i++;
     }
+     */
 
     print("</SELECT>&nbsp&nbsp&nbsp&nbsp<SELECT name=display>\n".
           "<OPTION value=\"0\">Main threads</OPTION>\n".
@@ -97,6 +111,7 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     $filter = 0;
 
     // Display the comments
+    /* TODO Show comments
     $comment = mysql_query("SELECT * FROM $comment_table WHERE story_id=$storyId AND parent=0 AND rating>=$filter", $link) or die("ERROR: Query failed");
     while ($comment_row = mysql_fetch_array($comment))
     {
@@ -111,10 +126,8 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
       if ($comment_row["childs"] > 0)
         display_follow_up($comment_row[id], 1, $display, $filter, $link, $comment_table);
     }
+     */
 
-    mysql_free_result($result);
-    mysql_close($link);
-    
     printHTMLfooter($scriptName, $startTime);
     ?>
   </body>

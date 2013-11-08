@@ -87,7 +87,7 @@
     foreach ($result as $storyId => $row)
     {
       $username = $row["writer"];
-      print("<a href=\"/PHP/ViewStory.php?storyId=".$row["id"]."\">".$row["title"]."</a> by ".$username." on ".$row["date"]."<br>\n");
+      print("<a href=\"/PHP/ViewStory.php?storyId=".$storyId."\">".$row["title"]."</a> by ".$username." on ".$row["date"]."<br>\n");
     }
 
     // Previous/Next links
