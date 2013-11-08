@@ -120,7 +120,7 @@
     $result = mysql_query("INSERT INTO $comment_table VALUES (NULL, $userId, $storyId, $parent, 0, 0, '$now', \"$subject\", \"$body\")", $link) or die("ERROR: Failed to insert new comment in database.");
     $result = mysql_query("UPDATE $comment_table SET childs=childs+1 WHERE id=$parent", $link) or die("ERROR: Failed to update parent childs in database.");
 
-    print("Your comment has been successfully stored in the $table database table<br>\n");
+    print("Your comment has been successfully stored in the $comment_table database table<br>\n");
     
     mysql_close($link);
     
