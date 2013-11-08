@@ -33,7 +33,7 @@
     {
       $page = $_GET['page'];
       if ($page == null)
-        $page = 0;
+        $page = "";
     }
       
     $nbOfStories = $_POST['nbOfStories'];
@@ -48,31 +48,55 @@
     print("<br><h2>Stories in category $categoryName</h2><br>");
 
     getDatabaseLink($link);
-    $result = mysql_query("SELECT * FROM stories WHERE category=$categoryId ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: Query failed");
-    if (mysql_num_rows($result) == 0)
+    $category_stories = new phpcassa\ColumnFamily($link, "CategoryStories");
+    try {
+      $result = $category_stories->get($categoryId, new phpcassa\ColumnSlice($page, "", $nbOfStories + 1, true));
+    } catch (cassandra\NotFoundException $e) {
+      $result = array();
+    } catch (Exception $e) {
+      die("ERROR: Query failed");
+    }
+
+    $oldestTime = min(array_keys($result));
+    $hasMore = count($result) > $nbOfStories;
+    if ($hasMore) unset($result[$oldestTime]);
+
+    if (empty($result))
     {
-      if ($page == 0)
+      if (empty($page))
         print("<h2>Sorry, but there is no story available in this category !</h2>");
       else
       {
         print("<h2>Sorry, but there are no more stories available at this time.</h2><br>\n");
+        /* TODO Fix pagination
         print("<p><CENTER>\n<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
               "&categoryName=".urlencode($categoryName)."&page=".($page-1)."&nbOfStories=$nbOfStories\">Previous page</a>\n</CENTER>\n");
+         */
       }
-      mysql_free_result($result);
-      mysql_close($link);
       printHTMLfooter($scriptName, $startTime);
       exit();
     }
 
     // Print the story titles and author
-    while ($row = mysql_fetch_array($result))
+    $stories = new phpcassa\ColumnFamily($link, "Stories");
+    try {
+      $result = $stories->multiget(array_values($result));
+    } catch (Exception $e) {
+      die("ERROR: Query failed");
+    }
+    foreach ($result as $storyId => $row)
     {
-      $username = getUserName($row["writer"], $link);
+      $username = $row["writer"];
       print("<a href=\"/PHP/ViewStory.php?storyId=".$row["id"]."\">".$row["title"]."</a> by ".$username." on ".$row["date"]."<br>\n");
     }
 
     // Previous/Next links
+    if ($hasMore) {
+      print("<p><CENTER>\n<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
+          "&categoryName=".urlencode($categoryName)."&page=".($oldestTime)."&nbOfStories=$nbOfStories\">Next page</a>\n</CENTER>\n");
+    }
+
+    /* TODO Fix pagination
     if ($page == 0)
       print("<p><CENTER>\n<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
            "&categoryName=".urlencode($categoryName)."&page=".($page+1)."&nbOfStories=$nbOfStories\">Next page</a>\n</CENTER>\n");
@@ -81,10 +105,8 @@
             "&categoryName=".urlencode($categoryName)."&page=".($page-1)."&nbOfStories=$nbOfStories\">Previous page</a>\n&nbsp&nbsp&nbsp".
             "<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
             "&categoryName=".urlencode($categoryName)."&page=".($page+1)."&nbOfStories=$nbOfStories\">Next page</a>\n\n</CENTER>\n");
+     */
 
-    mysql_free_result($result);
-    mysql_close($link);
-    
     printHTMLfooter($scriptName, $startTime);
     ?>
   </body>
