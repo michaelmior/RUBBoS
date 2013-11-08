@@ -62,18 +62,22 @@
     $access = 0;
     if (($nickname != null) && ($password != null))
     {
-      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentication query failed");
-      if (mysql_num_rows($result) != 0)
-      {
-        $row = mysql_fetch_array($result);
-        $userId = $row["id"];
+      $users = new phpcassa\ColumnFamily($link, "Users");
+      try {
+        $row = $users->get($nickname);
+        $userId = $row["nickname"];
         $access = $row["access"];
+      } catch (cassandra\NotFoundException $e) {
+        $userId = null;
+        $access = 0;
+      } catch (Exception $e) {
+        die("ERROR: Authentification query failed");
       }
-      mysql_free_result($result);
+      if ($row['password'] != $password) die("ERROR: Authentification query failed");
     }
 
-    $table = "submissions";
-    if ($userId == 0)
+    $table = $category;
+    if (!$userId)
       print("Story stored by the 'Anonymous Coward'<br>\n");
     else
     {
@@ -81,19 +85,36 @@
         print("Story submitted by regular user #$userId<br>\n");
       else
       {
-        print("Story posted by author #$userId<br>\n");
-        $table = "stories";
+        print("Story posted by author $userId<br>\n");
+        $table = "!SUBMISSIONS!";
       }
     }
 
     // Add story to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO $table VALUES (NULL, \"$title\", \"$body\", '$now', $userId, $category)", $link) or die("ERROR: Failed to insert new story in database.");
+    try {
+      $timestamp = microtime(true) * 1e6;
+      $story_id = uniqid();
+      $stories = new phpcassa\ColumnFamily($link, "Stories");
+      $stories->insert($story_id, array(
+        "title" => $title,
+        "body" => $body,
+        "date" => $now,
+        "writer" => $userId,
+        "category" => $category,
+        "timestamp" => $timestamp
+      ));
+
+      $stories = new phpcassa\ColumnFamily($link, "CategoryStories");
+      $stories->insert($table, array(
+        $timestamp => $story_id
+      ));
+    } catch(Exception $e) {
+      die("ERROR: Failed to insert new story in database.");
+    }
 
     print("Your story has been successfully stored in the $table database table<br>\n");
-    
-    mysql_close($link);
-    
+
     printHTMLfooter($scriptName, $startTime);
     ?>
   </body>

@@ -22,6 +22,9 @@ $sys->create_keyspace("RUBBoS", array(
 
 $sys->create_column_family("RUBBoS", "Users");
 $sys->create_column_family("RUBBoS", "Categories");
+$sys->create_column_family("RUBBoS", "Stories");
+$sys->create_column_family("RUBBoS", "CategoryStories", array(
+    "comparator_type" => "LongType"));
 
 $pool = new ConnectionPool("RUBBoS", array("127.0.0.1:9160"));
 
