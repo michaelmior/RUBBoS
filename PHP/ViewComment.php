@@ -60,45 +60,59 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
         $filter = 0;
     }
 
-    $display = $_POST['display'];
-    if ($display == null)
+	if (isset($_POST['display']))
+	{
+    	$display = $_POST['display'];
+	}
+    elseif (isset($_GET['display']))
     {
       $display = $_GET['display'];
-      if ($display == null)
-        $display = 0;
+	}
+	else
+	{
+      $display = 0;
     }
 
-    $storyId = $_POST['storyId'];
-    if ($storyId == null)
+	if (isset($_POST['storyId']))
+	{
+    	$storyId = $_POST['storyId'];
+	}
+    elseif (isset($_GET['storyId']))
     {
       $storyId = $_GET['storyId'];
-      if ($storyId == null)
-      {
-         printError($scriptName, $startTime, "Viewing comment", "You must provide a story identifier!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a story identifier!<br>");
+      exit();
     }
       
-    $commentId = $_POST['commentId'];
-    if ($commentId == null)
+	if (isset($_POST['commentId']))
+	{
+    	$commentId = $_POST['commentId'];
+	}
+    elseif (isset($_GET['commentId']))
     {
       $commentId = $_GET['commentId'];
-      if ($commentId == null)
-      {
-         printError($scriptName, $startTime, "Viewing comment", "You must provide a comment identifier!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment identifier!<br>");
+      exit();
     }
 
-    $comment_table = $_POST['comment_table'];
-    if ($comment_table == null)
+	if (isset($_POST['comment_table']))
+	{
+    	$comment_table = $_POST['comment_table'];
+	}
+    elseif (isset($_GET['comment_table']))
     {
       $comment_table = $_GET['comment_table'];
-      if ($comment_table == null)
-      {
-         printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
+      exit();
     }
 
     getDatabaseLink($link);

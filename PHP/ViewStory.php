@@ -22,15 +22,18 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     $startTime = getMicroTime();
 
     // Check parameters
-    $storyId = $_POST['storyId'];
-    if ($storyId == null)
+	if (isset($_POST['storyId']))
+	{
+    	$storyId = $_POST['storyId'];
+	}
+    elseif (isset($_GET['storyId']))
     {
       $storyId = $_GET['storyId'];
-      if ($storyId == null)
-      {
-         printError($scriptName, $startTime, "Viewing story", "You must provide a story identifier!<br>");
-         exit();
-      }
+	}
+	else
+    {
+      printError($scriptName, $startTime, "Viewing story", "You must provide a story identifier!<br>");
+      exit();
     }
       
     getDatabaseLink($link);

@@ -6,26 +6,32 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
     
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
+	if (isset($_POST['nickname']))
+	{
+    	$nickname = $_POST['nickname'];
+	}
+    elseif (isset($_GET['nickname']))
     {
       $nickname = $_GET['nickname'];
-      if ($nickname == null)
-      {
-         printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
+      exit();
     }
 
-    $password = $_POST['password'];
-    if ($password == null)
+	if (isset($_POST['password']))
+	{
+    	$password = $_POST['password'];
+	}
+    elseif (isset($_GET['password']))
     {
       $password = $_GET['password'];
-      if ($password == null)
-      {
-         printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
+      exit();
     }
 
     getDatabaseLink($link);

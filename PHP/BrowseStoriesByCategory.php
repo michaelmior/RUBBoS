@@ -6,42 +6,58 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $categoryName = $_POST['categoryName'];
-    if ($categoryName == null)
+	if (isset($_POST['categoryName']))
+	{
+    	$categoryName = $_POST['categoryName'];
+	}
+	elseif (isset($_GET['categoryName']))
     {
       $categoryName = $_GET['categoryName'];
-      if ($categoryName == null)
-      {
-         printError($scriptName, $startTime, "Browse Stories By Category", "You must provide a category name!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Browse Stories By Category", "You must provide a category name!<br>");
+      exit();
     }
       
-    $categoryId = $_POST['category'];
-    if ($categoryId == null)
+	if (isset($_POST['category']))
+	{
+    	$categoryId = $_POST['category'];
+	}
+    elseif (isset($_GET['category']))
     {
       $categoryId = $_GET['category'];
-      if ($categoryId == null)
-      {
-         printError($scriptName, $startTime, "Browse Stories By Category", "You must provide a category identifier!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Browse Stories By Category", "You must provide a category identifier!<br>");
+      exit();
     }
       
-    $page = $_POST['page'];
-    if ($page == null)
+	if (isset($_POST['page']))
+	{
+    	$page = $_POST['page'];
+	}
+	elseif (isset($_GET['page']))
     {
       $page = $_GET['page'];
-      if ($page == null)
-        $page = 0;
+	}
+	else
+	{
+      $page = 0;
     }
       
-    $nbOfStories = $_POST['nbOfStories'];
-    if ($nbOfStories == null)
+	if (isset($_POST['nbOfStories']))
+	{
+    	$nbOfStories = $_POST['nbOfStories'];
+	}
+    elseif (isset($_GET['nbOfStories']))
     {
       $nbOfStories = $_GET['nbOfStories'];
-      if ($nbOfStories == null)
-        $nbOfStories = 25;
+	}
+	else
+	{
+      $nbOfStories = 25;
     }
 
     printHTMLheader("RUBBoS Browse Stories By Category");

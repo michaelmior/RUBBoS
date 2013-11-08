@@ -6,49 +6,72 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
+	if (isset($_POST['nickname']))
+	{
+    	$nickname = $_POST['nickname'];
+	}
+    elseif (isset($_GET['nickname']))
     {
       $nickname = $_GET['nickname'];
     }
+	else
+	{
+	  $nickname = NULL;
+	}
 
-    $password = $_POST['password'];
-    if ($password == null)
+	if (isset($_POST['password']))
+	{
+    	$password = $_POST['password'];
+	}
+    elseif (isset($_GET['password']))
     {
       $password = $_GET['password'];
     }
+	else
+	{
+	  $password = NULL;
+	}
 
-    $title = $_POST['title'];
-    if ($title == null)
+	if (isset($_POST['title']))
+	{
+    	$title = $_POST['title'];
+	}
+    elseif (isset($_GET['title']))
     {
       $title = $_GET['title'];
-      if ($title == null)
-      {
-         printError($scriptName, $startTime, "SubmitStory", "You must provide a story title!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "SubmitStory", "You must provide a story title!<br>");
+      exit();
     }
 
-    $body = $_POST['body'];
-    if ($body == null)
+	if (isset($_POST['body']))
+	{
+    	$body = $_POST['body'];
+	}
+    elseif (isset($_GET['body']))
     {
       $body = $_GET['body'];
-      if ($body == null)
-      {
-         printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a story body!<br></h3>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a story body!<br></h3>");
+      exit();
     }
       
-    $category = $_POST['category'];
-    if ($category == null)
+	if (isset($_POST['category']))
+	{
+    	$category = $_POST['category'];
+	}
+    elseif (isset($_GET['category']))
     {
       $category = $_GET['category'];
-      if ($category == null)
-      {
-         printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a category !<br></h3>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a category !<br></h3>");
+      exit();
     }
 
     getDatabaseLink($link);

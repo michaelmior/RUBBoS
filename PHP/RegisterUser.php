@@ -6,59 +6,74 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
     
-    $firstname = $_POST['firstname'];
-    if ($firstname == null)
+	if (isset($_POST['firstname']))
+	{
+    	$firstname = $_POST['firstname'];
+	}
+    elseif (isset($_GET['firstname']))
     {
       $firstname = $_GET['firstname'];
-      if ($firstname == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide a first name!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide a first name!<br>");
+      exit();
     }
       
-    $lastname = $_POST['lastname'];
-    if ($lastname == null)
-    {
+	if (isset($_POST['lastname']))
+	{
+    	$lastname = $_POST['lastname'];
+	}
+    elseif (isset($_GET['lastname']))
+	{
       $lastname = $_GET['lastname'];
-      if ($lastname == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide a last name!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide a last name!<br>");
+      exit();
     }
       
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
+	if (isset($_POST['nickname']))
+	{
+    	$nickname = $_POST['nickname'];
+	}
+	elseif (isset($_GET['nickname']))
     {
       $nickname = $_GET['nickname'];
-      if ($nickname == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide a nick name!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide a nick name!<br>");
+      exit();
     }
 
-    $email = $_POST['email'];
-    if ($email == null)
+	if (isset($_POST['email']))
+	{
+    	$email = $_POST['email'];
+	}
+    elseif (isset($_GET['email']))
     {
       $email = $_GET['email'];
-      if ($email == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide an email address!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide an email address!<br>");
+      exit();
     }
 
-    $password = $_POST['password'];
-    if ($password == null)
+	if (isset($_POST['password']))
+	{
+    	$password = $_POST['password'];
+	}
+    elseif (isset($_GET['password']))
     {
       $password = $_GET['password'];
-      if ($password == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide a password!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide a password!<br>");
+      exit();
     }
 
     getDatabaseLink($link);

@@ -6,15 +6,18 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $storyId = $_POST['storyId'];
-    if ($storyId == null)
+	if (isset($_POST['storyId']))
+	{
+    	$storyId = $_POST['storyId'];
+	}
+    elseif (isset($_GET['storyId']))
     {
       $storyId = $_GET['storyId'];
-      if ($storyId == null)
-      {
-         printError($scriptName, $startTime, "RejectStory", "<h3>You must provide a story identifier !<br></h3>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "RejectStory", "<h3>You must provide a story identifier !<br></h3>");
+      exit();
     }
 
     getDatabaseLink($link);

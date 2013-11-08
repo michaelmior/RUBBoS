@@ -6,34 +6,56 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $type = $_POST['type'];
-    if ($type == null)
+	if (isset($_POST['type']))
+	{
+		$type = $_POST['type'];
+	}
+    elseif (isset($_GET['type']))
     {
       $type = $_GET['type'];
-      if ($type == null)
-        $type = 0;
+	}
+	else
+	{
+      $type = 0;
     }
 
-    $search = $_POST['search'];
-    if ($search == null)
+	if (isset($_POST['search']))
+	{
+    	$search = $_POST['search'];
+	}
+    elseif (isset($_GET['search']))
     {
       $search = $_GET['search'];
     }
+	else
+	{
+	  $search = NULL;
+	}
 
-    $page = $_POST['page'];
-    if ($page == null)
+	if (isset($_POST['page']))
+	{
+    	$page = $_POST['page'];
+	}
+    elseif (isset($_GET['page']))
     {
       $page = $_GET['page'];
-      if ($page == null)
-        $page = 0;
+	}
+	else
+	{
+      $page = 0;
     }
       
-    $nbOfStories = $_POST['nbOfStories'];
-    if ($nbOfStories == null)
+	if (isset($_POST['nbOfStories']))
+	{
+    	$nbOfStories = $_POST['nbOfStories'];
+	}
+    elseif (isset($_GET['nbOfStories']))
     {
       $nbOfStories = $_GET['nbOfStories'];
-      if ($nbOfStories == null)
-        $nbOfStories = 25;
+	}
+	else
+	{
+      $nbOfStories = 25;
     }
 
     printHTMLheader("RUBBoS search");

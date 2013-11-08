@@ -6,71 +6,100 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
+	if (isset($_POST['nickname']))
+	{
+    	$nickname = $_POST['nickname'];
+	}
+    elseif (isset($_GET['nickname']))
     {
       $nickname = $_GET['nickname'];
     }
+	else
+	{
+	  $nickname = NULL;
+	}
 
-    $password = $_POST['password'];
-    if ($password == null)
+	if (isset($_POST['password']))
+	{
+    	$password = $_POST['password'];
+	}
+    elseif (isset($_GET['password']))
     {
       $password = $_GET['password'];
     }
+	else
+	{
+	  $password = NULL;
+	}
 
-    $storyId = $_POST['storyId'];
-    if ($storyId == null)
+	if (isset($_POST['storyId']))
+	{
+    	$storyId = $_POST['storyId'];
+	}
+    elseif (isset($_GET['storyId']))
     {
       $storyId = $_GET['storyId'];
-      if ($storyId == null)
-      {
-         printError($scriptName, $startTime, "StoreComment", "You must provide a story identifier!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "StoreComment", "You must provide a story identifier!<br>");
+      exit();
     }
 
-    $parent = $_POST['parent'];
-    if ($parent == null)
+	if (isset($_POST['parent']))
+	{
+    	$parent = $_POST['parent'];
+	}
+    elseif (isset($_GET['parent']))
     {
       $parent = $_GET['parent'];
-      if ($parent == null)
-      {
-         printError($scriptName, $startTime, "StoreComment", "You must provide a follow up identifier!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "StoreComment", "You must provide a follow up identifier!<br>");
+      exit();
     }
 
-    $subject = $_POST['subject'];
-    if ($subject == null)
+	if (isset($_POST['subject']))
+	{
+    	$subject = $_POST['subject'];
+	}
+    elseif (isset($_GET['subject']))
     {
       $subject = $_GET['subject'];
-      if ($subject == null)
-      {
-         printError($scriptName, $startTime, "StoreComment", "You must provide a comment subject!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "StoreComment", "You must provide a comment subject!<br>");
+      exit();
     }
 
-    $body = $_POST['body'];
-    if ($body == null)
+	if (isset($_POST['body']))
+	{
+    	$body = $_POST['body'];
+	}
+    elseif (isset($_GET['body']))
     {
       $body = $_GET['body'];
-      if ($body == null)
-      {
-         printError($scriptName, $startTime, "StoreComment", "<h3>You must provide a comment body!<br></h3>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "StoreComment", "<h3>You must provide a comment body!<br></h3>");
+      exit();
     }
       
-    $comment_table = $_POST['comment_table'];
-    if ($comment_table == null)
+	if (isset($_POST['comment_table']))
+	{
+    	$comment_table = $_POST['comment_table'];
+	}
+    elseif (isset($_GET['comment_table']))
     {
       $comment_table = $_GET['comment_table'];
-      if ($comment_table == null)
-      {
-         printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
+      exit();
     }
 
     getDatabaseLink($link);

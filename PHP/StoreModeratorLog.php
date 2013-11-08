@@ -6,59 +6,74 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
+	if (isset($_POST['nickname']))
+	{
+    	$nickname = $_POST['nickname'];
+	}
+    elseif (isset($_GET['nickname']))
     {
       $nickname = $_GET['nickname'];
-      if ($nickname == null)
-      {
-         printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
+      exit();
     }
 
-    $password = $_POST['password'];
-    if ($password == null)
+	if (isset($_POST['password']))
+	{
+    	$password = $_POST['password'];
+	}
+    elseif (isset($_GET['password']))
     {
       $password = $_GET['password'];
-      if ($password == null)
-      {
-         printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
+      exit();
     }
 
-    $comment_table = $_POST['comment_table'];
-    if ($comment_table == null)
+	if (isset($_POST['comment_table']))
+	{
+    	$comment_table = $_POST['comment_table'];
+	}
+	elseif (isset($_GET['comment_table']))
     {
       $comment_table = $_GET['comment_table'];
-      if ($comment_table == null)
-      {
-         printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!<br>");
+      exit();
     }
 
-    $commentId = $_POST['commentId'];
-    if ($commentId == null)
-    {
+	if (isset($_POST['commentId']))
+	{
+    	$commentId = $_POST['commentId'];
+	}
+    elseif (isset($_GET['commentId']))
+	{
       $commentId = $_GET['commentId'];
-      if ($commentId == null)
-      {
-         printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!<br>");
+      exit();
     }
 
-    $rating = $_POST['rating'];
-    if ($rating == null)
+	if (isset($_POST['rating']))
+	{
+    	$rating = $_POST['rating'];
+	}
+    elseif (isset($_GET['rating']))
     {
       $rating = $_GET['rating'];
-      if ($rating == null)
-      {
-         printError($scriptName, $startTime, "Moderating comment", "You must provide a rating!<br>");
-         exit();
-      }
+	}
+	else
+	{
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a rating!<br>");
+      exit();
     }
       
     getDatabaseLink($link);
