@@ -35,14 +35,18 @@
     $access = 0;
     if (($nickname != null) && ($password != null))
     {
-      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentification query failed");
-      if (mysql_num_rows($result) != 0)
-      {
-        $row = mysql_fetch_array($result);
-        $userId = $row["id"];
+      $users = new phpcassa\ColumnFamily($link, "Users");
+      try {
+        $row = $users->get($nickname);
+        $userId = $row["nickname"];
         $access = $row["access"];
+      } catch (cassandra\NotFoundException $e) {
+        $userId = null;
+        $access = 0;
+      } catch (Exception $e) {
+        die("ERROR: Authentification query failed");
       }
-      mysql_free_result($result);
+      if ($row['password'] != $password) die("ERROR: Authentification query failed");
     }
 
     if (($userId == 0) || ($access == 0))
@@ -57,8 +61,6 @@
             "<p><p><a href=\"/PHP/ReviewStories.php?authorId=$userId\">Review submitted stories</a><br>\n");
     }
 
-    mysql_close($link);
-    
     printHTMLfooter($scriptName, $startTime);
     ?>
   </body>
