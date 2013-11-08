@@ -52,12 +52,17 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     include("PHPprinter.php");
     $startTime = getMicroTime();
     
-    $filter = $_POST['filter'];
-    if ($filter == null)
+	if (isset($_POST['filter']))
+	{
+    	$filter = $_POST['filter'];
+	}
+    elseif (isset($_GET['filter']))
     {
       $filter = $_GET['filter'];
-      if ($filter == null)
-        $filter = 0;
+	}
+	else
+	{
+      $filter = 0;
     }
 
 	if (isset($_POST['display']))
