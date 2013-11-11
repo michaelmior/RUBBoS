@@ -51,8 +51,14 @@
     $category_stories = new phpcassa\ColumnFamily($link, "CategoryStories");
     try {
       $result = $category_stories->get($categoryId, new phpcassa\ColumnSlice($page, "", $nbOfStories + 1, true));
+      if (!empty($page)) {
+        $prev_result = $category_stories->get($categoryId, new phpcassa\ColumnSlice($page, "", $nbOfStories + 1));
+      } else {
+        $prev_result = array();
+      }
     } catch (cassandra\NotFoundException $e) {
       $result = array();
+      $prev_result = array();
     } catch (Exception $e) {
       die("ERROR: Query failed");
     }
@@ -61,6 +67,13 @@
     $hasMore = count($result) > $nbOfStories;
     if ($hasMore) unset($result[$oldestTime]);
 
+    // Get the start value for the previous page
+    if (count($prev_result) > 1) {
+      $prevStart = array_keys($prev_result)[count($prev_result) - 1];
+    } else {
+      $prevStart = null;
+    }
+
     if (empty($result))
     {
       if (empty($page))
@@ -68,10 +81,10 @@
       else
       {
         print("<h2>Sorry, but there are no more stories available at this time.</h2><br>\n");
-        /* TODO Fix pagination
-        print("<p><CENTER>\n<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
-              "&categoryName=".urlencode($categoryName)."&page=".($page-1)."&nbOfStories=$nbOfStories\">Previous page</a>\n</CENTER>\n");
-         */
+        if ($prevStart) {
+          print("<p><CENTER>\n<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
+                "&categoryName=".urlencode($categoryName)."&page=".$prevStart."&nbOfStories=$nbOfStories\">Previous page</a>\n</CENTER>\n");
+        }
       }
       printHTMLfooter($scriptName, $startTime);
       exit();
@@ -91,21 +104,17 @@
     }
 
     // Previous/Next links
+    print("<p><CENTER>\n");
+    if ($prevStart) {
+      print("<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
+          "&categoryName=".urlencode($categoryName)."&page=".$prevStart."&nbOfStories=$nbOfStories\">Previous page</a>\n&nbsp&nbsp&nbsp");
+    }
     if ($hasMore) {
-      print("<p><CENTER>\n<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
+      print("<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
           "&categoryName=".urlencode($categoryName)."&page=".($oldestTime)."&nbOfStories=$nbOfStories\">Next page</a>\n</CENTER>\n");
     }
+    print("</p></CENTER>\n");
 
-    /* TODO Fix pagination
-    if ($page == 0)
-      print("<p><CENTER>\n<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
-           "&categoryName=".urlencode($categoryName)."&page=".($page+1)."&nbOfStories=$nbOfStories\">Next page</a>\n</CENTER>\n");
-    else
-      print("<p><CENTER>\n<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
-            "&categoryName=".urlencode($categoryName)."&page=".($page-1)."&nbOfStories=$nbOfStories\">Previous page</a>\n&nbsp&nbsp&nbsp".
-            "<a href=\"/PHP/BrowseStoriesByCategory.php?category=$categoryId".
-            "&categoryName=".urlencode($categoryName)."&page=".($page+1)."&nbOfStories=$nbOfStories\">Next page</a>\n\n</CENTER>\n");
-     */
 
     printHTMLfooter($scriptName, $startTime);
     ?>
