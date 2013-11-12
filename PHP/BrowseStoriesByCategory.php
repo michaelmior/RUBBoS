@@ -92,13 +92,19 @@
 
     // Print the story titles and author
     $stories = new phpcassa\ColumnFamily($link, "Stories");
+    $stories->return_format = phpcassa\ColumnFamily::ARRAY_FORMAT;
     try {
       $result = $stories->multiget(array_values($result));
     } catch (Exception $e) {
       die("ERROR: Query failed");
     }
-    foreach ($result as $storyId => $row)
+    foreach ($result as $story)
     {
+      $storyId = $story[0]->string;
+      $row = array();
+      foreach ($story[1] as $column) {
+        $row[$column[0]] = $column[1];
+      }
       $username = $row["writer"];
       print("<a href=\"/PHP/ViewStory.php?storyId=".$storyId."\">".$row["title"]."</a> by ".$username." on ".$row["date"]."<br>\n");
     }

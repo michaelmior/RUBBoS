@@ -81,20 +81,44 @@
 
     // Authenticate the user
     $userId = authenticate($nickname, $password, $link);
-    if ($userId == 0)
+    if (empty($userId))
       print("Comment posted by the 'Anonymous Coward'<br>\n");
     else
-      print("Comment posted by user #$userId<br>\n");
+      print("Comment posted by user $userId<br>\n");
 
     // Add comment to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO $comment_table VALUES (NULL, $userId, $storyId, $parent, 0, 0, '$now', \"$subject\", \"$body\")", $link) or die("ERROR: Failed to insert new comment in database.");
-    $result = mysql_query("UPDATE $comment_table SET childs=childs+1 WHERE id=$parent", $link) or die("ERROR: Failed to update parent childs in database.");
+    $comments = new phpcassa\ColumnFamily($link, $comment_table);
+    $story_comments = new phpcassa\ColumnFamily($link, "StoryComments");
+    try {
+      $commentId = phpcassa\UUID::uuid4();
+      $timestamp = microtime(true) * 1e6;
+      $comments->insert($commentId, array(
+        "writer" => $userId,
+        "parent" => $parent,
+        "childs" => 0,
+        "rating" => 0,
+        "date" => $now,
+        "subject" => $subject,
+        "comment" => $body,
+        "timestamp" => $timestamp
+      ));
+      $story_comments->insert($storyId, array(
+        $timestamp => $commentId
+      ));
+    } catch (Exception $e) {
+      die("ERROR: Failed to insert new comment in database.");
+    }
+    if ($parent) {
+      try {
+        $comments->inc($parent, "childs");
+      } catch (Exception $e) {
+        die("ERROR: Failed to update parent childs in database.");
+      }
+    }
 
     print("Your comment has been successfully stored in the $table database table<br>\n");
-    
-    mysql_close($link);
-    
+
     printHTMLfooter($scriptName, $startTime);
     ?>
   </body>

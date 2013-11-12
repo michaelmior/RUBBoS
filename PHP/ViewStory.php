@@ -51,10 +51,10 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     if (empty($row))
     {
       $row = get_story($storyId, "OldStories");
-      $comment_table = "OldComments";
+      $comment_table = "StoryOldComments";
     }
     else
-      $comment_table = "Comments";
+      $comment_table = "StoryComments";
     if (empty($row))
       die("<h3>ERROR: Sorry, but this story does not exist.</h3><br>\n");
     $username = $row["writer"];
@@ -111,22 +111,40 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     $filter = 0;
 
     // Display the comments
-    /* TODO Show comments
-    $comment = mysql_query("SELECT * FROM $comment_table WHERE story_id=$storyId AND parent=0 AND rating>=$filter", $link) or die("ERROR: Query failed");
-    while ($comment_row = mysql_fetch_array($comment))
+    $story_comments = new phpcassa\ColumnFamily($link, $comment_table);
+    $comments = new phpcassa\ColumnFamily($link, "Comments");
+    $comments->return_format = phpcassa\ColumnFamily::ARRAY_FORMAT;
+    try {
+        /*
+      $comment = $comments->get_indexed_slices(new phpcassa\Index\IndexClause(array(
+        new phpcassa\Index\IndexExpression("KEY", $storyId),
+        new phpcassa\Index\IndexExpression("rating", 0, "GTE")
+      )));
+*/
+      $result = $story_comments->get($storyId);
+      $result = $comments->multiget(array_values($result));
+    } catch (Exception $e) {
+      die("ERROR: Query failed");
+    }
+
+    foreach ($result as $comment)
     {
+      $commentId = $comment[0]->string;
+      $comment_row = array();
+      foreach ($comment[1] as $column) {
+        $comment_row[$column[0]] = $column[1];
+      }
       print("<br><hr><br>");
       $username = getUserName($comment_row["writer"], $link);
-      print("<TABLE width=\"100%\" bgcolor=\"#CCCCFF\"><TR><TD><FONT size=\"4\" color=\"#000000\"><B><a href=\"/PHP/ViewComment.php?comment_table=$comment_table&storyId=$storyId&commentId=".$comment_row["id"]."&filter=$filter&display=$display\">".$comment_row["subject"]."</a></B>&nbsp</FONT> (Score:".$comment_row["rating"].")</TABLE>\n");
+      print("<TABLE width=\"100%\" bgcolor=\"#CCCCFF\"><TR><TD><FONT size=\"4\" color=\"#000000\"><B><a href=\"/PHP/ViewComment.php?comment_table=$comment_table&storyId=$storyId&commentId=".$commentId."&filter=$filter&display=$display\">".$comment_row["subject"]."</a></B>&nbsp</FONT> (Score:".$comment_row["rating"].")</TABLE>\n");
       print("<TABLE><TR><TD><B>Posted by ".$username." on ".$comment_row["date"]."</B><p>\n");
       print("<TR><TD>".$comment_row["comment"]);
-      print("<TR><TD><p>[ <a href=\"/PHP/PostComment.php?comment_table=$comment_table&storyId=$storyId&parent=".$comment_row["id"]."\">Reply to this</a>&nbsp|&nbsp".
+      print("<TR><TD><p>[ <a href=\"/PHP/PostComment.php?comment_table=$comment_table&storyId=$storyId&parent=".$commentId."\">Reply to this</a>&nbsp|&nbsp".
             "<a href=\"/PHP/ViewComment.php?comment_table=$comment_table&storyId=$storyId&commentId=".$comment_row["parent"]."&filter=$filter&display=$display\">Parent</a>".
-            "&nbsp|&nbsp<a href=\"/PHP/ModerateComment.php?comment_table=$comment_table&commentId=".$comment_row["id"]."\">Moderate</a> ]</TABLE>\n");
+            "&nbsp|&nbsp<a href=\"/PHP/ModerateComment.php?comment_table=$comment_table&commentId=".$commentId."\">Moderate</a> ]</TABLE>\n");
       if ($comment_row["childs"] > 0)
-        display_follow_up($comment_row[id], 1, $display, $filter, $link, $comment_table);
+        display_follow_up($commentId, 1, $display, $filter, $link, $comment_table);
     }
-     */
 
     printHTMLfooter($scriptName, $startTime);
     ?>

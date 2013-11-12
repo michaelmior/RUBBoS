@@ -4,6 +4,7 @@ require dirname(__FILE__) . "/../vendor/autoload.php";
 use phpcassa\ColumnFamily;
 use phpcassa\SystemManager;
 use phpcassa\Connection\ConnectionPool;
+use phpcassa\Schema\DataType;
 use phpcassa\Schema\StrategyClass;
 use cassandra\NotFoundException;
 
@@ -11,7 +12,7 @@ $sys = new SystemManager("127.0.0.1");
 try {
     $sys->describe_keyspace("RUBBoS");
     $sys->drop_keyspace("RUBBoS");
-    die("Keyspace already exists");
+    //die("Keyspace already exists");
 } catch (NotFoundException $e) {
     // Good to go
 }
@@ -20,13 +21,25 @@ $sys->create_keyspace("RUBBoS", array(
     "strategy_class" => StrategyClass::SIMPLE_STRATEGY,
     "strategy_options" => array('replication_factor' => '1')));
 
-$sys->create_column_family("RUBBoS", "Users");
+$sys->create_column_family("RUBBoS", "Users", array(
+    "key_validation_class" => "UTF8Type",
+    "comparator_type" => "UTF8Type"));
 $sys->create_column_family("RUBBoS", "Categories");
-$sys->create_column_family("RUBBoS", "Stories");
-$sys->create_column_family("RUBBoS", "OldStories");
-$sys->create_column_family("RUBBoS", "Comments");
-$sys->create_column_family("RUBBoS", "OldComments");
+$sys->create_column_family("RUBBoS", "Stories", array(
+    "key_validation_class" => "LexicalUUIDType",
+    "comparator_type" => "UTF8Type"));
+$sys->create_column_family("RUBBoS", "OldStories", array(
+    "key_validation_class" => "LexicalUUIDType",
+    "comparator_type" => "UTF8Type"));
+$sys->create_column_family("RUBBoS", "Comments", array(
+    "key_validation_class" => "LexicalUUIDType",
+    "comparator_type" => "UTF8Type"));
+$sys->create_index("RUBBoS", "Comments", "rating", DataType::LONG_TYPE);
+$sys->create_column_family("RUBBoS", "StoryComments", array(
+    "key_validation_class" => "LexicalUUIDType",
+    "comparator_type" => "LongType"));
 $sys->create_column_family("RUBBoS", "CategoryStories", array(
+    "key_validation_class" => "UTF8Type",
     "comparator_type" => "LongType"));
 
 $pool = new ConnectionPool("RUBBoS", array("127.0.0.1:9160"));

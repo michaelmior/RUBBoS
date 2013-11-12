@@ -94,7 +94,7 @@
     $now = date("Y:m:d H:i:s");
     try {
       $timestamp = microtime(true) * 1e6;
-      $story_id = uniqid();
+      $story_id = phpcassa\UUID::uuid4();
       $stories = new phpcassa\ColumnFamily($link, "Stories");
       $stories->insert($story_id, array(
         "title" => $title,

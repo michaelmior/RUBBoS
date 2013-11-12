@@ -44,19 +44,26 @@ function printError($scriptName, $startTime, $title, $error)
 
 function authenticate($nickname, $password, $link)
 {
-  $result = mysql_query("SELECT id FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentification query failed");
-  if (mysql_num_rows($result) == 0)
-    return 0; // 0 is the anonymous user
-  $row = mysql_fetch_array($result);
-  return $row["id"];
+  $users = new phpcassa\ColumnFamily($link, "Users");
+  try {
+    $row = $users->get($nickname);
+    $userId = $row["nickname"];
+  } catch (cassandra\NotFoundException $e) {
+    $userId = null;
+  } catch (Exception $e) {
+    die("ERROR: Authentification query failed");
+  }
+  if ($row['password'] == $password) {
+    return $userId;
+  } else {
+    return null;
+  }
 }
 
 
 function getUserName($uid, $link)
 {
-  $user_query = mysql_query("SELECT nickname FROM users WHERE id=$uid", $link) or die("ERROR: getUserName query failed");
-  $user_row = mysql_fetch_array($user_query);
-  return $user_row["nickname"];
+  return $uid;
 }
 
 ?>

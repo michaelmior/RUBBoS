@@ -46,7 +46,7 @@
           "<input type=hidden name=comment_table value=$comment_table>\n".
           "<center><table>\n".
           "<tr><td><b>Nickname</b><td><input type=text size=20 name=nickname>\n".
-          "<tr><td><b>Password</b><td><input type=text size=20 name=password>\n".
+          "<tr><td><b>Password</b><td><input type=password size=20 name=password>\n".
           "<tr><td><b>Subject</b><td><input type=text size=100 name=subject>\n".
           "</SELECT></table><p><br>\n".
           "<TEXTAREA rows=\"20\" cols=\"80\" name=\"body\">Write your comment here</TEXTAREA><br><p>\n".
