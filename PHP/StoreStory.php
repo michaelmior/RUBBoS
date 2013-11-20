@@ -85,7 +85,12 @@
     $access = 0;
     if (!is_null($nickname) && !is_null($password))
     {
-      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentication query failed");
+      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link);
+	  if (!$result)
+	  {
+		error_log("[".__FILE__."] Authentication query 'SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"' failed: " . mysql_error($link));
+		die("ERROR: Authentication query failed for nickname '$nickname': " . mysql_error($link));
+	  }
       if (mysql_num_rows($result) != 0)
       {
         $row = mysql_fetch_array($result);
@@ -111,7 +116,12 @@
 
     // Add story to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO $table VALUES (NULL, \"$title\", \"$body\", '$now', $userId, $category)", $link) or die("ERROR: Failed to insert new story in database.");
+    $result = mysql_query("INSERT INTO $table VALUES (NULL, \"$title\", \"$body\", '$now', $userId, $category)", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Failed to insert new story in database 'INSERT INTO $table VALUES (NULL, \"$title\", \"$body\", '$now', $userId, $category)': " . mysql_error($link));
+		die("ERROR: Failed to insert new story in database for user '$userId' and category '$category': " . mysql_error($link));
+	}
 
     print("Your story has been successfully stored in the $table database table<br>\n");
     

@@ -6,7 +6,12 @@
 // Display the nested comments
 function display_follow_up($cid, $level, $display, $filter, $link, $comment_table)
 {
-  $follow = mysql_query("SELECT story_id,id,subject,writer,date,childs FROM $comment_table WHERE parent=$cid", $link) or die("ERROR: Query failed");
+  $follow = mysql_query("SELECT story_id,id,subject,writer,date,childs FROM $comment_table WHERE parent=$cid", $link);
+  if (!$follow)
+  {
+	error_log("[".__FILE__."] Query 'SELECT story_id,id,subject,writer,date,childs FROM $comment_table WHERE parent=$cid' failed: " . mysql_error($link));
+	die("ERROR: Query failed for comment table '$comment_table' and parent '$cid': " . mysql_error($link));
+  }
   while ($follow_row = mysql_fetch_array($follow))
   {
     for ($i = 0 ; $i < $level ; $i++)
@@ -61,16 +66,26 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     }
       
     getDatabaseLink($link);
-    $result = mysql_query("SELECT * FROM stories WHERE id=$storyId") or die("ERROR: Query failed");
+    $result = mysql_query("SELECT * FROM stories WHERE id=$storyId");
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Query 'SELECT * FROM stories WHERE id=$storyId' failed: " . mysql_error($link));
+		die("ERROR: Query failed for story '$storyId': " . mysql_error($link));
+	}
     if (mysql_num_rows($result) == 0)
     {
-      $result = mysql_query("SELECT * FROM old_stories WHERE id=$storyId") or die("ERROR: Query failed");
+      $result = mysql_query("SELECT * FROM old_stories WHERE id=$storyId");
+	  if (!$result)
+	  {
+		error_log("[".__FILE__."]: Query 'SELECT * FROM old_stories WHERE id=$storyId' failed: " . mysql_error($link));
+		die("ERROR: Query failed for story '$storyId': " . mysql_error($link));
+	  }
       $comment_table = "old_comments";
     }
     else
       $comment_table = "comments";
     if (mysql_num_rows($result) == 0)
-      die("<h3>ERROR: Sorry, but this story does not exist.</h3><br>\n");
+      die("<h3>ERROR: Sorry, but this story '$storyId' does not exist.</h3><br>\n");
     $row = mysql_fetch_array($result);
     $username = getUserName($row["writer"], $link);
 
@@ -88,7 +103,12 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
           "<input type=hidden name=storyId value=$storyId>\n".
           "<input type=hidden name=comment_table value=$comment_table>\n".
           "<B>Filter :</B>&nbsp&nbsp<SELECT name=filter>\n");
-    $count_result = mysql_query("SELECT rating, COUNT(rating) AS count FROM $comment_table WHERE story_id=$storyId GROUP BY rating ORDER BY rating", $link) or die("ERROR: Query failed");
+    $count_result = mysql_query("SELECT rating, COUNT(rating) AS count FROM $comment_table WHERE story_id=$storyId GROUP BY rating ORDER BY rating", $link);
+	if (!$count_result)
+	{
+		error_log("[".__FILE__."] Query 'SELECT rating, COUNT(rating) AS count FROM $comment_table WHERE story_id=$storyId GROUP BY rating ORDER BY rating' failed: " . mysql_error($link));
+		die("ERROR: Query failed for comment '$comment_table' and story '$storyId': " . mysql_error($link));
+	}
     $i = -1;
     while ($count_row = mysql_fetch_array($count_result))
     {
@@ -122,7 +142,12 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
           "</SELECT>&nbsp&nbsp&nbsp&nbsp<input type=submit value=\"Refresh display\"></center><p>\n");          
 
     // Display the comments
-    $comment = mysql_query("SELECT * FROM $comment_table WHERE story_id=$storyId AND parent=0 AND rating>=$filter", $link) or die("ERROR: Query failed");
+    $comment = mysql_query("SELECT * FROM $comment_table WHERE story_id=$storyId AND parent=0 AND rating>=$filter", $link);
+	if (!$comment)
+	{
+		error_log("[".__FILE__."] Query 'SELECT * FROM $comment_table WHERE story_id=$storyId AND parent=0 AND rating>=$filter' failed: " . mysql_error($link));
+		die("ERROR: Query failed for comment table '$comment_table' and story '$storyId': " . mysql_error($link));
+	}
     while ($comment_row = mysql_fetch_array($comment))
     {
       print("<br><hr><br>");

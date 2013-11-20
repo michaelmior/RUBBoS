@@ -41,7 +41,12 @@
     $access = 0;
     if (!is_null($nickname) && !is_null($password))
     {
-      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentification query failed");
+      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link);
+	  if (!$result)
+	  {
+		error_log("[".__FILE__."] Authentification query 'SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"' failed: " . mysql_error($link));
+		die("ERROR: Authentification query failed for nickname '$nickname': " . mysql_error($link));
+	  }
       if (mysql_num_rows($result) != 0)
       {
         $row = mysql_fetch_array($result);

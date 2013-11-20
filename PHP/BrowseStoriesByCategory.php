@@ -64,7 +64,12 @@
     print("<br><h2>Stories in category $categoryName</h2><br>");
 
     getDatabaseLink($link);
-    $result = mysql_query("SELECT * FROM stories WHERE category=$categoryId ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: Query failed");
+    $result = mysql_query("SELECT * FROM stories WHERE category=$categoryId ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Query 'SELECT * FROM stories WHERE category=$categoryId ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+		die("ERROR: Query failed for category '$categoryId', page '$page' and nbOfStories '$nbOfStories': " . mysql_error($link));
+	}
     if (mysql_num_rows($result) == 0)
     {
       if ($page == 0)

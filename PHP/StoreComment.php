@@ -117,8 +117,18 @@
 
     // Add comment to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO $comment_table VALUES (NULL, $userId, $storyId, $parent, 0, 0, '$now', \"$subject\", \"$body\")", $link) or die("ERROR: Failed to insert new comment in database.");
-    $result = mysql_query("UPDATE $comment_table SET childs=childs+1 WHERE id=$parent", $link) or die("ERROR: Failed to update parent childs in database.");
+    $result = mysql_query("INSERT INTO $comment_table VALUES (NULL, $userId, $storyId, $parent, 0, 0, '$now', \"$subject\", \"$body\")", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Failed to insert new comment in database 'INSERT INTO $comment_table VALUES (NULL, $userId, $storyId, $parent, 0, 0, '$now', \"$subject\", \"$body\")': " . mysql_error($link));
+		die("ERROR: Failed to insert new comment in database for comment table '$comment_table', user '$userId', story '$storyId' and parent '$parent': " . mysql_error($link));
+	}
+    $result = mysql_query("UPDATE $comment_table SET childs=childs+1 WHERE id=$parent", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Failed to update parent childs in database 'UPDATE $comment_table SET childs=childs+1 WHERE id=$parent': " . mysql_error($link));
+		die("ERROR: Failed to update parent childs in database for comment table '$comment_table' and parent '$parent': " . mysql_error($link));
+	}
 
     print("Your comment has been successfully stored in the $comment_table database table<br>\n");
     

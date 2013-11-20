@@ -103,9 +103,21 @@
       getDatabaseLink($link);
       if ($type == 0)
       { // Look for stories
-        $result = mysql_query("SELECT id, title, date, writer FROM stories WHERE title LIKE '$search%' "./*OR body LIKE '$search%%'*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: Query failed");
+        $result = mysql_query("SELECT id, title, date, writer FROM stories WHERE title LIKE '$search%' "./*OR body LIKE '$search%%'*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+		if (!$result)
+		{
+			error_log("[".__FILE__."] Query 'SELECT id, title, date, writer FROM stories WHERE title LIKE '$search%' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+			die("ERROR: Query failed for title '$search', page '$page' and nbOfStories '$nbOfStories' from stories: " . mysql_error($link));
+		}
         if (mysql_num_rows($result) == 0)
-          $result = mysql_query("SELECT id, title, date, writer FROM old_stories WHERE title LIKE '$search%' "./*OR body LIKE '$search%%'*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: Query failed");
+		{
+          $result = mysql_query("SELECT id, title, date, writer FROM old_stories WHERE title LIKE '$search%' "./*OR body LIKE '$search%%'*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+		  if (!$result)
+		  {
+			error_log("[".__FILE__."] Query 'SELECT id, title, date, writer FROM old_stories WHERE title LIKE '$search%' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+			die("ERROR: Query failed for title '$search', page '$page' and nbOfStories '$nbOfStories' from old_stories: " . mysql_error($link));
+		  }
+		}
         if (mysql_num_rows($result) == 0)
         {
           if ($page == 0)
@@ -124,10 +136,20 @@
       if ($type == 1)
       { // Look for comments
         $comment_table = "comments";
-        $result = mysql_query("SELECT id,story_id,subject,writer,date FROM comments WHERE subject LIKE '$search%' "./*OR comment LIKE '$search%%'*/" GROUP BY story_id ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: Query failed");
+        $result = mysql_query("SELECT id,story_id,subject,writer,date FROM comments WHERE subject LIKE '$search%' "./*OR comment LIKE '$search%%'*/" GROUP BY story_id ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+		if (!$result)
+		{
+			error_log("[".__FILE__."] Query 'SELECT id,story_id,subject,writer,date FROM comments WHERE subject LIKE '$search%' GROUP BY story_id ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+			die("ERROR: Query failed for subject '$search', page '$page' and nbOfStories '$nbOfStories' from comments: " . mysql_error($link));
+		}
         if (mysql_num_rows($result) == 0)
         {
-          $result = mysql_query("SELECT id,story_id,subject,writer,date FROM old_comments WHERE subject LIKE '$search%' "./*OR comment LIKE '$search%%'*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: Query failed");
+          $result = mysql_query("SELECT id,story_id,subject,writer,date FROM old_comments WHERE subject LIKE '$search%' "./*OR comment LIKE '$search%%'*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+		  if (!$result)
+		  {
+			error_log("[".__FILE__."] Query 'SELECT id,story_id,subject,writer,date FROM old_comments WHERE subject LIKE '$search%' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+			die("ERROR: Query failed for subject '$search', page '$page' and nbOfStories '$nbOfStories' from old_comments: " . mysql_error($link));
+		  }
           $comment_table = "old_comments";
         }
         if (mysql_num_rows($result) == 0)
@@ -154,9 +176,21 @@
       }
       if ($type == 2)
       { // Look for stories of an author
-        $result = mysql_query("SELECT stories.id, stories.title, stories.date, stories.writer FROM stories,users WHERE writer=users.id AND "./*(users.firstname LIKE '$search%%' OR users.lastname LIKE '$search%%' OR*/" users.nickname LIKE '$search%'"./*)*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: stories query failed");
+        $result = mysql_query("SELECT stories.id, stories.title, stories.date, stories.writer FROM stories,users WHERE writer=users.id AND "./*(users.firstname LIKE '$search%%' OR users.lastname LIKE '$search%%' OR*/" users.nickname LIKE '$search%'"./*)*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+		if (!$result)
+		{
+			error_log("[".__FILE__."] Query 'SELECT stories.id, stories.title, stories.date, stories.writer FROM stories,users WHERE writer=users.id AND users.nickname LIKE '$search%' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+			die("ERROR: stories query failed for nickname '$search', page '$page' and nbOfStories '$nbOfStories' from stories: " . mysql_error($link));
+		}
         if (mysql_num_rows($result) == 0)
-          $result = mysql_query("SELECT old_stories.id, old_stories.title, old_stories.date, old_stories.writer FROM old_stories,users WHERE writer=users.id AND "./*(users.firstname LIKE '$search%%' OR users.lastname LIKE '$search%%' OR*/" users.nickname LIKE '$search%'"./*)*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: old_stories query failed");
+		{
+          $result = mysql_query("SELECT old_stories.id, old_stories.title, old_stories.date, old_stories.writer FROM old_stories,users WHERE writer=users.id AND "./*(users.firstname LIKE '$search%%' OR users.lastname LIKE '$search%%' OR*/" users.nickname LIKE '$search%'"./*)*/" ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+		  if (!$result)
+		  {
+			error_log("[".__FILE__."] Query 'SELECT old_stories.id, old_stories.title, old_stories.date, old_stories.writer FROM old_stories,users WHERE writer=users.id AND users.nickname LIKE '$search%' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+			die("ERROR: old_stories query failed for nickname '$search', page '$page' and nbOfStories '$nbOfStories' from old_stories: " . mysql_error($link));
+		  }
+		}
         if (mysql_num_rows($result) == 0)
         {
           if ($page == 0)

@@ -11,7 +11,12 @@
     printHTMLheader("RUBBoS: Review Stories");
 
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("SELECT * FROM submissions ORDER BY date DESC LIMIT 10", $link) or die("ERROR: Query failed");
+    $result = mysql_query("SELECT * FROM submissions ORDER BY date DESC LIMIT 10", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Query 'SELECT * FROM submissions ORDER BY date DESC LIMIT 10' failed: " . mysql_error($link));
+		die("ERROR: Query failed for stories: " . mysql_error($link));
+	}
     if (mysql_num_rows($result) == 0)
       print("<h2>Sorry, but there is no submitted story available at this time.</h2><br>\n");
 

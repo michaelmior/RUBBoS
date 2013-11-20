@@ -96,9 +96,19 @@
       getDatabaseLink($link);
       $before = $year."-".$month."-".$day." 0:0:0";
       $after = $year."-".$month."-".$day." 23:59:59";
-      $result = mysql_query("SELECT * FROM stories WHERE date>='$before' AND date<='$after' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: Query failed");
+      $result = mysql_query("SELECT * FROM stories WHERE date>='$before' AND date<='$after' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+	  if (!$result)
+	  {
+		error_log("[".__FILE__."] Query 'SELECT * FROM stories WHERE date>='$before' AND date<='$after' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+		die("ERROR: Query failed for before date '$before', after date '$after', page '$page' and nbOfStories '$nbOfStories' from stories: " . mysql_error($link));
+	  }
       if (mysql_num_rows($result) == 0)
-        $result = mysql_query("SELECT * FROM old_stories WHERE date>='$before' AND date<='$after' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link) or die("ERROR: Query failed");
+        $result = mysql_query("SELECT * FROM old_stories WHERE date>='$before' AND date<='$after' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories", $link);
+		if (!$result)
+		{
+			error_log("[".__FILE__."] Query 'SELECT * FROM old_stories WHERE date>='$before' AND date<='$after' ORDER BY date DESC LIMIT ".$page*$nbOfStories.",$nbOfStories' failed: " . mysql_error($link));
+			die("ERROR: Query failed for before date '$before', after date '$after', page '$page' and nbOfStories '$nbOfStories' from old_stories: " . mysql_error($link));
+		}
       if (mysql_num_rows($result) == 0)
       {
         if ($page == 0)

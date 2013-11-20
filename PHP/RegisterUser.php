@@ -79,7 +79,12 @@
     getDatabaseLink($link);
 
     // Check if the nick name already exists
-    $nicknameResult = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link) or die("ERROR: Nickname query failed");
+    $nicknameResult = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link);
+	if (!$nicknameResult)
+	{
+		error_log("[".__FILE__."] Nickname query 'SELECT * FROM users WHERE nickname=\"$nickname\"' failed: " . mysql_error($link));
+		die("ERROR: Nickname query failed for nickname '$nickname': " . mysql_error($link));
+	}
     if (mysql_num_rows($nicknameResult) > 0)
     {
       printError($scriptName, $startTime, "Register user", "The nickname you have choosen is already taken by someone else. Please choose a new nickname.<br>\n");
@@ -90,9 +95,19 @@
 
     // Add user to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO users VALUES (NULL, \"$firstname\", \"$lastname\", \"$nickname\", \"$password\", \"$email\", 0, 0, '$now')", $link) or die("ERROR: Failed to insert new user in database.");
+    $result = mysql_query("INSERT INTO users VALUES (NULL, \"$firstname\", \"$lastname\", \"$nickname\", \"$password\", \"$email\", 0, 0, '$now')", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Failed to insert new user in database 'INSERT INTO users VALUES (NULL, \"$firstname\", \"$lastname\", \"$nickname\", \"$password\", \"$email\", 0, 0, '$now')': " . mysql_error($link));
+		die("ERROR: Failed to insert new user in database for nickname '$nickname': " . mysql_error($link));
+	}
 
-    $result = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link) or die("ERROR: Query user failed");
+    $result = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Query 'SELECT * FROM users WHERE nickname=\"$nickname\"' failed: " . mysql_error($link));
+		die("ERROR: Query user failed for nickname '$nickname': " . mysql_error($link));
+	}
     $row = mysql_fetch_array($result);
 
     printHTMLheader("RUBBoS: Welcome to $nickname");
