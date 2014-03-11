@@ -38,7 +38,3 @@ License
 =======
 
 The RUBBoS benchmark is licensed under the [LGPL](http://www.gnu.org/licenses/lgpl.html).
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/michaelmior/rubbos/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
