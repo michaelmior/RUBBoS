@@ -10,7 +10,7 @@
 $DB_CONFIG = array(
   'host' => 'localhost',
   'username' => 'root',
-  'password' => '1a2b3c',
+  'password' => '',
   'db_name' => 'rubbos'
 );
 
