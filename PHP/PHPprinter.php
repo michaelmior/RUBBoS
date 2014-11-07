@@ -1,9 +1,16 @@
 <?php
+require_once dirname(__FILE__) . '/config.php';
  
 function getDatabaseLink(&$link)
 {
-  $link = mysql_pconnect("localhost", "cecchet", "") or die ("ERROR: Could not connect to database");
-  mysql_select_db("rubbos", $link) or die("ERROR: Couldn't select RUBBoS database");
+  global $DB_CONFIG;
+  $link = mysql_pconnect(
+    $DB_CONFIG['host'],
+    $DB_CONFIG['username'],
+    $DB_CONFIG['password']
+  ) or die ("ERROR: Could not connect to database");
+  mysql_select_db($DB_CONFIG['db_name'], $link) 
+	or die("ERROR: Couldn't select RUBBoS database");
 }
 
 function getMicroTime()
