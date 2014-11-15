@@ -9,20 +9,7 @@ To build the client emulator, change into the `Client` directory and run `make`.
 
 Database setup
 ==============
-The PHP version of the benchmark requires the MySQL database server (or some server which speaks MySQL). No specific MySQL features are used, so any version of MySQL should suffice. To create the database schema, execute `database/rubbos.sql`.
-
-To load the initial data for the benchmark, data files must be downloaded from the [JMOB website](http://jmob.ow2.org/rubbos/smallDB.tgz):
-
-    wget http://jmob.ow2.org/rubbos/smallDB.tgz
-    # assuming you cloned RUBBoS in ~/RUBBos
-    mv smallDB.tgz ~/RUBBoS/database
-    cd ~/RUBBoS/database
-    tar -zxf smallDB.tgz
-
-Now you have a few `.data` files in the database directory. In order to import then to MySQL, you need to run the `database/load.sql`.
-
-In the case of failure, you will need to lift some security MySQL constraints. Enable the load of local data infiles by specifying the `local-infile=1` option in `/etc/mysql/my.cnf` file, under the `[mysqld]` and `[mysql]` sections. Then run `load.local.sql` file.
-
+The PHP version of the benchmark requires the MySQL database server (or some server which speaks MySQL). No specific MySQL features are used, so any version of MySQL should suffice. To create the database schema, execute `database/rubbos.sql`. To load the initial data for the benchmark, data files must be downloaded from the [JMOB website](http://jmob.ow2.org/rubbos/smallDB.tgz). Then, `database/load.sql` in this repository must be updated with the path to these files, then executed to complete the loading.
 
 Running the benchmark
 =====================
@@ -34,10 +21,10 @@ A `rubbos.properties` file must now be prepared with all parameters required to 
 Each remote client will require installations of Java and sysstat. These machines will also require a copy of the client emulator. The easiest method is to simply copy the entire repository onto each machine. A script such as the one below should suffice. Each remote client will need to allow the host running the benchmark access without password.
 
     #!/bin/bash
-
+    
     # Add all remote client nodes as array elements below
     hosts=()
-
+    
     for host in ${hosts[@]}; do
         ssh $host rm -rf RUBBoS
         scp -rq RUBBoS $host:
