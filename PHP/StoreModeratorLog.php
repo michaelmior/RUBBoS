@@ -6,71 +6,36 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-	if (isset($_POST['nickname']))
-	{
-    	$nickname = $_POST['nickname'];
-	}
-    elseif (isset($_GET['nickname']))
-    {
-      $nickname = $_GET['nickname'];
-	}
-	else
+    $nickname = getSessionPostGetParam('nickname');
+    if (!isset($nickname))
 	{
       printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
       exit();
     }
 
-	if (isset($_POST['password']))
-	{
-    	$password = $_POST['password'];
-	}
-    elseif (isset($_GET['password']))
-    {
-      $password = $_GET['password'];
-	}
-	else
+    $password = getSessionPostGetParam('password');
+    if (!isset($password))
 	{
       printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
       exit();
     }
 
-	if (isset($_POST['comment_table']))
-	{
-    	$comment_table = $_POST['comment_table'];
-	}
-	elseif (isset($_GET['comment_table']))
-    {
-      $comment_table = $_GET['comment_table'];
-	}
-	else
+    $comment_table = getSessionPostGetParam('comment_table');
+    if (!isset($comment_table))
 	{
       printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!<br>");
       exit();
     }
 
-	if (isset($_POST['commentId']))
-	{
-    	$commentId = $_POST['commentId'];
-	}
-    elseif (isset($_GET['commentId']))
-	{
-      $commentId = $_GET['commentId'];
-	}
-	else
+    $commentId = getSessionPostGetParam('commentId');
+    if (!isset($commentId))
 	{
       printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!<br>");
       exit();
     }
 
-	if (isset($_POST['rating']))
-	{
-    	$rating = $_POST['rating'];
-	}
-    elseif (isset($_GET['rating']))
-    {
-      $rating = $_GET['rating'];
-	}
-	else
+    $rating = getSessionPostGetParam('rating');
+    if (!isset($rating))
 	{
       printError($scriptName, $startTime, "Moderating comment", "You must provide a rating!<br>");
       exit();

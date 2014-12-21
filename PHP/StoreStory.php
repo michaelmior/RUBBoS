@@ -6,69 +6,26 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-	if (isset($_POST['nickname']))
-	{
-    	$nickname = $_POST['nickname'];
-	}
-    elseif (isset($_GET['nickname']))
-    {
-      $nickname = $_GET['nickname'];
-    }
-	else
-	{
-	  $nickname = NULL;
-	}
+    $nickname = getSessionPostGetParam('nickname');
 
-	if (isset($_POST['password']))
-	{
-    	$password = $_POST['password'];
-	}
-    elseif (isset($_GET['password']))
-    {
-      $password = $_GET['password'];
-    }
-	else
-	{
-	  $password = NULL;
-	}
+    $password = getSessionPostGetParam('password');
 
-	if (isset($_POST['title']))
-	{
-    	$title = $_POST['title'];
-	}
-    elseif (isset($_GET['title']))
-    {
-      $title = $_GET['title'];
-	}
-	else
+    $title = getSessionPostGetParam('title');
+    if (!isset($title))
 	{
       printError($scriptName, $startTime, "SubmitStory", "You must provide a story title!<br>");
       exit();
     }
 
-	if (isset($_POST['body']))
-	{
-    	$body = $_POST['body'];
-	}
-    elseif (isset($_GET['body']))
-    {
-      $body = $_GET['body'];
-	}
-	else
+    $body = getSessionPostGetParam('body');
+    if (!isset($body))
 	{
       printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a story body!<br></h3>");
       exit();
     }
       
-	if (isset($_POST['category']))
-	{
-    	$category = $_POST['category'];
-	}
-    elseif (isset($_GET['category']))
-    {
-      $category = $_GET['category'];
-	}
-	else
+    $category = getSessionPostGetParam('category');
+    if (!isset($category))
 	{
       printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a category !<br></h3>");
       exit();

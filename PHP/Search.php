@@ -6,57 +6,13 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-	if (isset($_POST['type']))
-	{
-		$type = $_POST['type'];
-	}
-    elseif (isset($_GET['type']))
-    {
-      $type = $_GET['type'];
-	}
-	else
-	{
-      $type = 0;
-    }
+    $type = getSessionPostGetParam('type', 0);
 
-	if (isset($_POST['search']))
-	{
-    	$search = $_POST['search'];
-	}
-    elseif (isset($_GET['search']))
-    {
-      $search = $_GET['search'];
-    }
-	else
-	{
-	  $search = NULL;
-	}
+    $search = getSessionPostGetParam('search');
 
-	if (isset($_POST['page']))
-	{
-    	$page = $_POST['page'];
-	}
-    elseif (isset($_GET['page']))
-    {
-      $page = $_GET['page'];
-	}
-	else
-	{
-      $page = 0;
-    }
+    $page = getSessionPostGetParam('page', 0);
       
-	if (isset($_POST['nbOfStories']))
-	{
-    	$nbOfStories = $_POST['nbOfStories'];
-	}
-    elseif (isset($_GET['nbOfStories']))
-    {
-      $nbOfStories = $_GET['nbOfStories'];
-	}
-	else
-	{
-      $nbOfStories = 25;
-    }
+    $nbOfStories = getSessionPostGetParam('nbOfStories', 25);
 
     printHTMLheader("RUBBoS search");
 

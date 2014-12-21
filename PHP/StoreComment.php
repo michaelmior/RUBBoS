@@ -6,97 +6,40 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-	if (isset($_POST['nickname']))
-	{
-    	$nickname = $_POST['nickname'];
-	}
-    elseif (isset($_GET['nickname']))
-    {
-      $nickname = $_GET['nickname'];
-    }
-	else
-	{
-	  $nickname = NULL;
-	}
+    $nickname = getSessionPostGetParam('nickname');
 
-	if (isset($_POST['password']))
-	{
-    	$password = $_POST['password'];
-	}
-    elseif (isset($_GET['password']))
-    {
-      $password = $_GET['password'];
-    }
-	else
-	{
-	  $password = NULL;
-	}
+    $password = getSessionPostGetParam('password');
 
-	if (isset($_POST['storyId']))
-	{
-    	$storyId = $_POST['storyId'];
-	}
-    elseif (isset($_GET['storyId']))
-    {
-      $storyId = $_GET['storyId'];
-	}
-	else
+    $storyId = getSessionPostGetParam('storyId');
+    if (!isset($storyId))
 	{
       printError($scriptName, $startTime, "StoreComment", "You must provide a story identifier!<br>");
       exit();
     }
 
-	if (isset($_POST['parent']))
-	{
-    	$parent = $_POST['parent'];
-	}
-    elseif (isset($_GET['parent']))
-    {
-      $parent = $_GET['parent'];
-	}
-	else
+    $parent = getSessionPostGetParam('parent');
+    if (!isset($parent))
 	{
       printError($scriptName, $startTime, "StoreComment", "You must provide a follow up identifier!<br>");
       exit();
     }
 
-	if (isset($_POST['subject']))
-	{
-    	$subject = $_POST['subject'];
-	}
-    elseif (isset($_GET['subject']))
-    {
-      $subject = $_GET['subject'];
-	}
-	else
+    $subject = getSessionPostGetParam('subject');
+    if (!isset($subject))
 	{
       printError($scriptName, $startTime, "StoreComment", "You must provide a comment subject!<br>");
       exit();
     }
 
-	if (isset($_POST['body']))
-	{
-    	$body = $_POST['body'];
-	}
-    elseif (isset($_GET['body']))
-    {
-      $body = $_GET['body'];
-	}
-	else
+    $body = getSessionPostGetParam('body');
+    if (!isset($body))
 	{
       printError($scriptName, $startTime, "StoreComment", "<h3>You must provide a comment body!<br></h3>");
       exit();
     }
       
-	if (isset($_POST['comment_table']))
-	{
-    	$comment_table = $_POST['comment_table'];
-	}
-    elseif (isset($_GET['comment_table']))
-    {
-      $comment_table = $_GET['comment_table'];
-	}
-	else
+    $comment_table = getSessionPostGetParam('comment_table');
+    if (!isset($comment_table))
 	{
       printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
       exit();

@@ -57,69 +57,26 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     include("PHPprinter.php");
     $startTime = getMicroTime();
     
-	if (isset($_POST['filter']))
-	{
-    	$filter = $_POST['filter'];
-	}
-    elseif (isset($_GET['filter']))
-    {
-      $filter = $_GET['filter'];
-	}
-	else
-	{
-      $filter = 0;
-    }
+    $filter = getSessionPostGetParam('filter', 0);
 
-	if (isset($_POST['display']))
-	{
-    	$display = $_POST['display'];
-	}
-    elseif (isset($_GET['display']))
-    {
-      $display = $_GET['display'];
-	}
-	else
-	{
-      $display = 0;
-    }
+    $display = getSessionPostGetParam('display', 0);
 
-	if (isset($_POST['storyId']))
-	{
-    	$storyId = $_POST['storyId'];
-	}
-    elseif (isset($_GET['storyId']))
-    {
-      $storyId = $_GET['storyId'];
-	}
-	else
+    $storyId = getSessionPostGetParam('storyId');
+    if (!isset($storyId))
 	{
       printError($scriptName, $startTime, "Viewing comment", "You must provide a story identifier!<br>");
       exit();
     }
       
-	if (isset($_POST['commentId']))
-	{
-    	$commentId = $_POST['commentId'];
-	}
-    elseif (isset($_GET['commentId']))
-    {
-      $commentId = $_GET['commentId'];
-	}
-	else
+    $commentId = getSessionPostGetParam('commentId');
+    if (!isset($commentId))
 	{
       printError($scriptName, $startTime, "Viewing comment", "You must provide a comment identifier!<br>");
       exit();
     }
 
-	if (isset($_POST['comment_table']))
-	{
-    	$comment_table = $_POST['comment_table'];
-	}
-    elseif (isset($_GET['comment_table']))
-    {
-      $comment_table = $_GET['comment_table'];
-	}
-	else
+    $comment_table = getSessionPostGetParam('comment_table');
+    if (!isset($comment_table))
 	{
       printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
       exit();
@@ -127,8 +84,9 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
 
     getDatabaseLink($link);
     if ($commentId == 0)
-
+    {
       $parent = 0;
+    }
     else
     {
       $result = mysql_query("SELECT parent FROM $comment_table WHERE id=$commentId", $link);

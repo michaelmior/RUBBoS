@@ -6,59 +6,23 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-	if (isset($_POST['categoryName']))
-	{
-    	$categoryName = $_POST['categoryName'];
-	}
-	elseif (isset($_GET['categoryName']))
-    {
-      $categoryName = $_GET['categoryName'];
-	}
-	else
+    $categoryName = getSessionPostGetParam('categoryName');
+    if (!isset($categoryName))
 	{
       printError($scriptName, $startTime, "Browse Stories By Category", "You must provide a category name!<br>");
       exit();
     }
       
-	if (isset($_POST['category']))
-	{
-    	$categoryId = $_POST['category'];
-	}
-    elseif (isset($_GET['category']))
-    {
-      $categoryId = $_GET['category'];
-	}
-	else
+    $category = getSessionPostGetParam('category');
+    if (!isset($category))
 	{
       printError($scriptName, $startTime, "Browse Stories By Category", "You must provide a category identifier!<br>");
       exit();
     }
       
-	if (isset($_POST['page']))
-	{
-    	$page = $_POST['page'];
-	}
-	elseif (isset($_GET['page']))
-    {
-      $page = $_GET['page'];
-	}
-	else
-	{
-      $page = 0;
-    }
+    $page = getSessionPostGetParam('page', 0);
       
-	if (isset($_POST['nbOfStories']))
-	{
-    	$nbOfStories = $_POST['nbOfStories'];
-	}
-    elseif (isset($_GET['nbOfStories']))
-    {
-      $nbOfStories = $_GET['nbOfStories'];
-	}
-	else
-	{
-      $nbOfStories = 25;
-    }
+    $nbOfStories = getSessionPostGetParam('nbOfStories', 25);
 
     printHTMLheader("RUBBoS Browse Stories By Category");
     print("<br><h2>Stories in category $categoryName</h2><br>");

@@ -27,43 +27,14 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     $startTime = getMicroTime();
 
     // Check parameters
-	if (isset($_POST['storyId']))
-	{
-    	$storyId = $_POST['storyId'];
-	}
-    elseif (isset($_GET['storyId']))
-    {
-      $storyId = $_GET['storyId'];
-	}
-	else
+    $storyId = getSessionPostGetParam('storyId');
+    if (!isset($storyId))
     {
       printError($scriptName, $startTime, "Viewing story", "You must provide a story identifier!<br>");
       exit();
     }
-	if (isset($_POST['filter']))
-	{
-    	$filter = $_POST['filter'];
-	}
-    elseif (isset($_GET['filter']))
-    {
-      $filter = $_GET['filter'];
-	}
-	else
-    {
-	  $filter = 0;
-    }
-	if (isset($_POST['display']))
-	{
-    	$display = $_POST['display'];
-	}
-    elseif (isset($_GET['display']))
-    {
-      $display = $_GET['display'];
-	}
-	else
-    {
-	  $display = 1;
-    }
+    $filter = getSessionPostGetParam('filter', 0);
+    $display = getSessionPostGetParam('display', 1);
       
     getDatabaseLink($link);
     $result = mysql_query("SELECT * FROM stories WHERE id=$storyId");

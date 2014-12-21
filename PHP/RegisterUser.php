@@ -6,71 +6,36 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
     
-	if (isset($_POST['firstname']))
-	{
-    	$firstname = $_POST['firstname'];
-	}
-    elseif (isset($_GET['firstname']))
-    {
-      $firstname = $_GET['firstname'];
-	}
-	else
+    $firstname = getSessionPostGetParam('firstname');
+    if (!isset($firstname))
 	{
       printError($scriptName, $startTime, "Register user", "You must provide a first name!<br>");
       exit();
     }
       
-	if (isset($_POST['lastname']))
-	{
-    	$lastname = $_POST['lastname'];
-	}
-    elseif (isset($_GET['lastname']))
-	{
-      $lastname = $_GET['lastname'];
-	}
-	else
+    $lastname = getSessionPostGetParam('lastname');
+    if (!isset($lastname))
 	{
       printError($scriptName, $startTime, "Register user", "You must provide a last name!<br>");
       exit();
     }
       
-	if (isset($_POST['nickname']))
-	{
-    	$nickname = $_POST['nickname'];
-	}
-	elseif (isset($_GET['nickname']))
-    {
-      $nickname = $_GET['nickname'];
-	}
-	else
+    $nickname = getSessionPostGetParam('nickname');
+    if (!isset($nickname))
 	{
       printError($scriptName, $startTime, "Register user", "You must provide a nick name!<br>");
       exit();
     }
 
-	if (isset($_POST['email']))
-	{
-    	$email = $_POST['email'];
-	}
-    elseif (isset($_GET['email']))
-    {
-      $email = $_GET['email'];
-	}
-	else
+    $email = getSessionPostGetParam('email');
+    if (!isset($email))
 	{
       printError($scriptName, $startTime, "Register user", "You must provide an email address!<br>");
       exit();
     }
 
-	if (isset($_POST['password']))
-	{
-    	$password = $_POST['password'];
-	}
-    elseif (isset($_GET['password']))
-    {
-      $password = $_GET['password'];
-	}
-	else
+    $password = getSessionPostGetParam('password');
+    if (!isset($password))
 	{
       printError($scriptName, $startTime, "Register user", "You must provide a password!<br>");
       exit();

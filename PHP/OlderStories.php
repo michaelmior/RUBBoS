@@ -6,70 +6,15 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-	if (isset($_POST['day']))
-	{
-    	$day = $_POST['day'];
-	}
-	elseif (isset($_GET['day']))
-    {
-      $day = $_GET['day'];
-    }
-	else
-	{
-	  $day = NULL;
-	}
+    $day = getSessionPostGetParam('day');
       
-	if (isset($_POST['month']))
-	{
-    	$month = $_POST['month'];
-	}
-	elseif (isset($_GET['month']))
-    {
-      $month = $_GET['month'];
-    }
-	else
-	{
-	  $month = NULL;
-	}
+    $month = getSessionPostGetParam('month');
       
-	if (isset($_POST['year']))
-	{
-    	$year = $_POST['year'];
-	}
-	elseif (isset($_GET['year']))
-    {
-      $year = $_GET['year'];
-    }
-	else
-	{
-	  $year = NULL;
-	}
+    $year = getSessionPostGetParam('year');
       
-	if (isset($_POST['page']))
-	{
-    	$page = $_POST['page'];
-	}
-	elseif (isset($_GET['page']))
-	{
-      $page = $_GET['page'];
-	}
-	else
-	{
-      $page = 0;
-    }
+    $page = getSessionPostGetParam('page', 0);
       
-	if (isset($_POST['nbOfStories']))
-	{
-    	$nbOfStories = $_POST['nbOfStories'];
-	}
-	elseif (isset($_GET['nbOfStories']))
-	{
-      $nbOfStories = $_GET['nbOfStories'];
-	}
-	else
-	{
-      $nbOfStories = 25;
-    }
+    $nbOfStories = getSessionPostGetParam('nbOfStories', 25);
 
     printHTMLheader("RUBBoS Older Stories");
 

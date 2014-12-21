@@ -79,4 +79,34 @@ function getUserName($uid, $link)
   return $user_row["nickname"];
 }
 
+
+function getSessionPostGetParam($name, $value=null)
+{
+  if (isset($_POST[$name]))
+  {
+    return $_POST[$name];
+  }
+  if (isset($_GET[$name]))
+  {
+    return $_GET[$name];
+  }
+
+  return $value;
+}
+
+
+function getSessionGetPostParam($name, $value=null)
+{
+  if (isset($_GET[$name]))
+  {
+    return $_GET[$name];
+  }
+  if (isset($_POST[$name]))
+  {
+    return $_POST[$name];
+  }
+
+  return $value;
+}
+
 ?>

@@ -6,15 +6,8 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-	if (isset($_POST['storyId']))
-	{
-    	$storyId = $_POST['storyId'];
-	}
-    elseif (isset($_GET['storyId']))
-    {
-      $storyId = $_GET['storyId'];
-	}
-	else
+    $storyId = getSessionPostGetParam('storyId');
+    if (!isset($storyId))
 	{
       printError($scriptName, $startTime, "RejectStory", "<h3>You must provide a story identifier !<br></h3>");
       exit();
