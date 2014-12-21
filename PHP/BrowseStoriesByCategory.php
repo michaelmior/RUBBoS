@@ -13,8 +13,8 @@
       exit();
     }
       
-    $category = getSessionPostGetParam('category');
-    if (!isset($category))
+    $categoryId = getSessionPostGetParam('categoryId');
+    if (!isset($categoryId))
 	{
       printError($scriptName, $startTime, "Browse Stories By Category", "You must provide a category identifier!<br>");
       exit();
