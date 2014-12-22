@@ -9,18 +9,19 @@
     $comment_table = getSessionPostGetParam('comment_table');
     if (!isset($comment_table))
 	{
-      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!<br>");
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!");
       exit();
     }
 
     $commentId = getSessionPostGetParam('commentId');
     if (!isset($commentId))
 	{
-      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!<br>");
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!");
       exit();
     }
 
     getDatabaseLink($link);
+
     printHTMLheader("RUBBoS: Comment moderation");
 
     $result = mysql_query("SELECT * FROM $comment_table WHERE id=$commentId", $link);

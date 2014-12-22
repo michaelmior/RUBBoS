@@ -30,7 +30,7 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     $storyId = getSessionPostGetParam('storyId');
     if (!isset($storyId))
     {
-      printError($scriptName, $startTime, "Viewing story", "You must provide a story identifier!<br>");
+      printError($scriptName, $startTime, "Viewing story", "You must provide a story identifier!");
       exit();
     }
     $filter = getSessionPostGetParam('filter', 0);
@@ -61,8 +61,11 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     $username = getUserName($row["writer"], $link);
 
     // Display the story
+
     printHTMLheader("RUBBoS: Viewing story ".$row["title"]);
+
     printHTMLHighlighted($row["title"]);
+
     print("Posted by ".$username." on ".$row["date"]."<br>\n");
     print($row["body"]."<br>\n");
       print("<p><center><a href=\"/PHP/PostComment.php?comment_table=$comment_table&storyId=$storyId&parent=0\">Post a comment on this story</a></center><p>");

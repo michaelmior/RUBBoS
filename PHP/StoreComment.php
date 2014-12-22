@@ -13,35 +13,35 @@
     $storyId = getSessionPostGetParam('storyId');
     if (!isset($storyId))
 	{
-      printError($scriptName, $startTime, "StoreComment", "You must provide a story identifier!<br>");
+      printError($scriptName, $startTime, "StoreComment", "You must provide a story identifier!");
       exit();
     }
 
     $parent = getSessionPostGetParam('parent');
     if (!isset($parent))
 	{
-      printError($scriptName, $startTime, "StoreComment", "You must provide a follow up identifier!<br>");
+      printError($scriptName, $startTime, "StoreComment", "You must provide a follow up identifier!");
       exit();
     }
 
     $subject = getSessionPostGetParam('subject');
     if (!isset($subject))
 	{
-      printError($scriptName, $startTime, "StoreComment", "You must provide a comment subject!<br>");
+      printError($scriptName, $startTime, "StoreComment", "You must provide a comment subject!");
       exit();
     }
 
     $body = getSessionPostGetParam('body');
     if (!isset($body))
 	{
-      printError($scriptName, $startTime, "StoreComment", "<h3>You must provide a comment body!<br></h3>");
+      printError($scriptName, $startTime, "StoreComment", "You must provide a comment body!");
       exit();
     }
       
     $comment_table = getSessionPostGetParam('comment_table');
     if (!isset($comment_table))
 	{
-      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!");
       exit();
     }
 

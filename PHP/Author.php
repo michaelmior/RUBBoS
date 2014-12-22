@@ -9,18 +9,20 @@
     $nickname = getSessionPostGetParam('nickname');
     if (!isset($nickname))
 	{
-      printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
+      printError($scriptName, $startTime, "Author", "You must provide a nick name!");
       exit();
     }
 
     $password = getSessionPostGetParam('password');
     if (!isset($password))
 	{
-      printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
+      printError($scriptName, $startTime, "Author", "You must provide a password!");
       exit();
     }
 
     getDatabaseLink($link);
+
+    printHTMLheader("RUBBoS: Author page");
 
     // Authenticate the user
     $userId = 0;
@@ -44,12 +46,10 @@
 
     if (($userId == 0) || ($access == 0))
     {
-      printHTMLheader("RUBBoS: Author page");
       print("<p><center><h2>Sorry, but this feature is only accessible by users with an author access.</h2></center><p>\n");
     }
     else
     {
-      printHTMLheader("RUBBoS: Author page");
       print("<p><center><h2>Which administrative task do you want to do ?</h2></center>\n".
             "<p><p><a href=\"/PHP/ReviewStories.php?authorId=$userId\">Review submitted stories</a><br>\n");
     }

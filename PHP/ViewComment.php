@@ -64,25 +64,28 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
     $storyId = getSessionPostGetParam('storyId');
     if (!isset($storyId))
 	{
-      printError($scriptName, $startTime, "Viewing comment", "You must provide a story identifier!<br>");
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a story identifier!");
       exit();
     }
       
     $commentId = getSessionPostGetParam('commentId');
     if (!isset($commentId))
 	{
-      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment identifier!<br>");
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment identifier!");
       exit();
     }
 
     $comment_table = getSessionPostGetParam('comment_table');
     if (!isset($comment_table))
 	{
-      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!");
       exit();
     }
 
     getDatabaseLink($link);
+
+    printHTMLheader("RUBBoS: Viewing comments");
+
     if ($commentId == 0)
     {
       $parent = 0;
@@ -102,8 +105,6 @@ function display_follow_up($cid, $level, $display, $filter, $link, $comment_tabl
       $row = mysql_fetch_array($result);
       $parent = $row["parent"];
     }
-
-    printHTMLheader("RUBBoS: Viewing comments");
 
     // Display comment filter chooser
     print("<center><form action=\"/PHP/ViewComment.php\" method=GET>\n".

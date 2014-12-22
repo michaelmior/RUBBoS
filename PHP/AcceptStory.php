@@ -9,7 +9,7 @@
     $storyId = getSessionPostGetParam('storyId');
     if (!isset($storyId))
 	{
-      printError($scriptName, $startTime, "AcceptStory", "<h3>You must provide a story identifier !<br></h3>");
+      printError($scriptName, $startTime, "AcceptStory", "You must provide a story identifier!");
       exit();
     }
 

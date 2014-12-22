@@ -13,21 +13,21 @@
     $title = getSessionPostGetParam('title');
     if (!isset($title))
 	{
-      printError($scriptName, $startTime, "SubmitStory", "You must provide a story title!<br>");
+      printError($scriptName, $startTime, "SubmitStory", "You must provide a story title!");
       exit();
     }
 
     $body = getSessionPostGetParam('body');
     if (!isset($body))
 	{
-      printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a story body!<br></h3>");
+      printError($scriptName, $startTime, "SubmitStory", "You must provide a story body!");
       exit();
     }
       
     $category = getSessionPostGetParam('category');
     if (!isset($category))
 	{
-      printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a category !<br></h3>");
+      printError($scriptName, $startTime, "SubmitStory", "You must provide a category!");
       exit();
     }
 

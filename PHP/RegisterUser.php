@@ -9,35 +9,35 @@
     $firstname = getSessionPostGetParam('firstname');
     if (!isset($firstname))
 	{
-      printError($scriptName, $startTime, "Register user", "You must provide a first name!<br>");
+      printError($scriptName, $startTime, "Register user", "You must provide a first name!");
       exit();
     }
       
     $lastname = getSessionPostGetParam('lastname');
     if (!isset($lastname))
 	{
-      printError($scriptName, $startTime, "Register user", "You must provide a last name!<br>");
+      printError($scriptName, $startTime, "Register user", "You must provide a last name!");
       exit();
     }
       
     $nickname = getSessionPostGetParam('nickname');
     if (!isset($nickname))
 	{
-      printError($scriptName, $startTime, "Register user", "You must provide a nick name!<br>");
+      printError($scriptName, $startTime, "Register user", "You must provide a nick name!");
       exit();
     }
 
     $email = getSessionPostGetParam('email');
     if (!isset($email))
 	{
-      printError($scriptName, $startTime, "Register user", "You must provide an email address!<br>");
+      printError($scriptName, $startTime, "Register user", "You must provide an email address!");
       exit();
     }
 
     $password = getSessionPostGetParam('password');
     if (!isset($password))
 	{
-      printError($scriptName, $startTime, "Register user", "You must provide a password!<br>");
+      printError($scriptName, $startTime, "Register user", "You must provide a password!");
       exit();
     }
 
@@ -52,7 +52,7 @@
 	}
     if (mysql_num_rows($nicknameResult) > 0)
     {
-      printError($scriptName, $startTime, "Register user", "The nickname you have choosen is already taken by someone else. Please choose a new nickname.<br>\n");
+      printError($scriptName, $startTime, "Register user", "The nickname you have choosen is already taken by someone else. Please choose a new nickname!");
       mysql_free_result($nicknameResult);
       exit();
     }
@@ -76,6 +76,7 @@
     $row = mysql_fetch_array($result);
 
     printHTMLheader("RUBBoS: Welcome to $nickname");
+
     print("<h2>Your registration has been processed successfully</h2><br>\n");
     print("<h3>Welcome $nickname</h3>\n");
     print("RUBBoS has stored the following information about you:<br>\n");

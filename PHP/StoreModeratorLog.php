@@ -9,35 +9,35 @@
     $nickname = getSessionPostGetParam('nickname');
     if (!isset($nickname))
 	{
-      printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
+      printError($scriptName, $startTime, "Author", "You must provide a nick name!");
       exit();
     }
 
     $password = getSessionPostGetParam('password');
     if (!isset($password))
 	{
-      printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
+      printError($scriptName, $startTime, "Author", "You must provide a password!");
       exit();
     }
 
     $comment_table = getSessionPostGetParam('comment_table');
     if (!isset($comment_table))
 	{
-      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!<br>");
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!");
       exit();
     }
 
     $commentId = getSessionPostGetParam('commentId');
     if (!isset($commentId))
 	{
-      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!<br>");
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!");
       exit();
     }
 
     $rating = getSessionPostGetParam('rating');
     if (!isset($rating))
 	{
-      printError($scriptName, $startTime, "Moderating comment", "You must provide a rating!<br>");
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a rating!");
       exit();
     }
       

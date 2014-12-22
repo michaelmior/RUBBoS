@@ -47,8 +47,10 @@ function printHTMLfooter($scriptName, $startTime)
 function printError($scriptName, $startTime, $title, $error)
 {
   printHTMLheader("RUBBoS ERROR: $title");
-  print("<h2>We cannot process your request due to the following error :</h2><br>\n");
-  print($error);
+
+  print("<h2>We cannot process your request due to the following error :</h2><br>");
+  print("<h3>" . $error . "<h3><br>");
+
   printHTMLfooter($scriptName, $startTime);      
 }
 
@@ -107,6 +109,24 @@ function getSessionGetPostParam($name, $value=null)
   }
 
   return $value;
+}
+
+
+function begin($link)
+{
+  mysql_query("BEGIN", $link);
+}
+
+
+function commit($link)
+{
+  mysql_query("COMMIT", $link);
+}
+
+
+function rollback($link)
+{
+  mysql_query("ROLLBACK", $link);
 }
 
 ?>

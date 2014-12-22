@@ -9,24 +9,25 @@
     $storyId = getSessionPostGetParam('storyId');
     if (!isset($storyId))
 	{
-      printError($scriptName, $startTime, "Posting comment", "You must provide a story identifier!<br>");
+      printError($scriptName, $startTime, "Posting comment", "You must provide a story identifier!");
       exit();
     }
     $parent = getSessionPostGetParam('parent');
     if (!isset($parent))
 	{
-      printError($scriptName, $startTime, "Posting comment", "You must provide a follow up identifier!<br>");
+      printError($scriptName, $startTime, "Posting comment", "You must provide a follow up identifier!");
       exit();
     }
 
     $comment_table = getSessionPostGetParam('comment_table');
     if (!isset($comment_table))
 	{
-      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!");
       exit();
     }
 
     printHTMLheader("RUBBoS: Comment submission");
+
     print("<p><br><center><h2>Post a comment !</h2><br>\n".
           "<form action=\"/PHP/StoreComment.php\" method=POST>\n".
           "<input type=hidden name=storyId value=$storyId>\n".
