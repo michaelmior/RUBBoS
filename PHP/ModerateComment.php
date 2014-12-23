@@ -6,34 +6,32 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $comment_table = $_POST['comment_table'];
-    if ($comment_table == null)
-    {
-      $comment_table = $_GET['comment_table'];
-      if ($comment_table == null)
-      {
-         printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!<br>");
-         exit();
-      }
+    $comment_table = getSessionPostGetParam('comment_table');
+    if (!isset($comment_table))
+	{
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment table!");
+      exit();
     }
 
-    $commentId = $_POST['commentId'];
-    if ($commentId == null)
-    {
-      $commentId = $_GET['commentId'];
-      if ($commentId == null)
-      {
-         printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!<br>");
-         exit();
-      }
+    $commentId = getSessionPostGetParam('commentId');
+    if (!isset($commentId))
+	{
+      printError($scriptName, $startTime, "Moderating comment", "You must provide a comment identifier!");
+      exit();
     }
 
     getDatabaseLink($link);
+
     printHTMLheader("RUBBoS: Comment moderation");
 
-    $result = mysql_query("SELECT * FROM $comment_table WHERE id=$commentId", $link) or die("ERROR: Query failed");
+    $result = mysql_query("SELECT * FROM $comment_table WHERE id=$commentId", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Query 'SELECT * FROM $comment_table WHERE id=$commentId' failed: " . mysql_error($link));
+		die("ERROR: Query failed for comment '$commentId': " . mysql_error($link));
+	}
     if (mysql_num_rows($result) == 0)
-     die("<h3>ERROR: Sorry, but this comment does not exist.</h3><br>\n");
+     die("<h3>ERROR: Sorry, but this comment '$commentId' does not exist.</h3><br>\n");
     $row = mysql_fetch_array($result);
 
     print("<p><br><center><h2>Moderate a comment !</h2></center><br>\n<br><hr><br>");

@@ -6,49 +6,29 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
-    {
-      $nickname = $_GET['nickname'];
+    $nickname = getSessionPostGetParam('nickname');
+
+    $password = getSessionPostGetParam('password');
+
+    $title = getSessionPostGetParam('title');
+    if (!isset($title))
+	{
+      printError($scriptName, $startTime, "SubmitStory", "You must provide a story title!");
+      exit();
     }
 
-    $password = $_POST['password'];
-    if ($password == null)
-    {
-      $password = $_GET['password'];
-    }
-
-    $title = $_POST['title'];
-    if ($title == null)
-    {
-      $title = $_GET['title'];
-      if ($title == null)
-      {
-         printError($scriptName, $startTime, "SubmitStory", "You must provide a story title!<br>");
-         exit();
-      }
-    }
-
-    $body = $_POST['body'];
-    if ($body == null)
-    {
-      $body = $_GET['body'];
-      if ($body == null)
-      {
-         printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a story body!<br></h3>");
-         exit();
-      }
+    $body = getSessionPostGetParam('body');
+    if (!isset($body))
+	{
+      printError($scriptName, $startTime, "SubmitStory", "You must provide a story body!");
+      exit();
     }
       
-    $category = $_POST['category'];
-    if ($category == null)
-    {
-      $category = $_GET['category'];
-      if ($category == null)
-      {
-         printError($scriptName, $startTime, "SubmitStory", "<h3>You must provide a category !<br></h3>");
-         exit();
-      }
+    $category = getSessionPostGetParam('category');
+    if (!isset($category))
+	{
+      printError($scriptName, $startTime, "SubmitStory", "You must provide a category!");
+      exit();
     }
 
     getDatabaseLink($link);
@@ -60,9 +40,14 @@
     // Authenticate the user
     $userId = 0;
     $access = 0;
-    if (($nickname != null) && ($password != null))
+    if (!is_null($nickname) && !is_null($password))
     {
-      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentication query failed");
+      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link);
+	  if (!$result)
+	  {
+		error_log("[".__FILE__."] Authentication query 'SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"' failed: " . mysql_error($link));
+		die("ERROR: Authentication query failed for nickname '$nickname': " . mysql_error($link));
+	  }
       if (mysql_num_rows($result) != 0)
       {
         $row = mysql_fetch_array($result);
@@ -88,7 +73,12 @@
 
     // Add story to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO $table VALUES (NULL, \"$title\", \"$body\", '$now', $userId, $category)", $link) or die("ERROR: Failed to insert new story in database.");
+    $result = mysql_query("INSERT INTO $table VALUES (NULL, \"$title\", \"$body\", '$now', $userId, $category)", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Failed to insert new story in database 'INSERT INTO $table VALUES (NULL, \"$title\", \"$body\", '$now', $userId, $category)': " . mysql_error($link));
+		die("ERROR: Failed to insert new story in database for user '$userId' and category '$category': " . mysql_error($link));
+	}
 
     print("Your story has been successfully stored in the $table database table<br>\n");
     

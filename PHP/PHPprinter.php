@@ -2,8 +2,18 @@
  
 function getDatabaseLink(&$link)
 {
-  $link = mysql_pconnect("localhost", "cecchet", "") or die ("ERROR: Could not connect to database");
-  mysql_select_db("rubbos", $link) or die("ERROR: Couldn't select RUBBoS database");
+  $link = mysql_pconnect("localhost", "cecchet", "");
+  if (!$link)
+  {
+	error_log("[".__FILE__."] Could not connect to database: " . mysql_error());
+	die("ERROR: Could not connect to database: " . mysql_error());
+  }
+  $result = mysql_select_db("rubbos", $link);
+  if (!$result)
+  {
+	error_log("ERROR: Couldn't select RUBBoS database: " . mysql_error($link));
+	die("ERROR: Couldn't select RUBBoS database: " . mysql_error($link));
+  }
 }
 
 function getMicroTime()
@@ -37,14 +47,21 @@ function printHTMLfooter($scriptName, $startTime)
 function printError($scriptName, $startTime, $title, $error)
 {
   printHTMLheader("RUBBoS ERROR: $title");
-  print("<h2>We cannot process your request due to the following error :</h2><br>\n");
-  print($error);
+
+  print("<h2>We cannot process your request due to the following error :</h2><br>");
+  print("<h3>" . $error . "<h3><br>");
+
   printHTMLfooter($scriptName, $startTime);      
 }
 
 function authenticate($nickname, $password, $link)
 {
-  $result = mysql_query("SELECT id FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentification query failed");
+  $result = mysql_query("SELECT id FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link);
+  if (!$result)
+  {
+	error_log("[".__FILE__."] Authentification query 'SELECT id FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"' failed: " . mysql_error($link));
+	die("ERROR: Authentification query failed for nickname '$nickname': " . mysql_error($link));
+  }
   if (mysql_num_rows($result) == 0)
     return 0; // 0 is the anonymous user
   $row = mysql_fetch_array($result);
@@ -54,9 +71,62 @@ function authenticate($nickname, $password, $link)
 
 function getUserName($uid, $link)
 {
-  $user_query = mysql_query("SELECT nickname FROM users WHERE id=$uid", $link) or die("ERROR: getUserName query failed");
+  $user_query = mysql_query("SELECT nickname FROM users WHERE id=$uid", $link);
+  if (!$user_query)
+  {
+	error_log("[".__FILE__."] getUserName query 'SELECT nickname FROM users WHERE id=$uid' failed: " . mysql_error($link));
+	die("ERROR: getUserName query failed for user '$uid': " . mysql_error($link));
+  }
   $user_row = mysql_fetch_array($user_query);
   return $user_row["nickname"];
+}
+
+
+function getSessionPostGetParam($name, $value=null)
+{
+  if (isset($_POST[$name]))
+  {
+    return $_POST[$name];
+  }
+  if (isset($_GET[$name]))
+  {
+    return $_GET[$name];
+  }
+
+  return $value;
+}
+
+
+function getSessionGetPostParam($name, $value=null)
+{
+  if (isset($_GET[$name]))
+  {
+    return $_GET[$name];
+  }
+  if (isset($_POST[$name]))
+  {
+    return $_POST[$name];
+  }
+
+  return $value;
+}
+
+
+function begin($link)
+{
+  mysql_query("BEGIN", $link);
+}
+
+
+function commit($link)
+{
+  mysql_query("COMMIT", $link);
+}
+
+
+function rollback($link)
+{
+  mysql_query("ROLLBACK", $link);
 }
 
 ?>

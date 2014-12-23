@@ -6,39 +6,28 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $storyId = $_POST['storyId'];
-    if ($storyId == null)
-    {
-      $storyId = $_GET['storyId'];
-      if ($storyId == null)
-      {
-         printError($scriptName, $startTime, "Posting comment", "You must provide a story identifier!<br>");
-         exit();
-      }
+    $storyId = getSessionPostGetParam('storyId');
+    if (!isset($storyId))
+	{
+      printError($scriptName, $startTime, "Posting comment", "You must provide a story identifier!");
+      exit();
     }
-    $parent = $_POST['parent'];
-    if ($parent == null)
-    {
-      $parent = $_GET['parent'];
-      if ($parent == null)
-      {
-         printError($scriptName, $startTime, "Posting comment", "You must provide a follow up identifier!<br>");
-         exit();
-      }
+    $parent = getSessionPostGetParam('parent');
+    if (!isset($parent))
+	{
+      printError($scriptName, $startTime, "Posting comment", "You must provide a follow up identifier!");
+      exit();
     }
 
-    $comment_table = $_POST['comment_table'];
-    if ($comment_table == null)
-    {
-      $comment_table = $_GET['comment_table'];
-      if ($comment_table == null)
-      {
-         printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
-         exit();
-      }
+    $comment_table = getSessionPostGetParam('comment_table');
+    if (!isset($comment_table))
+	{
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!");
+      exit();
     }
 
     printHTMLheader("RUBBoS: Comment submission");
+
     print("<p><br><center><h2>Post a comment !</h2><br>\n".
           "<form action=\"/PHP/StoreComment.php\" method=POST>\n".
           "<input type=hidden name=storyId value=$storyId>\n".

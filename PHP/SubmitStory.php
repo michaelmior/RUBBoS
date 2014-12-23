@@ -17,7 +17,12 @@
           "<tr><td><b>Password</b><td><input type=text size=20 name=password>\n".
           "<tr><td><b>Story title</b><td><input type=text size=100 name=title>\n".
           "<tr><td><b>Category</b><td><SELECT name=category>\n");
-    $result = mysql_query("SELECT * FROM categories", $link) or die("ERROR: Query failed");
+    $result = mysql_query("SELECT * FROM categories", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Query 'SELECT * FROM categories' failed: " . mysql_error($link));
+		die("ERROR: Query failed for categories: " . mysql_error($link));
+	}
     while ($row = mysql_fetch_array($result))
     {
       print("<OPTION value=\"".$row["id"]."\">".$row["name"]."</OPTION>\n");

@@ -6,68 +6,53 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
     
-    $firstname = $_POST['firstname'];
-    if ($firstname == null)
-    {
-      $firstname = $_GET['firstname'];
-      if ($firstname == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide a first name!<br>");
-         exit();
-      }
+    $firstname = getSessionPostGetParam('firstname');
+    if (!isset($firstname))
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide a first name!");
+      exit();
     }
       
-    $lastname = $_POST['lastname'];
-    if ($lastname == null)
-    {
-      $lastname = $_GET['lastname'];
-      if ($lastname == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide a last name!<br>");
-         exit();
-      }
+    $lastname = getSessionPostGetParam('lastname');
+    if (!isset($lastname))
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide a last name!");
+      exit();
     }
       
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
-    {
-      $nickname = $_GET['nickname'];
-      if ($nickname == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide a nick name!<br>");
-         exit();
-      }
+    $nickname = getSessionPostGetParam('nickname');
+    if (!isset($nickname))
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide a nick name!");
+      exit();
     }
 
-    $email = $_POST['email'];
-    if ($email == null)
-    {
-      $email = $_GET['email'];
-      if ($email == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide an email address!<br>");
-         exit();
-      }
+    $email = getSessionPostGetParam('email');
+    if (!isset($email))
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide an email address!");
+      exit();
     }
 
-    $password = $_POST['password'];
-    if ($password == null)
-    {
-      $password = $_GET['password'];
-      if ($password == null)
-      {
-         printError($scriptName, $startTime, "Register user", "You must provide a password!<br>");
-         exit();
-      }
+    $password = getSessionPostGetParam('password');
+    if (!isset($password))
+	{
+      printError($scriptName, $startTime, "Register user", "You must provide a password!");
+      exit();
     }
 
     getDatabaseLink($link);
 
     // Check if the nick name already exists
-    $nicknameResult = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link) or die("ERROR: Nickname query failed");
+    $nicknameResult = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link);
+	if (!$nicknameResult)
+	{
+		error_log("[".__FILE__."] Nickname query 'SELECT * FROM users WHERE nickname=\"$nickname\"' failed: " . mysql_error($link));
+		die("ERROR: Nickname query failed for nickname '$nickname': " . mysql_error($link));
+	}
     if (mysql_num_rows($nicknameResult) > 0)
     {
-      printError($scriptName, $startTime, "Register user", "The nickname you have choosen is already taken by someone else. Please choose a new nickname.<br>\n");
+      printError($scriptName, $startTime, "Register user", "The nickname you have choosen is already taken by someone else. Please choose a new nickname!");
       mysql_free_result($nicknameResult);
       exit();
     }
@@ -75,12 +60,23 @@
 
     // Add user to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO users VALUES (NULL, \"$firstname\", \"$lastname\", \"$nickname\", \"$password\", \"$email\", 0, 0, '$now')", $link) or die("ERROR: Failed to insert new user in database.");
+    $result = mysql_query("INSERT INTO users VALUES (NULL, \"$firstname\", \"$lastname\", \"$nickname\", \"$password\", \"$email\", 0, 0, '$now')", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Failed to insert new user in database 'INSERT INTO users VALUES (NULL, \"$firstname\", \"$lastname\", \"$nickname\", \"$password\", \"$email\", 0, 0, '$now')': " . mysql_error($link));
+		die("ERROR: Failed to insert new user in database for nickname '$nickname': " . mysql_error($link));
+	}
 
-    $result = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link) or die("ERROR: Query user failed");
+    $result = mysql_query("SELECT * FROM users WHERE nickname=\"$nickname\"", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Query 'SELECT * FROM users WHERE nickname=\"$nickname\"' failed: " . mysql_error($link));
+		die("ERROR: Query user failed for nickname '$nickname': " . mysql_error($link));
+	}
     $row = mysql_fetch_array($result);
 
     printHTMLheader("RUBBoS: Welcome to $nickname");
+
     print("<h2>Your registration has been processed successfully</h2><br>\n");
     print("<h3>Welcome $nickname</h3>\n");
     print("RUBBoS has stored the following information about you:<br>\n");

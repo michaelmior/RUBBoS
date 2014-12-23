@@ -6,71 +6,43 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
 
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
-    {
-      $nickname = $_GET['nickname'];
+    $nickname = getSessionPostGetParam('nickname');
+
+    $password = getSessionPostGetParam('password');
+
+    $storyId = getSessionPostGetParam('storyId');
+    if (!isset($storyId))
+	{
+      printError($scriptName, $startTime, "StoreComment", "You must provide a story identifier!");
+      exit();
     }
 
-    $password = $_POST['password'];
-    if ($password == null)
-    {
-      $password = $_GET['password'];
+    $parent = getSessionPostGetParam('parent');
+    if (!isset($parent))
+	{
+      printError($scriptName, $startTime, "StoreComment", "You must provide a follow up identifier!");
+      exit();
     }
 
-    $storyId = $_POST['storyId'];
-    if ($storyId == null)
-    {
-      $storyId = $_GET['storyId'];
-      if ($storyId == null)
-      {
-         printError($scriptName, $startTime, "StoreComment", "You must provide a story identifier!<br>");
-         exit();
-      }
+    $subject = getSessionPostGetParam('subject');
+    if (!isset($subject))
+	{
+      printError($scriptName, $startTime, "StoreComment", "You must provide a comment subject!");
+      exit();
     }
 
-    $parent = $_POST['parent'];
-    if ($parent == null)
-    {
-      $parent = $_GET['parent'];
-      if ($parent == null)
-      {
-         printError($scriptName, $startTime, "StoreComment", "You must provide a follow up identifier!<br>");
-         exit();
-      }
-    }
-
-    $subject = $_POST['subject'];
-    if ($subject == null)
-    {
-      $subject = $_GET['subject'];
-      if ($subject == null)
-      {
-         printError($scriptName, $startTime, "StoreComment", "You must provide a comment subject!<br>");
-         exit();
-      }
-    }
-
-    $body = $_POST['body'];
-    if ($body == null)
-    {
-      $body = $_GET['body'];
-      if ($body == null)
-      {
-         printError($scriptName, $startTime, "StoreComment", "<h3>You must provide a comment body!<br></h3>");
-         exit();
-      }
+    $body = getSessionPostGetParam('body');
+    if (!isset($body))
+	{
+      printError($scriptName, $startTime, "StoreComment", "You must provide a comment body!");
+      exit();
     }
       
-    $comment_table = $_POST['comment_table'];
-    if ($comment_table == null)
-    {
-      $comment_table = $_GET['comment_table'];
-      if ($comment_table == null)
-      {
-         printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!<br>");
-         exit();
-      }
+    $comment_table = getSessionPostGetParam('comment_table');
+    if (!isset($comment_table))
+	{
+      printError($scriptName, $startTime, "Viewing comment", "You must provide a comment table!");
+      exit();
     }
 
     getDatabaseLink($link);
@@ -88,10 +60,20 @@
 
     // Add comment to database
     $now = date("Y:m:d H:i:s");
-    $result = mysql_query("INSERT INTO $comment_table VALUES (NULL, $userId, $storyId, $parent, 0, 0, '$now', \"$subject\", \"$body\")", $link) or die("ERROR: Failed to insert new comment in database.");
-    $result = mysql_query("UPDATE $comment_table SET childs=childs+1 WHERE id=$parent", $link) or die("ERROR: Failed to update parent childs in database.");
+    $result = mysql_query("INSERT INTO $comment_table VALUES (NULL, $userId, $storyId, $parent, 0, 0, '$now', \"$subject\", \"$body\")", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Failed to insert new comment in database 'INSERT INTO $comment_table VALUES (NULL, $userId, $storyId, $parent, 0, 0, '$now', \"$subject\", \"$body\")': " . mysql_error($link));
+		die("ERROR: Failed to insert new comment in database for comment table '$comment_table', user '$userId', story '$storyId' and parent '$parent': " . mysql_error($link));
+	}
+    $result = mysql_query("UPDATE $comment_table SET childs=childs+1 WHERE id=$parent", $link);
+	if (!$result)
+	{
+		error_log("[".__FILE__."] Failed to update parent childs in database 'UPDATE $comment_table SET childs=childs+1 WHERE id=$parent': " . mysql_error($link));
+		die("ERROR: Failed to update parent childs in database for comment table '$comment_table' and parent '$parent': " . mysql_error($link));
+	}
 
-    print("Your comment has been successfully stored in the $table database table<br>\n");
+    print("Your comment has been successfully stored in the $comment_table database table<br>\n");
     
     mysql_close($link);
     

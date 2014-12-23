@@ -6,36 +6,35 @@
     include("PHPprinter.php");
     $startTime = getMicroTime();
     
-    $nickname = $_POST['nickname'];
-    if ($nickname == null)
-    {
-      $nickname = $_GET['nickname'];
-      if ($nickname == null)
-      {
-         printError($scriptName, $startTime, "Author", "You must provide a nick name!<br>");
-         exit();
-      }
+    $nickname = getSessionPostGetParam('nickname');
+    if (!isset($nickname))
+	{
+      printError($scriptName, $startTime, "Author", "You must provide a nick name!");
+      exit();
     }
 
-    $password = $_POST['password'];
-    if ($password == null)
-    {
-      $password = $_GET['password'];
-      if ($password == null)
-      {
-         printError($scriptName, $startTime, "Author", "You must provide a password!<br>");
-         exit();
-      }
+    $password = getSessionPostGetParam('password');
+    if (!isset($password))
+	{
+      printError($scriptName, $startTime, "Author", "You must provide a password!");
+      exit();
     }
 
     getDatabaseLink($link);
 
+    printHTMLheader("RUBBoS: Author page");
+
     // Authenticate the user
     $userId = 0;
     $access = 0;
-    if (($nickname != null) && ($password != null))
+    if (!is_null($nickname) && !is_null($password))
     {
-      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link) or die("ERROR: Authentification query failed");
+      $result = mysql_query("SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"", $link);
+	  if (!$result)
+	  {
+		error_log("[".__FILE__."] Authentification query 'SELECT id,access FROM users WHERE nickname=\"$nickname\" AND password=\"$password\"' failed: " . mysql_error($link));
+		die("ERROR: Authentification query failed for nickname '$nickname': " . mysql_error($link));
+	  }
       if (mysql_num_rows($result) != 0)
       {
         $row = mysql_fetch_array($result);
@@ -47,12 +46,10 @@
 
     if (($userId == 0) || ($access == 0))
     {
-      printHTMLheader("RUBBoS: Author page");
       print("<p><center><h2>Sorry, but this feature is only accessible by users with an author access.</h2></center><p>\n");
     }
     else
     {
-      printHTMLheader("RUBBoS: Author page");
       print("<p><center><h2>Which administrative task do you want to do ?</h2></center>\n".
             "<p><p><a href=\"/PHP/ReviewStories.php?authorId=$userId\">Review submitted stories</a><br>\n");
     }
