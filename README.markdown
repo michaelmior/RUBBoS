@@ -3,7 +3,10 @@ The RUBBoS bulletin board benchmark was originally developed by the JMOB project
 
 Installation
 ============
-Only the PHP version of this benchmark is being maintained in this codebase. To install, simply copy the `PHP` directory somewhere into the path of an Apache web server with PHP support. The absolute path of this directory should be specified as `php_html_path` and `php_script_path` in any `rubbos.properties` files used to run the benchmark.
+Only the PHP version of this benchmark is being maintained in this codebase.
+To install, simply copy the `PHP` directory somewhere into the path of an Apache web server with PHP support.
+The absolute path of this directory should be specified as `php_html_path` and `php_script_path` in any `rubbos.properties` files used to run the benchmark.
+Finally, copy `config.example.php` to `config.php` and add in your database connection information.
 
 To build the client emulator, change into the `Client` directory and run `make`. This will create `rubbos_client.jar` which will be used to run the benchmark.
 
