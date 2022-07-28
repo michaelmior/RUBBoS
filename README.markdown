@@ -12,7 +12,7 @@ To build the client emulator, change into the `Client` directory and run `make`.
 
 Database setup
 ==============
-The PHP version of the benchmark requires the MySQL database server (or some server which speaks MySQL). No specific MySQL features are used, so any version of MySQL should suffice. To create the database schema, execute `database/rubbos.sql`. To load the initial data for the benchmark, data files must be downloaded from the [JMOB website](http://jmob.ow2.org/rubbos/smallDB.tgz). Then, `database/load.sql` in this repository must be updated with the path to these files, then executed to complete the loading.
+The PHP version of the benchmark requires the MySQL database server (or some server which speaks MySQL). No specific MySQL features are used, so any version of MySQL should suffice. To create the database schema, execute `database/rubbos.sql`. To load the initial data for the benchmark, data files must be downloaded from the [JMOB website](https://dllegacy.ow2.org/rubbos/smallDB-rubbos.tgz). Then, `database/load.sql` in this repository must be updated with the path to these files, then executed to complete the loading.
 
 Running the benchmark
 =====================
